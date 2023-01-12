@@ -17,6 +17,9 @@ namespace MathAnim.Animation
         virtual protected internal Animation<T>? Animation { get; protected set; }
 
         public AnimatableProperty(T value) => Value = value;
+
+        public static implicit operator T(AnimatableProperty<T> property) => property.Value;
+        public static implicit operator AnimatableProperty<T>(T t) => new(t);
     }
 
     class Keyframe<T>
