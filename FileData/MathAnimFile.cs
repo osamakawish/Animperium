@@ -21,6 +21,7 @@ namespace MathAnim.FileData
         internal AnimationFrame Start { get; set; } = new(0, 0);
         internal AnimationFrame End { get; init; } = new(0, 0);
 
+        internal IGraphicsObject? SelectedObject { get; set; }
         internal GraphicsObjectTree GraphicsObjectTree { get; } = new();
     }
 }

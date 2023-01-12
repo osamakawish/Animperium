@@ -9,7 +9,12 @@ namespace MathAnim.FileData
 {
     static class CurrentValues
     {
-        static MathAnimFile? CurrentFile { get; set; }
-        static IGraphicsObject? CurrentObject { get; set; }
+        internal static MathAnimFile? CurrentFile { get; set; }
+        internal static GraphicsObjectTree? CurrentTree => CurrentFile?.GraphicsObjectTree;
+        internal static IGraphicsObject? CurrentObject
+        {
+            get => CurrentFile?.SelectedObject;
+            set { if (CurrentFile is not null) CurrentFile.SelectedObject = value; }
+        }
     }
 }
