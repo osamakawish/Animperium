@@ -64,14 +64,11 @@ namespace MathAnim.Animation
     }
 
     /// <summary>
-    /// Animation over time, determined by the first point and last point, such that first point
-    /// is at <see cref="Animation{T}"/>(0) and
-    /// the last is at <see cref="Animation{T}"/>(<see cref="uint.MaxValue"/>).
+    /// Animation over time. Input must be between 0 and 1.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="f">It's a percentange of <see cref="uint.MaxValue"/>. This allows for easier modification when 
-    /// the frames per second is changed, without sacrificing memory, at the cost of slight overhead 
-    /// and additional error testing.</param>
+    /// <param name="f">This is a percentange of the total number of frames. 
+    /// This opens up for easier modification when and if the user changes the number of frames per second.</param>
     /// <returns></returns>
     delegate T Animation<T>(decimal f);
 }
