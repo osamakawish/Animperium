@@ -20,16 +20,19 @@ namespace MathAnim.Controls
     /// </summary>
     public partial class AnimatablePropertyControl : UserControl, IAnimatablePropertyControl
     {
+        UserControl PropertyModifierControl
+        {
+            get => (UserControl)AnimatablePropertyModifier.Content;
+            set => AnimatablePropertyModifier.Content = value;
+        }
+
         private bool isAnimatable = false;
+        public bool IsAnimatable => isAnimatable;
 
         public AnimatablePropertyControl()
         {
             InitializeComponent();
         }
-
-        public bool IsAnimatable => isAnimatable;
-
-        void SetPropertyModifierControl(UserControl control) => AnimatablePropertyModifier.Content = control;
 
         private void IsAnimatableButton_Click(object sender, RoutedEventArgs e)
         {

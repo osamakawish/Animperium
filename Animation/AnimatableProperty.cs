@@ -11,26 +11,61 @@ namespace MathAnim.Animation
     {
         // DO NOT REMOVE THIS. We aren't using null to allow users
         // to revert to their existing animation for the property.
-        bool IsAnimatable { get; set; } = false;
+        internal bool IsAnimatable { get; set; } = false;
         public T Value { get; set; }
-        List<Keyframe<T>> Keyframes { get; } = new();
-        Animation<T>? Animation { get; set; }
+        internal List<Keyframe<T>> Keyframes { get; } = new();
+        virtual protected internal Animation<T>? Animation { get; protected set; }
 
         public AnimatableProperty(T value) => Value = value;
     }
 
     class Keyframe<T>
     {
-        T Value { get; set; }
-        Keyframe<T>? Prev { get; set; }
-        Keyframe<T>? Next { get; set; }
+        Keyframe<T>? prev;
+        Keyframe<T>? next;
+
+        internal T Value { get; set; }
+
+        /// <summary>
+        /// The next keyframe.
+        /// </summary>
+        /// <remarks>
+        /// Only need to assign <b>either</b> this or the previous keyframe's <see cref="Next"/> property.
+        /// The other is updated simultaneously.
+        /// </remarks>
+        internal Keyframe<T>? Prev
+        {
+            get => prev;
+            set
+            {
+                if (value is not null) value.next = this;
+                prev = value;
+            }
+        }
+
+        /// <summary>
+        /// The next keyframe.
+        /// </summary>
+        /// <remarks>
+        /// Only need to assign <b>either</b> this or the next keyframe's <see cref="Prev"/> property.
+        /// The other is updated simultaneously.
+        /// </remarks>
+        internal Keyframe<T>? Next
+        {
+            get => next;
+            set
+            {
+                if (value is not null) value.prev = this;
+                next = value;
+            }
+        }
 
         public Keyframe(T value) => Value = value;
     }
 
     /// <summary>
-    /// Animation over time, determined by the first point and last point, such that first animation
-    /// is <see cref="Animation{T}"/>(0) and
+    /// Animation over time, determined by the first point and last point, such that first point
+    /// is at <see cref="Animation{T}"/>(0) and
     /// the last is at <see cref="Animation{T}"/>(<see cref="uint.MaxValue"/>).
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -38,5 +73,5 @@ namespace MathAnim.Animation
     /// the frames per second is changed, without sacrificing memory, at the cost of slight overhead 
     /// and additional error testing.</param>
     /// <returns></returns>
-    delegate T Animation<T>(uint f);
+    delegate T Animation<T>(decimal f);
 }
