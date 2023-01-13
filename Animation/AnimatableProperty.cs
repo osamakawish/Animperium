@@ -22,56 +22,14 @@ namespace MathAnim.Animation
         public static implicit operator AnimatableProperty<T>(T t) => new(t);
     }
 
-    class Keyframe<T>
-    {
-        Keyframe<T>? prev;
-        Keyframe<T>? next;
-
-        internal T Value { get; set; }
-
-        /// <summary>
-        /// The next keyframe.
-        /// </summary>
-        /// <remarks>
-        /// Only need to assign <b>either</b> this or the previous keyframe's <see cref="Next"/> property.
-        /// The other is updated simultaneously.
-        /// </remarks>
-        internal Keyframe<T>? Prev
-        {
-            get => prev;
-            set
-            {
-                if (value is not null) value.next = this;
-                prev = value;
-            }
-        }
-
-        /// <summary>
-        /// The next keyframe.
-        /// </summary>
-        /// <remarks>
-        /// Only need to assign <b>either</b> this or the next keyframe's <see cref="Prev"/> property.
-        /// The other is updated simultaneously.
-        /// </remarks>
-        internal Keyframe<T>? Next
-        {
-            get => next;
-            set
-            {
-                if (value is not null) value.prev = this;
-                next = value;
-            }
-        }
-
-        public Keyframe(T value) => Value = value;
-    }
-
     /// <summary>
     /// Animation over time. Input must be between 0 and 1.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="f">This is a percentange of the total number of frames. 
-    /// This opens up for easier modification when and if the user changes the number of frames per second.</param>
+    /// This opens up for easier modification when and if the user changes the number of frames per second.
+    /// This <b>must</b> be 0m at start of frame, and 1.0m at end of frame.
+    /// </param>
     /// <returns></returns>
     delegate T Animation<T>(decimal f);
 }
