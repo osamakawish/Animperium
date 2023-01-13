@@ -12,7 +12,7 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="192"/>
         </Grid.RowDefinitions>
-        
+
         <Menu x:Name="MainMenu" Background="#222" Grid.Row="0"/>
         <Canvas x:Name="MainCanvas" Grid.Row="1" Background="#ccc"/>
         <Grid x:Name="MainEditorGrid" Grid.Row="2" Background="#222">
@@ -25,7 +25,7 @@
 
             <StackPanel x:Name="Toolbar"/>
             <TreeView Grid.Column="1" Background="#1a1a1a"/>
-            <animation:AnimationPanel/>
+            <animation:AnimationPanel Grid.Column="3"/>
         </Grid>
     </Grid>
 </Window>
