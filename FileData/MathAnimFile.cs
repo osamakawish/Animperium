@@ -13,9 +13,9 @@ namespace MathAnim.FileData
     /// <param name="Relative">Initially, this is the percentage (between 0 and 1)
     /// of the total number of frames. May be modified over time as .</param>
     /// <param name="ExactFrameNo"></param>
-    record AnimationFrame(decimal Relative, uint ExactFrameNo);
+    internal record AnimationFrame(decimal Relative, uint ExactFrameNo);
 
-    class MathAnimFile
+    internal class MathAnimFile
     {
         internal byte FramesPerSecond { get; set; } = 24;
         internal AnimationFrame Start { get; set; } = new(0, 0);

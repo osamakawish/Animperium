@@ -2,11 +2,14 @@
 
 namespace MathAnim.Graphics
 {
-    static class Functions
+    internal static class Functions
     {
-        delegate double UnivariateFunction(double x);
-        delegate Vector<double> ParametricFunction(double s);
-        delegate Vector<double> VectorField(Vector<short> v);
-        delegate UnivariateFunction FunctionGraph(short s);
+        private delegate double UnivariateFunction(double x);
+
+        private delegate Vector<double> ParametricFunction(double s);
+
+        private delegate Vector<double> VectorField(Vector<short> v);
+
+        private delegate UnivariateFunction FunctionGraph(short s);
     }
 }

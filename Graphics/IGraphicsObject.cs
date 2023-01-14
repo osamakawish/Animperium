@@ -10,7 +10,7 @@ using System.Windows.Media;
 namespace MathAnim.Graphics
 {
     // Origin in center by default.
-    interface IGraphicsObject
+    internal interface IGraphicsObject
     {
         AnimatableProperty<SizeF> Size { get; set; }
         AnimatableProperty<PointF> Position { get; set; }

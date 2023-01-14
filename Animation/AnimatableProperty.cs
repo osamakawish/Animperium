@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MathAnim.Animation
 {
-    class AnimatableProperty<T>
+    internal class AnimatableProperty<T>
     {
         // DO NOT REMOVE THIS. We aren't using null to allow users
         // to revert to their existing animation for the property.
@@ -31,5 +31,5 @@ namespace MathAnim.Animation
     /// This <b>must</b> be 0m at start of frame, and 1.0m at end of frame.
     /// </param>
     /// <returns></returns>
-    delegate T Animation<T>(decimal f);
+    internal delegate T Animation<T>(decimal f);
 }

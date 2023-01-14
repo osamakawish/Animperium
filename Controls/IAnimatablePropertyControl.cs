@@ -1,11 +1,11 @@
 ﻿namespace MathAnim.Controls
 {
-    interface IAnimatablePropertyControl 
+    internal interface IAnimatablePropertyControl 
     {
         bool IsAnimatable { get; }
     }
 
-    interface IAnimatablePropertyControl<T>
+    internal interface IAnimatablePropertyControl<T>
     {
         T Value { get; set; }
     }

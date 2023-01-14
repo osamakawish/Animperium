@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MathAnim.FileData
 {
-    static class CurrentValues
+    internal static class CurrentValues
     {
         internal static MathAnimFile? CurrentFile { get; set; }
         internal static GraphicsObjectTree? CurrentTree => CurrentFile?.GraphicsObjectTree;

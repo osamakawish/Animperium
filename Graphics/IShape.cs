@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace MathAnim.Graphics
 {
-    interface IShape : IGraphicsObject
+    internal interface IShape : IGraphicsObject
     {
         AnimatableProperty<double> StrokeThickness { get; set; }
         AnimatableProperty<Brush> Stroke { get; set; }

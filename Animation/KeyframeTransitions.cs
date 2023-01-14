@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace MathAnim.Animation
 {
-    static class KeyframeTransitions
+    internal static class KeyframeTransitions
     {
         internal static KeyframeTransition<T> Transition<T>(Keyframe<T> start, Animation<T> transition)
             => start.Next is not null ? (new(start, transition)) : throw new NullReferenceException();

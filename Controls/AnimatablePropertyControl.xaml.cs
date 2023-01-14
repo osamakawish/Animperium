@@ -20,7 +20,7 @@ namespace MathAnim.Controls
     /// </summary>
     public partial class AnimatablePropertyControl : UserControl, IAnimatablePropertyControl
     {
-        UserControl PropertyModifierControl
+        private UserControl PropertyModifierControl
         {
             get => (UserControl)AnimatablePropertyModifier.Content;
             set => AnimatablePropertyModifier.Content = value;
