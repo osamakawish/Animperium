@@ -14,7 +14,7 @@ namespace MathAnim.Animation
         internal bool IsAnimatable { get; set; } = false;
         public T Value { get; set; }
         internal List<Keyframe<T>> Keyframes { get; } = new();
-        virtual protected internal Animation<T>? Animation { get; protected set; }
+        protected internal virtual Animation<T>? Animation { get; protected set; }
 
         public AnimatableProperty(T value) => Value = value;
 
@@ -26,10 +26,10 @@ namespace MathAnim.Animation
     /// Animation over time. Input must be between 0 and 1.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="f">This is a percentange of the total number of frames. 
+    /// <param name="f">This is a percentage of the total number of frames. 
     /// This opens up for easier modification when and if the user changes the number of frames per second.
     /// This <b>must</b> be 0m at start of frame, and 1.0m at end of frame.
     /// </param>
     /// <returns></returns>
-    internal delegate T Animation<T>(decimal f);
+    internal delegate T Animation<out T>(decimal f);
 }

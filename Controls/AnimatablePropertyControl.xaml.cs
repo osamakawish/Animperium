@@ -20,14 +20,13 @@ namespace MathAnim.Controls
     /// </summary>
     public partial class AnimatablePropertyControl : UserControl, IAnimatablePropertyControl
     {
-        private UserControl PropertyModifierControl
+        internal UserControl PropertyModifierControl
         {
             get => (UserControl)AnimatablePropertyModifier.Content;
             set => AnimatablePropertyModifier.Content = value;
         }
 
-        private bool isAnimatable = false;
-        public bool IsAnimatable => isAnimatable;
+        public bool IsAnimatable { get; private set; }
 
         public AnimatablePropertyControl()
         {
@@ -36,9 +35,9 @@ namespace MathAnim.Controls
 
         private void IsAnimatableButton_Click(object sender, RoutedEventArgs e)
         {
-            isAnimatable = !isAnimatable;
+            IsAnimatable = !IsAnimatable;
             IsAnimatableButton.Background = new SolidColorBrush
-                (isAnimatable ? Color.FromRgb(0x40, 0xa0, 0x40) : Color.FromRgb(0x60, 0x60, 0x60));
+                (IsAnimatable ? Color.FromRgb(0x40, 0xa0, 0x40) : Color.FromRgb(0x60, 0x60, 0x60));
         }
     }
 }
