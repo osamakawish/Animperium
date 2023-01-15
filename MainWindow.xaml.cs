@@ -1,19 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
 namespace MathAnim
@@ -21,45 +12,38 @@ namespace MathAnim
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        private Timer _timer = new();
+        private readonly Storyboard _storyboard = new();
 
         public MainWindow()
         {
             InitializeComponent();
 
+            //TestAnimate();
             TestAnimate();
-        }   
+        }
 
         private void TestAnimate()
         {
-            var ellipse = new Ellipse()
+            // Create rectangle on canvas.
+            var rect = new Rectangle
             {
-                Width = 20,
-                Height = 50,
-                Fill = new SolidColorBrush(Colors.Red)
+                Name = "Rect",
+                Width = 200,
+                Height = 80,
+                Fill = Brushes.Brown
             };
+            RegisterName(rect.Name, rect);
+            MainCanvas.Children.Add(rect);
+            Canvas.SetLeft(rect, 110); Canvas.SetTop(rect, 43);
 
-            Canvas.SetTop(ellipse, 0);
-            Canvas.SetLeft(ellipse, 0);
-
-            MainCanvas.Children.Add(ellipse);
-
-            _timer = new Timer(1000d / 24);
-
-            _timer.Elapsed += (_, e) => MainCanvas.Dispatcher.Invoke(() =>
-            {
-                Canvas.SetTop(ellipse, Canvas.GetTop(ellipse) + 1);
-            });
-
-            _timer.Start();
-        }
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            base.OnClosing(e);
-            _timer.Stop();
+            // Add animation to the storyboard
+            var doubleAnim = new DoubleAnimation(43, 166d, new Duration(TimeSpan.FromSeconds(5)));
+            _storyboard.Children.Add(doubleAnim);
+            Storyboard.SetTarget(doubleAnim, rect);
+            Storyboard.SetTargetProperty(doubleAnim, new PropertyPath(Canvas.TopProperty));
+            rect.Loaded += (_, _) => _storyboard.Begin(this);
         }
     }
 }
