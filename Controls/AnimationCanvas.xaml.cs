@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -34,18 +36,60 @@ namespace MathAnim.Controls
         public uint FramesPerSecond { get; internal set; }
         public TimeSpan CurrentTime => TimeSpan.FromSeconds((double)CurrentFrame / FramesPerSecond);
 
+        private Dictionary<TimeDividers, List<Line>> _timeMarkers = new();
+        internal Dictionary<TimeDividers, (Brush brush, double thickness)> TimeMarkerData { get; }
+            = new(new Dictionary<TimeDividers, (Brush brush, double thickness)>()
+        {
+            { TimeDividers.Frames, (Brushes.GhostWhite, 0.2d) },
+            { TimeDividers.Seconds, (Brushes.LightGray, 0.5d) },
+            { TimeDividers.Minutes, (Brushes.DarkGray, 0.8d) },
+            { TimeDividers.Hours, (Brushes.Gray, 1d) }
+        });
+
+        private static readonly double TimelineHeight = 32;
+
         public AnimationCanvas()
         {
             InitializeComponent();
+            SizeChanged += OnSizeChanged;
+        }
+
+        internal void DrawTimeMarkers()
+        {
+            // UNDONE
+            void DrawMarker(double x, TimeDividers divider)
+            {
+                // Initiate line and add to canvas, keeping private variables updated.
+                var line = new Line { X1 = 0, Y1 = 0, X2 = 0, Y2 = TimelineHeight };
+                Canvas.SetLeft(line, x);
+                (line.Stroke, line.StrokeThickness) = TimeMarkerData[divider];
+                _timeMarkers[divider].Add(line);
+                TimelineCanvas.Children.Add(line);
+            }
+
+            // Add the markers.
+        }
+
+        protected void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
+        {
+            // TODO: Update the timeline
         }
 
         /// <summary>
         /// Hides time dividers marked 0, and shows the ones marked 1.
         /// </summary>
-        /// <param name="dividers"></param>
-        internal void DrawTimeMarkers(TimeDividers dividers)
+        public void ShowTimeMarkers(TimeDividers timeDividers)
         {
-            // TODO
+            bool HasFlag(TimeDividers divider) => timeDividers.HasFlag(divider);
+
+            void UpdateVisibility(bool hasFlag, TimeDividers divider) =>
+                _timeMarkers[divider]
+                    .ForEach(l => l.Visibility = hasFlag ? Visibility.Visible : Visibility.Hidden);
+
+            void UpdateVisibilities(params TimeDividers[] dividers)
+                => dividers.ToList().ForEach(d => UpdateVisibility(HasFlag(d), d));
+
+            UpdateVisibilities(TimeDividers.Frames, TimeDividers.Seconds, TimeDividers.Minutes, TimeDividers.Hours);
         }
 
         internal void ClearKeyframes()
@@ -59,7 +103,7 @@ namespace MathAnim.Controls
             // Remember to u
         }
 
-        internal void MoveTimeline(uint frame)
+        internal void MoveTimeline(int frames)
         {
             // TODO
         }
