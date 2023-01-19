@@ -36,7 +36,7 @@ namespace MathAnim.Controls
         internal MathAnimFile AssociatedFile { get; set; }
         public uint CurrentFrame { get; internal set; }
 
-        private byte _framesPerSecond = 24;
+        private byte _framesPerSecond = StandardValues.FramesPerSecond;
         public byte FramesPerSecond
         {
             get => _framesPerSecond;
@@ -44,7 +44,7 @@ namespace MathAnim.Controls
             {
                 if (_framesPerSecond == value) return;
 
-                _timeMarkers[TimeDividers.Frames].Clear();
+                TimeMarkers[TimeDividers.Frames].Clear();
                 // TODO: Modify the lines.
                 //_timeMarkers[TimeDividers.Frames].Add();
 
@@ -52,9 +52,9 @@ namespace MathAnim.Controls
             }
         }
 
-        private double MinimumFrameMarkerGap => ActualWidth / FramesPerSecond;
+        private double MinimumFrameMarkerGap => ActualWidth / TotalFrames;
 
-        private AnimationTime _totalTime;
+        private AnimationTime _totalTime = StandardValues.TotalTime;
 
         public AnimationTime TotalTime
         {
@@ -67,28 +67,13 @@ namespace MathAnim.Controls
             }
         }
 
-
-        public uint TotalFrames => FramesPerSecond * TotalSeconds;
-
-        private uint _totalSeconds;
-
-        public uint TotalSeconds
-        {
-            get => _totalSeconds;
-            set
-            {
-                if (_totalSeconds == value) return;
-
-                // TODO: Draw additional markers if more, remove existing ones if less.
-
-                _totalSeconds = value;
-            }
-        }
-
+        public uint TotalFrames => TotalTime.TotalFrames(FramesPerSecond);
+        
+        public uint TotalSeconds => TotalTime.TotalSeconds;
 
         public TimeSpan CurrentTime => TimeSpan.FromSeconds((double)CurrentFrame / FramesPerSecond);
 
-        private Dictionary<TimeDividers, List<Line>> _timeMarkers = new();
+        private Dictionary<TimeDividers, List<Line>> TimeMarkers { get; } = new();
 
         internal Dictionary<TimeDividers, (Brush brush, double thickness)> TimeMarkerData { get; }
             = new(new Dictionary<TimeDividers, (Brush brush, double thickness)>()
@@ -109,14 +94,13 @@ namespace MathAnim.Controls
 
             AssociatedFile = CurrentValues.CurrentFile;
             AssociatedFile.FramesPerSecondChanged += (_, b) => FramesPerSecond = b;
-            AssociatedFile.TotalSecondsChanged += (_, t) => TotalSeconds = t;
+            AssociatedFile.TotalTimeChanged += (_, t) => TotalTime = t;
 
-            DrawTimeMarkers();;
+            Loaded += (_, _) => DrawTimeMarkers();;
         }
 
         private void DrawTimeMarkers()
         {
-            // DEBUG: Needs testing.
             var framesPerMinute = FramesPerSecond * 60;
             var framesPerHour = framesPerMinute * 60;
 
@@ -154,13 +138,20 @@ namespace MathAnim.Controls
             }
         }
 
+        /// <summary>
+        /// Creates a marker on the timeline according to the respective divider conditions.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="divider"></param>
         private void DrawMarker(double x, TimeDividers divider)
         {
-            // Initiate line and add to canvas, keeping private variables updated.
             var line = new Line { X1 = 0, Y1 = 0, X2 = 0, Y2 = TimelineHeight };
             Canvas.SetLeft(line, x);
             (line.Stroke, line.StrokeThickness) = TimeMarkerData[divider];
-            _timeMarkers[divider].Add(line);
+
+            if (TimeMarkers.TryGetValue(divider, out var lines)) lines.Add(line);
+            else TimeMarkers.Add(divider, new List<Line>());
+            
             TimelineCanvas.Children.Add(line);
         }
 
@@ -177,7 +168,7 @@ namespace MathAnim.Controls
             bool HasFlag(TimeDividers divider) => timeDividers.HasFlag(divider);
 
             void UpdateVisibility(bool hasFlag, TimeDividers divider) =>
-                _timeMarkers[divider]
+                TimeMarkers[divider]
                     .ForEach(l => l.Visibility = hasFlag ? Visibility.Visible : Visibility.Hidden);
 
             void UpdateVisibilities(params TimeDividers[] dividers)

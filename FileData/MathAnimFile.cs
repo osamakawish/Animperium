@@ -13,8 +13,8 @@ namespace MathAnim.FileData
         internal EventHandler<AnimationTime>? TotalTimeChanged;
         internal EventHandler<byte>? FramesPerSecondChanged;
 
-        private AnimationTime _totalTime = new(0, 1, 0, 0);
-        private byte _framesPerSecond = 24;
+        private byte _framesPerSecond = ValueTemplate.Default.FramesPerSecond;
+        private AnimationTime _totalTime = ValueTemplate.Default.TotalTime;
 
         internal byte FramesPerSecond
         {

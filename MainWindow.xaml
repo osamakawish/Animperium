@@ -17,7 +17,7 @@
         <Canvas x:Name="MainCanvas" Grid.Row="1" Background="#ccc">
             <!--<Ellipse Width="20" Height="40" Fill="Red"/>-->
         </Canvas>
-        <Grid x:Name="MainEditorGrid" Grid.Row="2" Background="#222">
+        <Grid x:Name="MainEditorGrid" Grid.Row="2" Background="LightGray">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="24"/>
                 <ColumnDefinition Width="1*"/>
@@ -26,7 +26,7 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel x:Name="Toolbar"/>
-            <TreeView Grid.Column="1" Background="#1a1a1a"/>
+            <TreeView Grid.Column="1" Background="WhiteSmoke"/>
             <controls:PropertyPanel Grid.Column="2"/>
             <animation:AnimationPanel Grid.Column="3"/>
         </Grid>

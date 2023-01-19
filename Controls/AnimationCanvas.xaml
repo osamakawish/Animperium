@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:MathAnim.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:Background="White">
-    <Grid>
+    <Grid Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="32"/>
             <RowDefinition Height="1*"/>
