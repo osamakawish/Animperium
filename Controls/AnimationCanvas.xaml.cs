@@ -108,7 +108,6 @@ namespace MathAnim.Controls
             var framesUntilMinute = FramesPerSecond * 60;
             var framesUntilHour = FramesPerSecond * 3600;
 
-            // TODO: Add the markers.
             for (var i = 0; i < TotalFrames; i++)
             {
                 --framesUntilSecond;
