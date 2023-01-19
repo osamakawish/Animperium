@@ -1,25 +1,43 @@
 ﻿using MathAnim.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MathAnim.FileData
 {
-    /// <summary>
-    /// The animation frame stated in terms of relative and absolute position on the timeline.
-    /// </summary>
-    /// <param name="Relative">Initially, this is the percentage (between 0 and 1)
-    /// of the total number of frames. May be modified over time as .</param>
-    /// <param name="ExactFrameNo"></param>
-    internal record AnimationFrame(decimal Relative, uint ExactFrameNo);
-
     internal class MathAnimFile
     {
-        internal byte FramesPerSecond { get; set; } = 24;
-        internal AnimationFrame Start { get; set; } = new(0, 0);
-        internal AnimationFrame End { get; init; } = new(0, 0);
+        internal EventHandler<AnimationTime>? TotalTimeChanged;
+        internal EventHandler<byte>? FramesPerSecondChanged;
+
+        private AnimationTime _totalTime = new(0, 1, 0, 0);
+        private byte _framesPerSecond = 24;
+
+        internal byte FramesPerSecond
+        {
+            get => _framesPerSecond;
+            set
+            {
+                if (_framesPerSecond == value) return;
+                _framesPerSecond = value;
+                FramesPerSecondChanged?.Invoke(this, value);
+            }
+        }
+
+        internal AnimationTime TotalTime
+        {
+            get => _totalTime;
+            set
+            {
+                if (!value.HasLegalInputs(FramesPerSecond)) return;
+                if (_totalTime == value) return;
+                _totalTime = value;
+                TotalTimeChanged?.Invoke(this, value);
+            }
+        }
 
         internal IGraphicsObject? SelectedObject { get; set; }
         internal GraphicsObjectTree GraphicsObjectTree { get; } = new();
