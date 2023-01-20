@@ -68,7 +68,6 @@ namespace MathAnim.Controls
         }
 
         public uint TotalFrames => TotalTime.TotalFrames(FramesPerSecond);
-        
         public uint TotalSeconds => TotalTime.TotalSeconds;
 
         public TimeSpan CurrentTime => TimeSpan.FromSeconds((double)CurrentFrame / FramesPerSecond);
@@ -99,14 +98,17 @@ namespace MathAnim.Controls
             Loaded += (_, _) => DrawTimeMarkers();;
         }
 
+        /// <summary>
+        /// Renders all the time markers on the animation timeline. 
+        /// </summary>
         private void DrawTimeMarkers()
         {
             var framesPerMinute = FramesPerSecond * 60;
             var framesPerHour = framesPerMinute * 60;
 
             var framesUntilSecond = FramesPerSecond;
-            var framesUntilMinute = FramesPerSecond * 60;
-            var framesUntilHour = FramesPerSecond * 3600;
+            var framesUntilMinute = framesPerMinute;
+            var framesUntilHour = framesPerHour;
 
             for (var i = 0; i < TotalFrames; i++)
             {
@@ -117,41 +119,36 @@ namespace MathAnim.Controls
                 if (i == 0) continue;
 
                 var x = MinimumFrameMarkerGap * i;
-                
+
+                void DrawMarker(TimeDividers divider)
+                {
+                    var line = new Line { X1 = 0, Y1 = 0, X2 = 0, Y2 = TimelineHeight };
+                    Canvas.SetLeft(line, x);
+                    (line.Stroke, line.StrokeThickness) = TimeMarkerData[divider];
+
+                    if (TimeMarkers.TryGetValue(divider, out var lines)) lines.Add(line);
+                    else TimeMarkers.Add(divider, new List<Line>());
+
+                    TimelineCanvas.Children.Add(line);
+                }
+
                 if (framesUntilHour == 0)
                 {
-                    DrawMarker(x, TimeDividers.Hours);
+                    DrawMarker(TimeDividers.Hours);
                     framesUntilHour = framesPerHour;
                 }
                 else if (framesUntilMinute == 0)
                 {
-                    DrawMarker(x, TimeDividers.Minutes); 
+                    DrawMarker(TimeDividers.Minutes); 
                     framesUntilMinute = framesPerMinute;
                 }
                 else if (framesUntilSecond == 0)
                 {
-                    DrawMarker(x, TimeDividers.Seconds);
+                    DrawMarker(TimeDividers.Seconds);
                     framesUntilSecond = FramesPerSecond;
                 }
-                else DrawMarker(x, TimeDividers.Frames);
+                else DrawMarker(TimeDividers.Frames);
             }
-        }
-
-        /// <summary>
-        /// Creates a marker on the timeline according to the respective divider conditions.
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="divider"></param>
-        private void DrawMarker(double x, TimeDividers divider)
-        {
-            var line = new Line { X1 = 0, Y1 = 0, X2 = 0, Y2 = TimelineHeight };
-            Canvas.SetLeft(line, x);
-            (line.Stroke, line.StrokeThickness) = TimeMarkerData[divider];
-
-            if (TimeMarkers.TryGetValue(divider, out var lines)) lines.Add(line);
-            else TimeMarkers.Add(divider, new List<Line>());
-            
-            TimelineCanvas.Children.Add(line);
         }
 
         protected void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
@@ -187,7 +184,6 @@ namespace MathAnim.Controls
         internal void MoveTimeline(TimeSpan time)
         {
             // TODO
-            // Remember to u
         }
 
         internal void MoveTimeline(int frames)
