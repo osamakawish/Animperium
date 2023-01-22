@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MathAnim.FileData;
+using MathAnim.Settings;
 
 namespace MathAnim.Controls
 {
@@ -39,7 +40,7 @@ namespace MathAnim.Controls
         internal MathAnimFile AssociatedFile { get; set; }
         public uint CurrentFrame { get; internal set; }
 
-        private byte _framesPerSecond = StandardValues.FramesPerSecond;
+        private byte _framesPerSecond = FileSettings.Default.FramesPerSecond;
         public byte FramesPerSecond
         {
             get => _framesPerSecond;
@@ -72,7 +73,7 @@ namespace MathAnim.Controls
             }
         }
 
-        private AnimationTime _totalTime = StandardValues.TotalTime;
+        private AnimationTime _totalTime = FileSettings.Default.TotalTime;
         public AnimationTime TotalTime
         {
             get => _totalTime;

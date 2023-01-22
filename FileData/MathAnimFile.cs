@@ -1,4 +1,5 @@
 ﻿using MathAnim.Graphics;
+using MathAnim.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -10,11 +11,13 @@ namespace MathAnim.FileData
 {
     internal class MathAnimFile
     {
+        //public static MathAnimFile FromSettings(FileSettings fileSettings)
+
         internal EventHandler<AnimationTime>? TotalTimeChanged;
         internal EventHandler<byte>? FramesPerSecondChanged;
 
-        private byte _framesPerSecond = ValueTemplate.Default.FramesPerSecond;
-        private AnimationTime _totalTime = ValueTemplate.Default.TotalTime;
+        private byte _framesPerSecond = FileSettings.Default.FramesPerSecond;
+        private AnimationTime _totalTime = FileSettings.Default.TotalTime;
 
         internal byte FramesPerSecond
         {
@@ -41,5 +44,13 @@ namespace MathAnim.FileData
 
         internal IGraphicsObject? SelectedObject { get; set; }
         internal GraphicsObjectTree GraphicsObjectTree { get; } = new();
+
+        public MathAnimFile()
+        {
+                
+        }
+
+        public MathAnimFile(byte framesPerSecond, AnimationTime animationTime)
+            { _framesPerSecond = framesPerSecond; _totalTime = animationTime; }
     }
 }
