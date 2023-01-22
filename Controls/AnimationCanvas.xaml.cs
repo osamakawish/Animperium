@@ -18,6 +18,9 @@ using MathAnim.FileData;
 
 namespace MathAnim.Controls
 {
+    using TimeMarkersDictionary = Dictionary<TimeDividers, List<TimeMarker>>;
+
+    internal record struct TimeMarker(uint Frame, Line Line);
 
     /// <summary>
     /// Interaction logic for AnimationCanvas.xaml
@@ -54,14 +57,46 @@ namespace MathAnim.Controls
 
         private double MinimumFrameMarkerGap => ActualWidth / TotalFrames;
 
-        private AnimationTime _totalTime = StandardValues.TotalTime;
+        private double _frameMarkerGap;
+        private double FrameMarkerGap
+        {
+            get => _frameMarkerGap;
+            set
+            {
+                if (value < MinimumFrameMarkerGap) return;
+                if (Math.Abs(value - _frameMarkerGap) < 0.01) return;
 
+                // TODO: Update Frame Marker Locations
+
+                _frameMarkerGap = value;
+            }
+        }
+
+        private AnimationTime _totalTime = StandardValues.TotalTime;
         public AnimationTime TotalTime
         {
             get => _totalTime;
             set
             {
-                if (value < _totalTime) { }
+                if (_totalTime == value) return;
+                var totalFrames = value.TotalFrames(FramesPerSecond);
+
+                if (value < _totalTime)
+                {
+                    // SLOW : All frames are tested by this code.
+                    void RemoveSurplusMarkers(params TimeDividers[] dividers)
+                        => dividers.ToList().ForEach(d => TimeMarkers[d].RemoveAll(x => x.Frame > totalFrames));
+
+                    RemoveSurplusMarkers(
+                        TimeDividers.Frames,
+                        TimeDividers.Seconds,
+                        TimeDividers.Minutes,
+                        TimeDividers.Hours);
+                }
+                else if (value > _totalTime)
+                {
+                    // TODO
+                }
 
                 _totalTime = value;
             }
@@ -72,15 +107,16 @@ namespace MathAnim.Controls
 
         public TimeSpan CurrentTime => TimeSpan.FromSeconds((double)CurrentFrame / FramesPerSecond);
 
-        private Dictionary<TimeDividers, List<Line>> TimeMarkers { get; } = new();
+        private TimeMarkersDictionary TimeMarkers { get; } = new();
 
+        private static SolidColorBrush Brush(byte r, byte g, byte b, byte a = 255) => new(Color.FromArgb(a, r, g, b));
         internal Dictionary<TimeDividers, (Brush brush, double thickness)> TimeMarkerData { get; }
             = new(new Dictionary<TimeDividers, (Brush brush, double thickness)>()
         {
-            { TimeDividers.Frames, (Brushes.GhostWhite, 0.2d) },
-            { TimeDividers.Seconds, (Brushes.LightGray, 0.5d) },
-            { TimeDividers.Minutes, (Brushes.DarkGray, 0.8d) },
-            { TimeDividers.Hours, (Brushes.Gray, 1d) }
+            { TimeDividers.Frames, (Brush(0xE8, 0xE8, 0xE8), 1d) },
+            { TimeDividers.Seconds, (Brush(0xC0, 0xC0, 0xC0), 1.2d) },
+            { TimeDividers.Minutes, (Brush(0xA0, 0xA0, 0xA0), 1.4d) },
+            { TimeDividers.Hours, (Brushes.Gray, 1.6d) }
         });
 
         private static readonly double TimelineHeight = 32;
@@ -95,7 +131,8 @@ namespace MathAnim.Controls
             AssociatedFile.FramesPerSecondChanged += (_, b) => FramesPerSecond = b;
             AssociatedFile.TotalTimeChanged += (_, t) => TotalTime = t;
 
-            Loaded += (_, _) => DrawTimeMarkers();;
+            _frameMarkerGap = MinimumFrameMarkerGap;
+            Loaded += (_, _) => DrawTimeMarkers();
         }
 
         /// <summary>
@@ -110,7 +147,7 @@ namespace MathAnim.Controls
             var framesUntilMinute = framesPerMinute;
             var framesUntilHour = framesPerHour;
 
-            for (var i = 0; i < TotalFrames; i++)
+            for (uint i = 0; i < TotalFrames; i++)
             {
                 --framesUntilSecond;
                 --framesUntilMinute;
@@ -118,42 +155,49 @@ namespace MathAnim.Controls
 
                 if (i == 0) continue;
 
-                var x = MinimumFrameMarkerGap * i;
-
-                void DrawMarker(TimeDividers divider)
-                {
-                    var line = new Line { X1 = 0, Y1 = 0, X2 = 0, Y2 = TimelineHeight };
-                    Canvas.SetLeft(line, x);
-                    (line.Stroke, line.StrokeThickness) = TimeMarkerData[divider];
-
-                    if (TimeMarkers.TryGetValue(divider, out var lines)) lines.Add(line);
-                    else TimeMarkers.Add(divider, new List<Line>());
-
-                    TimelineCanvas.Children.Add(line);
-                }
+                var x = FrameMarkerGap * i;
 
                 if (framesUntilHour == 0)
                 {
-                    DrawMarker(TimeDividers.Hours);
+                    DrawMarker(TimeDividers.Hours, x, i);
                     framesUntilHour = framesPerHour;
                 }
                 else if (framesUntilMinute == 0)
                 {
-                    DrawMarker(TimeDividers.Minutes); 
+                    DrawMarker(TimeDividers.Minutes, x, i); 
                     framesUntilMinute = framesPerMinute;
                 }
                 else if (framesUntilSecond == 0)
                 {
-                    DrawMarker(TimeDividers.Seconds);
+                    DrawMarker(TimeDividers.Seconds, x, i);
                     framesUntilSecond = FramesPerSecond;
                 }
-                else DrawMarker(TimeDividers.Frames);
+                else DrawMarker(TimeDividers.Frames, x, i);
             }
         }
 
-        protected void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
+        private void DrawMarker(TimeDividers divider, double x, uint i)
+        {
+            var line = new Line { X1 = 0, Y1 = 0, X2 = 0, Y2 = TimelineHeight };
+            Canvas.SetLeft(line, x);
+            (line.Stroke, line.StrokeThickness) = TimeMarkerData[divider];
+            Panel.SetZIndex(line, (int)divider);
+
+            if (TimeMarkers.TryGetValue(divider, out var lines))
+                lines.Add(new TimeMarker(i, line));
+            else TimeMarkers.Add(divider, new List<TimeMarker>());
+
+            TimelineCanvas.Children.Add(line);
+        }
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
         {
             // TODO: Update the timeline
+        }
+
+        private void UpdateTimelineLocation()
+        {
+            // TODO
         }
 
         /// <summary>
@@ -165,7 +209,7 @@ namespace MathAnim.Controls
 
             void UpdateVisibility(bool hasFlag, TimeDividers divider) =>
                 TimeMarkers[divider]
-                    .ForEach(l => l.Visibility = hasFlag ? Visibility.Visible : Visibility.Hidden);
+                    .ForEach(l => l.Line.Visibility = hasFlag ? Visibility.Visible : Visibility.Hidden);
 
             void UpdateVisibilities(params TimeDividers[] dividers)
                 => dividers.ToList().ForEach(d => UpdateVisibility(HasFlag(d), d));
@@ -181,19 +225,31 @@ namespace MathAnim.Controls
             // TODO
         }
 
-        internal void MoveTimeline(TimeSpan time)
+        internal void MoveTimeline(TimeSpan time, bool isForward=true)
         {
+            if (TimelinePosition == TimelineLocation.FullTimeline) return;
+
             // TODO
+            
         }
 
         internal void MoveTimeline(int frames)
         {
+            if (TimelinePosition == TimelineLocation.FullTimeline) return;
+
             // TODO
+            var dist = frames * FrameMarkerGap;
+
         }
 
         internal void ScaleTimeline(double scale)
         {
             // TODO
+            // F : x -> a*(x-p) + p : rescales timeline centered at p by scale factor of a. Apply F to every line.
+            // Make sure that neither start nor end of timeline are anywhere but at the edges or outside.
+            // In fact, test that before applying F to every line, then update F accordingly.
+
+            // TODO: Make sure to update TimelinePosition
         }
 
         internal void AddKeyframe(TimeSpan time)
