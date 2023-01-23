@@ -13,31 +13,30 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MathAnim.Controls
+namespace MathAnim.Controls;
+
+/// <summary>
+/// Interaction logic for AnimatablePropertyControl.xaml
+/// </summary>
+public partial class AnimatablePropertyControl : UserControl, IAnimatablePropertyControl
 {
-    /// <summary>
-    /// Interaction logic for AnimatablePropertyControl.xaml
-    /// </summary>
-    public partial class AnimatablePropertyControl : UserControl, IAnimatablePropertyControl
+    internal UserControl PropertyModifierControl
     {
-        internal UserControl PropertyModifierControl
-        {
-            get => (UserControl)AnimatablePropertyModifier.Content;
-            set => AnimatablePropertyModifier.Content = value;
-        }
+        get => (UserControl)AnimatablePropertyModifier.Content;
+        set => AnimatablePropertyModifier.Content = value;
+    }
 
-        public bool IsAnimatable { get; private set; }
+    public bool IsAnimatable { get; private set; }
 
-        public AnimatablePropertyControl()
-        {
-            InitializeComponent();
-        }
+    public AnimatablePropertyControl()
+    {
+        InitializeComponent();
+    }
 
-        private void IsAnimatableButton_Click(object sender, RoutedEventArgs e)
-        {
-            IsAnimatable = !IsAnimatable;
-            IsAnimatableButton.Background = new SolidColorBrush
-                (IsAnimatable ? Color.FromRgb(0x40, 0xa0, 0x40) : Color.FromRgb(0x60, 0x60, 0x60));
-        }
+    private void IsAnimatableButton_Click(object sender, RoutedEventArgs e)
+    {
+        IsAnimatable = !IsAnimatable;
+        IsAnimatableButton.Background = new SolidColorBrush
+            (IsAnimatable ? Color.FromRgb(0x40, 0xa0, 0x40) : Color.FromRgb(0x60, 0x60, 0x60));
     }
 }

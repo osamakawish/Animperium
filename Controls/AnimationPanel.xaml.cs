@@ -13,16 +13,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MathAnim.Animation
+namespace MathAnim.Animation;
+
+/// <summary>
+/// Interaction logic for AnimationPanel.xaml
+/// </summary>
+public partial class AnimationPanel : UserControl
 {
-    /// <summary>
-    /// Interaction logic for AnimationPanel.xaml
-    /// </summary>
-    public partial class AnimationPanel : UserControl
+    public AnimationPanel()
     {
-        public AnimationPanel()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

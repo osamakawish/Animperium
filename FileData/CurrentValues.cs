@@ -5,16 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MathAnim.FileData
+namespace MathAnim.FileData;
+
+internal static class CurrentValues
 {
-    internal static class CurrentValues
+    internal static MathAnimFile? CurrentFile { get; set; }
+    internal static GraphicsObjectTree? CurrentTree => CurrentFile?.GraphicsObjectTree;
+    internal static IGraphicsObject? CurrentObject
     {
-        internal static MathAnimFile? CurrentFile { get; set; }
-        internal static GraphicsObjectTree? CurrentTree => CurrentFile?.GraphicsObjectTree;
-        internal static IGraphicsObject? CurrentObject
-        {
-            get => CurrentFile?.SelectedObject;
-            set { if (CurrentFile is not null) CurrentFile.SelectedObject = value; }
-        }
+        get => CurrentFile?.SelectedObject;
+        set { if (CurrentFile is not null) CurrentFile.SelectedObject = value; }
     }
 }

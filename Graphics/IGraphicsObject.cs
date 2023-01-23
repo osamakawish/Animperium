@@ -7,14 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace MathAnim.Graphics
+namespace MathAnim.Graphics;
+
+// Origin in center by default.
+internal interface IGraphicsObject
 {
-    // Origin in center by default.
-    internal interface IGraphicsObject
-    {
-        AnimatableProperty<SizeF> Size { get; set; }
-        AnimatableProperty<PointF> Position { get; set; }
-        AnimatableProperty<Transform> TransformTransform { get; set; }
-        AnimatableProperty<bool> Visibility { get; set; }
-    }
+    AnimatableProperty<SizeF> Size { get; set; }
+    AnimatableProperty<PointF> Position { get; set; }
+    AnimatableProperty<Transform> TransformTransform { get; set; }
+    AnimatableProperty<bool> Visibility { get; set; }
 }

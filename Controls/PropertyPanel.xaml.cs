@@ -13,16 +13,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MathAnim.Controls
+namespace MathAnim.Controls;
+
+/// <summary>
+/// Interaction logic for PropertyPanel.xaml
+/// </summary>
+public partial class PropertyPanel : UserControl
 {
-    /// <summary>
-    /// Interaction logic for PropertyPanel.xaml
-    /// </summary>
-    public partial class PropertyPanel : UserControl
+    public PropertyPanel()
     {
-        public PropertyPanel()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

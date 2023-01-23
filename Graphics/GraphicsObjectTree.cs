@@ -1,4 +1,3 @@
-﻿namespace MathAnim.Graphics
-{
-    internal class GraphicsObjectTree { }
-}
+﻿namespace MathAnim.Graphics;
+
+internal class GraphicsObjectTree { }
