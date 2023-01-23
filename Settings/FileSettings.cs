@@ -10,7 +10,7 @@ namespace MathAnim.Settings
     /// <summary>
     /// A set of default values for the application. Can be modified by users.
     /// </summary>
-    internal record FileSettings(DoubleTolerance Tolerance, byte FramesPerSecond, AnimationTime TotalTime)
+    internal record FileSettings(DoubleTolerance Tolerance, AnimationTime AnimationTime)
     {
         internal static FileSettings Default = StandardSettings.StandardFileSettings;
 

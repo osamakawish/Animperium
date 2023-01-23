@@ -2,13 +2,21 @@
 
 namespace MathAnim.FileData;
 
-public record struct AnimationTime(byte Hours, byte Minutes, byte Seconds, byte Frames)
+public record struct AnimationTime
+    (byte Hours,
+    byte Minutes,
+    byte Seconds,
+    byte Frames,
+    byte FramesPerSecond = 24)
 {
-    public bool HasLegalInputs(byte framesPerSecond=24)
-        => Minutes < 60 && Seconds < 60 && Frames < framesPerSecond;
+    public uint FramesPerMinute => FramesPerSecond * 60u;
+    public uint FramesPerHour => FramesPerSecond * 3600u;
 
-    public uint TotalFrames(byte framesPerSecond = 24)
-        => Frames + framesPerSecond * TotalSeconds;
+    public bool HasLegalInputs
+        => Minutes < 60 && Seconds < 60 && Frames < FramesPerSecond;
+
+    public uint TotalFrames
+        => Frames + FramesPerSecond * (Seconds + 60u * (Minutes + 60u * Hours));
 
     public uint TotalSeconds => (uint)(Frames == 0 ? 0 : 1) + Seconds + 60 * (Minutes + 60 * (uint)Hours);
 
@@ -20,28 +28,29 @@ public record struct AnimationTime(byte Hours, byte Minutes, byte Seconds, byte 
     /// <summary>
     /// </summary>
     /// <param name="timeLimit">The total time.</param>
-    /// <param name="framesPerSecond">The FPS, or the number of frames per second in a given second.</param>
-    /// <returns>True if the inputs of this record are legal (<see cref="Frames"/> &lt; <see cref="framesPerSecond"/>
-    /// , <see cref="Seconds"/> &lt; 60, etc.) and is within the provided time limit, false otherwise.</returns>
-    public bool IsValid(AnimationTime timeLimit, byte framesPerSecond = 24)
-        => TotalFrames(framesPerSecond) <= timeLimit.TotalFrames(framesPerSecond) && HasLegalInputs(framesPerSecond);
+    /// <returns>True if the inputs of this record are legal (<see cref="Frames"/> &lt; <see cref="FramesPerSecond"/>,
+    /// <see cref="Seconds"/> &lt; 60, etc.) and is within the provided time limit, false otherwise.</returns>
+    public bool IsValid(AnimationTime timeLimit)
+        => TotalFrames <= timeLimit.TotalFrames && HasLegalInputs;
 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="framesPerSecond"></param>
     /// <returns></returns>
-    public AnimationTime LegalForm(byte framesPerSecond = 24)
+    public AnimationTime LegalForm
     {
-        if (HasLegalInputs(framesPerSecond)) return this;
+        get
+        {
+            if (HasLegalInputs) return this;
 
-        var totalFrames = TotalFrames(framesPerSecond);
-        var totalSeconds = totalFrames / framesPerSecond;
-        var timeSpan = TimeSpan.FromSeconds(totalSeconds);
+            var totalFrames = TotalFrames;
+            var totalSeconds = totalFrames / FramesPerSecond;
+            var timeSpan = TimeSpan.FromSeconds(totalSeconds);
 
-        return new AnimationTime((byte)timeSpan.Hours,
-            (byte)timeSpan.Minutes,
-            (byte)(totalSeconds % 60),
-            (byte)(totalFrames % framesPerSecond));
+            return new AnimationTime((byte)timeSpan.Hours,
+                (byte)timeSpan.Minutes,
+                (byte)(totalSeconds % 60),
+                (byte)(totalFrames % FramesPerSecond));
+        }
     }
 }

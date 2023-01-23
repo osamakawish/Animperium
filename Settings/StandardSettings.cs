@@ -13,5 +13,5 @@ internal static class StandardSettings
     public static double AsDouble(this DoubleTolerance tolerance) => Math.Pow(10, -(int)tolerance);
 
     public static readonly FileSettings StandardFileSettings
-        = new(DoubleTolerance.Medium, 24, new AnimationTime(0, 1, 0, 0));
+        = new(DoubleTolerance.Medium, new AnimationTime(0, 1, 0, 0));
 }

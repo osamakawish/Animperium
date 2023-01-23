@@ -11,13 +11,15 @@ namespace MathAnim.FileData
 {
     internal class MathAnimFile
     {
+        public const uint SecondsPerMinute = 60;
+        public const uint SecondsPerHour = 60 * 60;
         //public static MathAnimFile FromSettings(FileSettings fileSettings)
 
         internal EventHandler<AnimationTime>? TotalTimeChanged;
         internal EventHandler<byte>? FramesPerSecondChanged;
 
-        private byte _framesPerSecond = FileSettings.Default.FramesPerSecond;
-        private AnimationTime _totalTime = FileSettings.Default.TotalTime;
+        private byte _framesPerSecond = FileSettings.Default.AnimationTime.FramesPerSecond;
+        private AnimationTime _totalTime = FileSettings.Default.AnimationTime;
 
         internal byte FramesPerSecond
         {
@@ -35,7 +37,7 @@ namespace MathAnim.FileData
             get => _totalTime;
             set
             {
-                if (!value.HasLegalInputs(FramesPerSecond)) return;
+                if (!value.HasLegalInputs) return;
                 if (_totalTime == value) return;
                 _totalTime = value;
                 TotalTimeChanged?.Invoke(this, value);

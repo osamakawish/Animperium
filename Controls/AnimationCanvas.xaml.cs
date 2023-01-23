@@ -19,9 +19,9 @@ using MathAnim.Settings;
 
 namespace MathAnim.Controls
 {
-    using TimeMarkersDictionary = Dictionary<TimeDividers, List<TimeMarker>>;
+    using TimeMarkersDictionary = Dictionary<uint, TimeMarker>;
 
-    internal record struct TimeMarker(uint Frame, Line Line);
+    internal record struct TimeMarker(TimeDividers Divider, Line Line);
 
     /// <summary>
     /// Interaction logic for AnimationCanvas.xaml
@@ -40,7 +40,7 @@ namespace MathAnim.Controls
         internal MathAnimFile AssociatedFile { get; set; }
         public uint CurrentFrame { get; internal set; }
 
-        private byte _framesPerSecond = FileSettings.Default.FramesPerSecond;
+        private byte _framesPerSecond = FileSettings.Default.AnimationTime.FramesPerSecond;
         public byte FramesPerSecond
         {
             get => _framesPerSecond;
@@ -48,15 +48,16 @@ namespace MathAnim.Controls
             {
                 if (_framesPerSecond == value) return;
 
-                TimeMarkers[TimeDividers.Frames].Clear();
+                TimeMarkers.Clear();
+
                 // TODO: Modify the lines.
                 //_timeMarkers[TimeDividers.Frames].Add();
-
+                
                 _framesPerSecond = value;
             }
         }
 
-        private double MinimumFrameMarkerGap => ActualWidth / TotalFrames;
+        private double MinimumFrameMarkerGap => ActualWidth / TotalTime.TotalFrames;
 
         private double _frameMarkerGap;
         private double FrameMarkerGap
@@ -73,26 +74,19 @@ namespace MathAnim.Controls
             }
         }
 
-        private AnimationTime _totalTime = FileSettings.Default.TotalTime;
+        private AnimationTime _totalTime = FileSettings.Default.AnimationTime;
         public AnimationTime TotalTime
         {
             get => _totalTime;
             set
             {
                 if (_totalTime == value) return;
-                var totalFrames = value.TotalFrames(FramesPerSecond);
 
                 if (value < _totalTime)
                 {
-                    // SLOW : All frames are tested by this code.
-                    void RemoveSurplusMarkers(params TimeDividers[] dividers)
-                        => dividers.ToList().ForEach(d => TimeMarkers[d].RemoveAll(x => x.Frame > totalFrames));
-
-                    RemoveSurplusMarkers(
-                        TimeDividers.Frames,
-                        TimeDividers.Seconds,
-                        TimeDividers.Minutes,
-                        TimeDividers.Hours);
+                    var start = _totalTime.TotalFrames + 1;
+                    var end = value.TotalFrames;
+                    for (var i = start; i <= end; i++) TimeMarkers.Remove(i);
                 }
                 else if (value > _totalTime)
                 {
@@ -103,11 +97,9 @@ namespace MathAnim.Controls
             }
         }
 
-        public uint TotalFrames => TotalTime.TotalFrames(FramesPerSecond);
-        public uint TotalSeconds => TotalTime.TotalSeconds;
-
         public TimeSpan CurrentTime => TimeSpan.FromSeconds((double)CurrentFrame / FramesPerSecond);
 
+        private Transform1D TimelineTransform { get; set; } = Transform1D.Identity;
         private TimeMarkersDictionary TimeMarkers { get; } = new();
 
         private static SolidColorBrush Brush(byte r, byte g, byte b, byte a = 255) => new(Color.FromArgb(a, r, g, b));
@@ -136,6 +128,13 @@ namespace MathAnim.Controls
             Loaded += (_, _) => DrawTimeMarkers();
         }
 
+        static bool Divides(uint a, uint b) => b % a == 0;
+
+        private TimeDividers GetTimeDivider(uint frame)
+            => Divides(FramesPerSecond * 3600u, frame) ? TimeDividers.Hours :
+                Divides(FramesPerSecond * 60u, frame) ? TimeDividers.Minutes :
+                Divides(FramesPerSecond * 60u, frame) ? TimeDividers.Seconds : TimeDividers.Frames;
+
         /// <summary>
         /// Renders all the time markers on the animation timeline. 
         /// </summary>
@@ -148,7 +147,7 @@ namespace MathAnim.Controls
             var framesUntilMinute = framesPerMinute;
             var framesUntilHour = framesPerHour;
 
-            for (uint i = 0; i < TotalFrames; i++)
+            for (uint i = 0; i < TotalTime.TotalFrames; i++)
             {
                 --framesUntilSecond;
                 --framesUntilMinute;
@@ -177,17 +176,13 @@ namespace MathAnim.Controls
             }
         }
 
-        private void DrawMarker(TimeDividers divider, double x, uint i)
+        private void DrawMarker(TimeDividers divider, double x, uint frame)
         {
             var line = new Line { X1 = 0, Y1 = 0, X2 = 0, Y2 = TimelineHeight };
             Canvas.SetLeft(line, x);
             (line.Stroke, line.StrokeThickness) = TimeMarkerData[divider];
             Panel.SetZIndex(line, (int)divider);
-
-            if (TimeMarkers.TryGetValue(divider, out var lines))
-                lines.Add(new TimeMarker(i, line));
-            else TimeMarkers.Add(divider, new List<TimeMarker>());
-
+            TimeMarkers.Add(frame, new TimeMarker(divider, line));
             TimelineCanvas.Children.Add(line);
         }
 
@@ -202,6 +197,29 @@ namespace MathAnim.Controls
         }
 
         /// <summary>
+        /// The material conditional evaluation.
+        /// </summary>
+        /// <param name="if"></param>
+        /// <param name="then"></param>
+        /// <returns></returns>
+        private static bool Implies(bool @if, bool then) => !@if || then;
+        private bool SatisfiesFlag(uint frame, TimeDividers flag)
+            => (Implies(flag.HasFlag(TimeDividers.Hours), Divides(frame, 3600u * FramesPerSecond)))
+               && Implies(flag.HasFlag(TimeDividers.Minutes), Divides(frame, 60u * FramesPerSecond))
+               && Implies(flag.HasFlag(TimeDividers.Seconds), Divides(frame, FramesPerSecond));
+        private uint GetFrames(TimeDividers d)
+        {
+            var rate = d.HasFlag(TimeDividers.Frames)
+                ? 1u : FramesPerSecond * (d.HasFlag(TimeDividers.Seconds) ? 1u
+                    : 60u * (d.HasFlag(TimeDividers.Minutes) ? 1u : d.HasFlag(TimeDividers.Hours) ? 60u : 1));
+            
+            for (var i = rate; i < TotalTime.TotalFrames; i += rate)
+            {
+                
+            }
+        }
+
+        /// <summary>
         /// Hides time dividers marked 0, and shows the ones marked 1.
         /// </summary>
         public void ShowTimeMarkers(TimeDividers timeDividers)
@@ -209,7 +227,7 @@ namespace MathAnim.Controls
             bool HasFlag(TimeDividers divider) => timeDividers.HasFlag(divider);
 
             void UpdateVisibility(bool hasFlag, TimeDividers divider) =>
-                TimeMarkers[divider]
+                TimeMarkers
                     .ForEach(l => l.Line.Visibility = hasFlag ? Visibility.Visible : Visibility.Hidden);
 
             void UpdateVisibilities(params TimeDividers[] dividers)
