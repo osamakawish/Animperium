@@ -1,14 +1,23 @@
 ﻿using System.Collections.Generic;
+
 namespace MathAnim.FileData;
 
-using MathAnim.Controls;
-using System.Windows.Shapes;
+using Controls;
 
-using TimeMarkersDictionary = Dictionary<uint, TimeMarker>;
-
-internal record struct TimeMarker(TimeDividers Divider, Line Line);
-
-public class TimeMarkerData
+internal class TimeMarkerData
 {
-
+    // Essentially only manipulates these properties.
+    internal required AnimationTime TotalTime
+    {
+        get;
+        set;
+    }
+    private Dictionary<TimeDividers, uint> TimeMarkers { get; } = new();
+    private FrameDividersDictionary FrameDividers { get; } = new()
+    {
+        { TimeDividers.Frames, new List<uint>() },
+        { TimeDividers.Seconds, new List<uint>() },
+        { TimeDividers.Minutes, new List<uint>() },
+        { TimeDividers.Hours, new List<uint>() }
+    };
 }

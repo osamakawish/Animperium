@@ -1,4 +1,7 @@
-﻿using System;
+﻿global using TimeMarkersDictionary = System.Collections.Generic.Dictionary<uint, MathAnim.Controls.TimeMarker>;
+global using FrameDividersDictionary = System.Collections.Generic.Dictionary<MathAnim.Controls.TimeDividers, System.Collections.Generic.List<uint>>;
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -19,9 +22,8 @@ using MathAnim.Settings;
 
 namespace MathAnim.Controls;
 
-using TimeMarkersDictionary = Dictionary<uint, TimeMarker>;
 
-internal record struct TimeMarker(TimeDividers Divider, Line Line);
+public record struct TimeMarker(TimeDividers Divider, Line Line);
 
 /// <summary>
 /// Interaction logic for AnimationCanvas.xaml
@@ -48,13 +50,15 @@ public partial class AnimationCanvas
         {
             if (_framesPerSecond == value) return;
 
-            TimeMarkers.Clear();
-
-            // TODO: Modify the lines.
-            //_timeMarkers[TimeDividers.Frames].Add();
+            void RemoveMarkers(IEnumerable<Line> lines) => lines.ToList().ForEach(TimelineCanvas.Children.Remove);
+            RemoveMarkers(TimeMarkers.Select(x => x.Value.Line));
+            
+            TimeMarkers.Clear(); FrameDividers.Clear();
 
             _totalTime = TotalTime with { FramesPerSecond = value };
             _framesPerSecond = value;
+
+            DrawTimeMarkers();
         }
     }
 
@@ -83,12 +87,11 @@ public partial class AnimationCanvas
         {
             if (_totalTime == value) return;
 
+            // Remove surplus markers if new value less than previous.
             if (value < _totalTime)
-            {
-                var start = _totalTime.TotalFrames + 1;
-                var end = value.TotalFrames;
-                for (var i = start; i <= end; i++) TimeMarkers.Remove(i);
-            }
+                for (var i = _totalTime.TotalFrames + 1; i <= value.TotalFrames; i++)
+                { var div = TimeMarkers[i].Divider; TimeMarkers.Remove(i); FrameDividers[div].Remove(i); }
+
             else if (value > _totalTime)
             {
                 // TODO
@@ -103,9 +106,17 @@ public partial class AnimationCanvas
     private Transform1D TimelineTransform { get; set; } = Transform1D.Identity;
     private TimeMarkersDictionary TimeMarkers { get; } = new();
 
+    private FrameDividersDictionary FrameDividers { get; } = new()
+    {
+        { TimeDividers.Frames, new List<uint>() },
+        { TimeDividers.Seconds, new List<uint>() },
+        { TimeDividers.Minutes, new List<uint>() },
+        { TimeDividers.Hours, new List<uint>() }
+    };
+
     private static SolidColorBrush Brush(byte r, byte g, byte b, byte a = 255) => new(Color.FromArgb(a, r, g, b));
-    internal Dictionary<TimeDividers, (Brush brush, double thickness)> TimeMarkerData { get; }
-        = new(new Dictionary<TimeDividers, (Brush brush, double thickness)>()
+    internal Dictionary<TimeDividers, (Brush brush, double thickness)> TimeMarkerGraphicsData { get; }
+        = new(new Dictionary<TimeDividers, (Brush brush, double thickness)>
         {
             { TimeDividers.Frames, (Brush(0xE8, 0xE8, 0xE8), 1d) },
             { TimeDividers.Seconds, (Brush(0xC0, 0xC0, 0xC0), 1.2d) },
@@ -180,10 +191,10 @@ public partial class AnimationCanvas
     private void DrawMarker(TimeDividers divider, double x, uint frame)
     {
         var line = new Line { X1 = 0, Y1 = 0, X2 = 0, Y2 = TimelineHeight };
-        Canvas.SetLeft(line, x);
-        (line.Stroke, line.StrokeThickness) = TimeMarkerData[divider];
-        Panel.SetZIndex(line, (int)divider);
+        Canvas.SetLeft(line, x); Panel.SetZIndex(line, (int)divider);
+        (line.Stroke, line.StrokeThickness) = TimeMarkerGraphicsData[divider];
         TimeMarkers.Add(frame, new TimeMarker(divider, line));
+        FrameDividers[divider].Add(frame);
         TimelineCanvas.Children.Add(line);
     }
 
@@ -197,28 +208,12 @@ public partial class AnimationCanvas
         // TODO
     }
 
-    /// <summary>
-    /// The material conditional evaluation.
-    /// </summary>
-    /// <param name="if"></param>
-    /// <param name="then"></param>
-    /// <returns></returns>
-    private static bool Implies(bool @if, bool then) => !@if || then;
-    private bool SatisfiesFlag(uint frame, TimeDividers flag)
-        => (Implies(flag.HasFlag(TimeDividers.Hours), Divides(frame, 3600u * FramesPerSecond)))
-           && Implies(flag.HasFlag(TimeDividers.Minutes), Divides(frame, 60u * FramesPerSecond))
-           && Implies(flag.HasFlag(TimeDividers.Seconds), Divides(frame, FramesPerSecond));
-    private uint GetFrames(TimeDividers d)
-    {
-        var rate = d.HasFlag(TimeDividers.Frames)
-            ? 1u : FramesPerSecond * (d.HasFlag(TimeDividers.Seconds) ? 1u
-                : 60u * (d.HasFlag(TimeDividers.Minutes) ? 1u : d.HasFlag(TimeDividers.Hours) ? 60u : 1));
-            
-        for (var i = rate; i < TotalTime.TotalFrames; i += rate)
-        {
-                
-        }
-    }
+    // SLOW -> Takes too long even for hour markers, even though there's only few of them. Better to implement
+    // an updated dictionary containing dividers -> frames. Determining reverse is a simple calculation
+    // and is therefore not necessary.
+    private List<uint> GetFrames(TimeDividers d)
+        => FrameDividers[d];
+        //=> TimeMarkers.ToList().Where(m => d.HasFlag(m.Value.Divider)).Select(x => x.Key).ToList();
 
     /// <summary>
     /// Hides time dividers marked 0, and shows the ones marked 1.
@@ -227,12 +222,12 @@ public partial class AnimationCanvas
     {
         bool HasFlag(TimeDividers divider) => timeDividers.HasFlag(divider);
 
-        void UpdateVisibility(bool hasFlag, TimeDividers divider) =>
-            TimeMarkers
+        void UpdateVisibility(bool hasFlag) =>
+            TimeMarkers.Values.ToList()
                 .ForEach(l => l.Line.Visibility = hasFlag ? Visibility.Visible : Visibility.Hidden);
 
         void UpdateVisibilities(params TimeDividers[] dividers)
-            => dividers.ToList().ForEach(d => UpdateVisibility(HasFlag(d), d));
+            => dividers.ToList().ForEach(d => UpdateVisibility(HasFlag(d)));
 
         UpdateVisibilities(TimeDividers.Frames, TimeDividers.Seconds, TimeDividers.Minutes, TimeDividers.Hours);
     }
