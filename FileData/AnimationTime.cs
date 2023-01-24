@@ -53,4 +53,8 @@ public record struct AnimationTime
                 (byte)(totalFrames % FramesPerSecond));
         }
     }
+
+    public override string ToString() 
+        => $"AnimationTime[{FramesPerSecond}]({Hours}: {Minutes}: {Seconds}; {Frames})" +
+           $"{(HasLegalInputs ? string.Empty : "?")}";
 }

@@ -1,7 +1,4 @@
-﻿global using TimeMarkersDictionary = System.Collections.Generic.Dictionary<uint, MathAnim.Controls.TimeMarker>;
-global using FrameDividersDictionary = System.Collections.Generic.Dictionary<MathAnim.Controls.TimeDividers, System.Collections.Generic.List<uint>>;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -30,6 +27,9 @@ public record struct TimeMarker(TimeDividers Divider, Line Line);
 /// </summary>
 public partial class AnimationCanvas
 {
+    public required TimeMarkerData MarkerData { get; init; }
+    public required TimeMarkerGraphicsData MarkerGraphicsData { get; init; }
+
     public enum TimelineLocation : byte
     {
         HasStart = 1,
@@ -50,19 +50,21 @@ public partial class AnimationCanvas
         {
             if (_framesPerSecond == value) return;
 
-            void RemoveMarkers(IEnumerable<Line> lines) => lines.ToList().ForEach(TimelineCanvas.Children.Remove);
-            RemoveMarkers(TimeMarkers.Select(x => x.Value.Line));
-            
-            TimeMarkers.Clear(); FrameDividers.Clear();
+            var timeMarkers = MarkerGraphicsData.FrameMarkers;
 
-            _totalTime = TotalTime with { FramesPerSecond = value };
+            void RemoveMarkers(IEnumerable<Line> lines) => lines.ToList().ForEach(TimelineCanvas.Children.Remove);
+            RemoveMarkers(timeMarkers.Select(x => x.Value));
+
+            MarkerData.Clear(); MarkerGraphicsData.Clear();
+
+            MarkerData.TotalTime = MarkerData.TotalTime with { FramesPerSecond = value };
             _framesPerSecond = value;
 
-            DrawTimeMarkers();
+            MarkerGraphicsData.DrawTimeMarkers();
         }
     }
 
-    private double MinimumFrameMarkerGap => ActualWidth / TotalTime.TotalFrames;
+    private double MinimumFrameMarkerGap => ActualWidth / MarkerData.TotalTime.TotalFrames;
 
     private double _frameMarkerGap;
     private double FrameMarkerGap
@@ -79,52 +81,10 @@ public partial class AnimationCanvas
         }
     }
 
-    private AnimationTime _totalTime = FileSettings.Default.AnimationTime;
-    public AnimationTime TotalTime
-    {
-        get => _totalTime;
-        set
-        {
-            if (_totalTime == value) return;
-
-            // Remove surplus markers if new value less than previous.
-            if (value < _totalTime)
-                for (var i = _totalTime.TotalFrames + 1; i <= value.TotalFrames; i++)
-                { var div = TimeMarkers[i].Divider; TimeMarkers.Remove(i); FrameDividers[div].Remove(i); }
-
-            else if (value > _totalTime)
-            {
-                // TODO
-            }
-
-            _totalTime = value;
-        }
-    }
-
     public TimeSpan CurrentTime => TimeSpan.FromSeconds((double)CurrentFrame / FramesPerSecond);
+    
 
-    private Transform1D TimelineTransform { get; set; } = Transform1D.Identity;
-    private TimeMarkersDictionary TimeMarkers { get; } = new();
-
-    private FrameDividersDictionary FrameDividers { get; } = new()
-    {
-        { TimeDividers.Frames, new List<uint>() },
-        { TimeDividers.Seconds, new List<uint>() },
-        { TimeDividers.Minutes, new List<uint>() },
-        { TimeDividers.Hours, new List<uint>() }
-    };
-
-    private static SolidColorBrush Brush(byte r, byte g, byte b, byte a = 255) => new(Color.FromArgb(a, r, g, b));
-    internal Dictionary<TimeDividers, (Brush brush, double thickness)> TimeMarkerGraphicsData { get; }
-        = new(new Dictionary<TimeDividers, (Brush brush, double thickness)>
-        {
-            { TimeDividers.Frames, (Brush(0xE8, 0xE8, 0xE8), 1d) },
-            { TimeDividers.Seconds, (Brush(0xC0, 0xC0, 0xC0), 1.2d) },
-            { TimeDividers.Minutes, (Brush(0xA0, 0xA0, 0xA0), 1.4d) },
-            { TimeDividers.Hours, (Brushes.Gray, 1.6d) }
-        });
-
-    private static readonly double TimelineHeight = 32;
+    internal static readonly double TimelineHeight = 32;
 
     public AnimationCanvas()
     {
@@ -132,70 +92,15 @@ public partial class AnimationCanvas
         SizeChanged += OnSizeChanged;
         CurrentValues.CurrentFile ??= new MathAnimFile();
 
+        MarkerData = new TimeMarkerData { TotalTime = FileSettings.Default.AnimationTime };
+        MarkerGraphicsData = new TimeMarkerGraphicsData { AnimationCanvas = this };
+
         AssociatedFile = CurrentValues.CurrentFile;
         AssociatedFile.FramesPerSecondChanged += (_, b) => FramesPerSecond = b;
-        AssociatedFile.TotalTimeChanged += (_, t) => TotalTime = t;
+        AssociatedFile.TotalTimeChanged += (_, t) => MarkerData.TotalTime = t;
 
         _frameMarkerGap = MinimumFrameMarkerGap;
-        Loaded += (_, _) => DrawTimeMarkers();
-    }
-
-    static bool Divides(uint a, uint b) => b % a == 0;
-
-    private TimeDividers GetTimeDivider(uint frame)
-        => Divides(FramesPerSecond * 3600u, frame) ? TimeDividers.Hours :
-            Divides(FramesPerSecond * 60u, frame) ? TimeDividers.Minutes :
-            Divides(FramesPerSecond * 60u, frame) ? TimeDividers.Seconds : TimeDividers.Frames;
-
-    /// <summary>
-    /// Renders all the time markers on the animation timeline. 
-    /// </summary>
-    private void DrawTimeMarkers()
-    {
-        var framesPerMinute = FramesPerSecond * 60;
-        var framesPerHour = framesPerMinute * 60;
-
-        var framesUntilSecond = FramesPerSecond;
-        var framesUntilMinute = framesPerMinute;
-        var framesUntilHour = framesPerHour;
-
-        for (uint i = 0; i < TotalTime.TotalFrames; i++)
-        {
-            --framesUntilSecond;
-            --framesUntilMinute;
-            --framesUntilHour;
-
-            if (i == 0) continue;
-
-            var x = FrameMarkerGap * i;
-
-            if (framesUntilHour == 0)
-            {
-                DrawMarker(TimeDividers.Hours, x, i);
-                framesUntilHour = framesPerHour;
-            }
-            else if (framesUntilMinute == 0)
-            {
-                DrawMarker(TimeDividers.Minutes, x, i); 
-                framesUntilMinute = framesPerMinute;
-            }
-            else if (framesUntilSecond == 0)
-            {
-                DrawMarker(TimeDividers.Seconds, x, i);
-                framesUntilSecond = FramesPerSecond;
-            }
-            else DrawMarker(TimeDividers.Frames, x, i);
-        }
-    }
-
-    private void DrawMarker(TimeDividers divider, double x, uint frame)
-    {
-        var line = new Line { X1 = 0, Y1 = 0, X2 = 0, Y2 = TimelineHeight };
-        Canvas.SetLeft(line, x); Panel.SetZIndex(line, (int)divider);
-        (line.Stroke, line.StrokeThickness) = TimeMarkerGraphicsData[divider];
-        TimeMarkers.Add(frame, new TimeMarker(divider, line));
-        FrameDividers[divider].Add(frame);
-        TimelineCanvas.Children.Add(line);
+        Loaded += (_, _) => MarkerGraphicsData.DrawTimeMarkers();
     }
 
     private void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
@@ -206,30 +111,6 @@ public partial class AnimationCanvas
     private void UpdateTimelineLocation()
     {
         // TODO
-    }
-
-    // SLOW -> Takes too long even for hour markers, even though there's only few of them. Better to implement
-    // an updated dictionary containing dividers -> frames. Determining reverse is a simple calculation
-    // and is therefore not necessary.
-    private List<uint> GetFrames(TimeDividers d)
-        => FrameDividers[d];
-        //=> TimeMarkers.ToList().Where(m => d.HasFlag(m.Value.Divider)).Select(x => x.Key).ToList();
-
-    /// <summary>
-    /// Hides time dividers marked 0, and shows the ones marked 1.
-    /// </summary>
-    public void ShowTimeMarkers(TimeDividers timeDividers)
-    {
-        bool HasFlag(TimeDividers divider) => timeDividers.HasFlag(divider);
-
-        void UpdateVisibility(bool hasFlag) =>
-            TimeMarkers.Values.ToList()
-                .ForEach(l => l.Line.Visibility = hasFlag ? Visibility.Visible : Visibility.Hidden);
-
-        void UpdateVisibilities(params TimeDividers[] dividers)
-            => dividers.ToList().ForEach(d => UpdateVisibility(HasFlag(d)));
-
-        UpdateVisibilities(TimeDividers.Frames, TimeDividers.Seconds, TimeDividers.Minutes, TimeDividers.Hours);
     }
 
     /// <summary>

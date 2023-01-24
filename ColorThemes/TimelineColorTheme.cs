@@ -4,11 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using MathAnim.Controls;
 
 namespace MathAnim.ColorThemes;
 
 public record TimelineColorTheme
-    (PenStrokeData Hours,
+(PenStrokeData Hours,
     PenStrokeData Minutes,
     PenStrokeData Seconds,
-    PenStrokeData Frames);
+    PenStrokeData Frames)
+{
+    public PenStrokeData this[TimeDividers dividers]
+        => dividers switch
+        {
+            TimeDividers.Frames => Frames,
+            TimeDividers.Seconds => Seconds,
+            TimeDividers.Minutes => Minutes,
+            TimeDividers.Hours => Hours,
+            _ => throw new ArgumentOutOfRangeException(nameof(dividers), dividers, null)
+        };
+}
