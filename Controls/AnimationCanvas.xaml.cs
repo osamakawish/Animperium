@@ -103,96 +103,12 @@ public partial class AnimationCanvas
         Loaded += (_, _) => MarkerGraphicsData.DrawTimeMarkers();
     }
 
-    private void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
-    {
-        // TODO: Update the timeline
-    }
-
     private void UpdateTimelineLocation()
     {
         // TODO
     }
 
-    /// <summary>
-    /// Removes the keyframes from the canvas.
-    /// </summary>
-    internal void ClearKeyframes()
-    {
-        // TODO
-    }
-
-    internal void MoveTimeline(TimeSpan time, bool isForward=true)
-    {
-        if (TimelinePosition == TimelineLocation.FullTimeline) return;
-
-        // TODO
-            
-    }
-
-    internal void MoveTimeline(int frames)
-    {
-        if (TimelinePosition == TimelineLocation.FullTimeline) return;
-
-        // TODO
-        var dist = frames * FrameMarkerGap;
-
-    }
-
-    internal void ScaleTimeline(double scale)
-    {
-        // TODO
-        // F : x -> a*(x-p) + p : rescales timeline centered at p by scale factor of a. Apply F to every line.
-        // Make sure that neither start nor end of timeline are anywhere but at the edges or outside.
-        // In fact, test that before applying F to every line, then update F accordingly.
-
-        // TODO: Make sure to update TimelinePosition
-    }
-
-    internal void AddKeyframe(TimeSpan time)
-    {
-        // TODO
-    }
-
     // Better to have a keyframe as input instead.
-    internal void RemoveKeyframe(TimeSpan time)
-    {
-        // TODO
-    }
-
-    internal void AddKeyframe(uint frame)
-    {
-        // TODO
-    }
-
-    internal void RemoveKeyframe(uint frame)
-    {
-        // TODO
-    }
-
-    internal void GoToPreviousFrame()
-    {
-        // TODO
-    }
-
-    internal void GoToNextFrame()
-    {
-        // TODO
-    }
-
-    internal void Play()
-    {
-        // TODO
-    }
-
-    internal void Pause()
-    {
-        // TODO
-    }
-
-    internal void Stop()
-    {
-        // TODO
-    }
 }
 
 public enum TimeDividers : byte

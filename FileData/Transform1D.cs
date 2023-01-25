@@ -52,6 +52,14 @@ public record Transform1D(double Scale, double Shift, double Origin = 0)
     /// </summary>
     public Transform1D AsZeroOrigin => new(Scale, Shift - Scale * Origin);
 
+    /// <summary>
+    /// Produces the same transform but written in terms of the provided <see cref="origin"/>.
+    /// </summary>
+    /// <param name="origin">The new origin of the </param>
+    /// <returns></returns>
+    public Transform1D AsOrigin(double origin)
+        => new(Scale, Shift + Scale * (origin - Origin), origin);
+
     public bool IsSame(Transform1D t, DoubleTolerance tolerance)
         => Math.Abs(Scale - t.Scale) < tolerance.AsDouble() &&
            Math.Abs(Shift - Scale * Origin - (t.Shift - t.Scale * t.Origin)) < tolerance.AsDouble();
@@ -78,6 +86,4 @@ public record Transform1D(double Scale, double Shift, double Origin = 0)
             _ => asZeroOrigin
         };
     }
-
-    // Another method that returns the same transform with different/center origin.
 }
