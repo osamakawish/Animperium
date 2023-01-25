@@ -47,9 +47,37 @@ public record Transform1D(double Scale, double Shift, double Origin = 0)
     public Transform1D ApplyTransform(Transform1D t)
         => new(Scale * t.Scale, t.Scale * (Shift - t.Origin) + t.Shift, Origin);
 
-    public Transform1D ToZeroOrigin => new(Scale, Shift - Scale * Origin);
+    /// <summary>
+    /// Returns the same transform but computed in a way that the origin is zero.
+    /// </summary>
+    public Transform1D AsZeroOrigin => new(Scale, Shift - Scale * Origin);
 
     public bool IsSame(Transform1D t, DoubleTolerance tolerance)
         => Math.Abs(Scale - t.Scale) < tolerance.AsDouble() &&
-           Math.Abs((Shift - Scale * Origin) - (t.Shift - t.Scale * t.Origin)) < tolerance.AsDouble();
+           Math.Abs(Shift - Scale * Origin - (t.Shift - t.Scale * t.Origin)) < tolerance.AsDouble();
+
+    /// <summary>
+    /// Ensures <see cref="Transform1D"/>[0] &lt; 0 and <see cref="Transform1D"/>[<see cref="max"/>]
+    /// &gt; <see cref="max"/>, within <see cref="tolerance"/>.
+    /// </summary>
+    /// <param name="max"></param>
+    /// <param name="tolerance"></param>
+    /// <returns></returns>
+    public Transform1D Fix(double max, DoubleTolerance tolerance = DoubleTolerance.Medium)
+    {
+        var asZeroOrigin = AsZeroOrigin;
+        var leftEndValid = asZeroOrigin[0] - tolerance.AsDouble() / 2 < 0;
+        var rightEndValid = asZeroOrigin[max] + tolerance.AsDouble() / 2 > max;
+
+        if (!(leftEndValid || rightEndValid))
+            return ApplyScale((max + asZeroOrigin.Shift) / (this[max] - this[0]));
+        return leftEndValid switch
+        {
+            false when rightEndValid => ApplyShift(-asZeroOrigin.Shift),
+            true when !rightEndValid => ApplyShift(asZeroOrigin[max]),
+            _ => asZeroOrigin
+        };
+    }
+
+    // Another method that returns the same transform with different/center origin.
 }
