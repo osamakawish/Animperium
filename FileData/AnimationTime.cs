@@ -15,6 +15,9 @@ public record struct AnimationTime
     public bool HasLegalInputs
         => Minutes < 60 && Seconds < 60 && Frames < FramesPerSecond;
 
+    /// <summary>
+    /// Total number of frames, not including the starting/zero frame.
+    /// </summary>
     public uint TotalFrames
         => Frames + FramesPerSecond * (Seconds + 60u * (Minutes + 60u * Hours));
 

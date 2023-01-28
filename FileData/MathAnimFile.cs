@@ -15,11 +15,15 @@ internal class MathAnimFile
     public const uint SecondsPerHour = 60 * 60;
     //public static MathAnimFile FromSettings(FileSettings fileSettings)
 
+    internal FileSettings Settings;
+
     internal EventHandler<AnimationTime>? TotalTimeChanged;
     internal EventHandler<byte>? FramesPerSecondChanged;
 
     private byte _framesPerSecond = FileSettings.Default.AnimationTime.FramesPerSecond;
     private AnimationTime _totalTime = FileSettings.Default.AnimationTime;
+
+    internal DoubleTolerance DoubleTolerance = FileSettings.Default.Tolerance;
 
     internal byte FramesPerSecond
     {
@@ -49,7 +53,7 @@ internal class MathAnimFile
 
     public MathAnimFile()
     {
-                
+        
     }
 
     public MathAnimFile(byte framesPerSecond, AnimationTime animationTime)

@@ -2,8 +2,17 @@
 
 namespace MathAnim.FileData;
 
-using Controls;
 using Settings;
+
+public enum TimeDividers : byte
+{
+    None = 0,
+    Frames = 1,
+    Seconds = 1 << 1,
+    Minutes = 1 << 2,
+    Hours = 1 << 3,
+    All = 0b1111
+}
 
 /// <summary>
 /// Handles the non-graphical computational component of the time markers.

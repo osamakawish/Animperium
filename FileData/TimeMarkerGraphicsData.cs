@@ -11,6 +11,7 @@ using MathAnim.Settings;
 
 namespace MathAnim.FileData;
 
+[Flags]
 public enum TimelineLocation : byte
 {
     HasStart = 1,
@@ -21,10 +22,12 @@ public enum TimelineLocation : byte
 
 public class TimeMarkerGraphicsData
 {
+    public TimelineLocation TimelinePosition { get; internal set; } = TimelineLocation.FullTimeline;
+
     private static readonly double TimelineHeight = AnimationCanvas.TimelineHeight;
 
     public required AnimationCanvas AnimationCanvas { get; init; }
-    private Transform1D TimelineTransform { get; set; } = Transform1D.Identity;
+    internal Transform1D TimelineTransform { get; set; } = Transform1D.Identity;
     public TimeMarkerData MarkerData => AnimationCanvas.MarkerData;
     private AnimationTime TotalTime => MarkerData.TotalTime;
     private byte FramesPerSecond => AnimationCanvas.FramesPerSecond;
@@ -35,17 +38,20 @@ public class TimeMarkerGraphicsData
         (new ArgbColor(0xC0, 0xC0, 0xC0), 1.2d),
         (new ArgbColor(0xE0, 0xE0, 0xE0), 1d)
     );
-    private double MinimumFrameMarkerGap => AnimationCanvas.ActualWidth / TotalTime.TotalFrames;
+    internal double MinimumFrameMarkerGap => AnimationCanvas.ActualWidth / TotalTime.TotalFrames;
+
+    internal double Tolerance => AnimationCanvas.AssociatedFile.DoubleTolerance.AsDouble();
+
 
     private double _frameMarkerGap;
-    private double FrameMarkerGap
+    internal double FrameMarkerGap
     {
         get
         { if (_frameMarkerGap == 0) _frameMarkerGap = MinimumFrameMarkerGap; return _frameMarkerGap; }
         set
         {
             if (value < MinimumFrameMarkerGap) return;
-            if (Math.Abs(value - _frameMarkerGap) < FileSettings.Default.ToleranceAsDouble) return;
+            if (Math.Abs(value - _frameMarkerGap) < 1 + Tolerance) return;
 
             // TODO: Update Frame Marker Locations
 

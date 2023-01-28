@@ -11,10 +11,10 @@ using DoubleMapping = Mapping<double>;
 
 public record struct Mapping<T>(T From, T To);
 
-public record Transform1D(double Scale, double Shift, double Origin = 0)
+public record Transform1D(double Scale = 1, double Shift = 0, double Origin = 0)
 {
     public static Transform1D InvalidTransform => new(double.NaN, double.NaN, double.NaN);
-    public static Transform1D Identity => new(1, 0);
+    public static Transform1D Identity => new();
 
     public static Transform1D FromMapping(
         DoubleMapping map1,
@@ -28,6 +28,23 @@ public record Transform1D(double Scale, double Shift, double Origin = 0)
 
         return new Transform1D(slope, map1.To - slope * map1.From);
     }
+
+    /// <summary>
+    /// The value such that <see cref="Transform1D"/>[<see cref="Zero"/>] = 0.
+    /// </summary>
+    public double Zero => Origin - Shift / Scale;
+
+    /// <summary>
+    /// Fixes the zero of this transformation, and the other mapping.
+    /// </summary>
+    /// <param name="map"></param>
+    /// <param name="tolerance"></param>
+    /// <returns></returns>
+    public Transform1D FromZeroFixedMapping(
+        DoubleMapping map,
+        DoubleTolerance tolerance = DoubleTolerance.Medium)
+    // SLOW: Possibly slow, as it may be the case that the general computation takes additional time.
+        => FromMapping(new DoubleMapping(Inverse[0], 0), map, tolerance);
 
     public double this[double x] => Scale * (x - Origin) + Shift;
 
@@ -66,16 +83,24 @@ public record Transform1D(double Scale, double Shift, double Origin = 0)
 
     /// <summary>
     /// Ensures <see cref="Transform1D"/>[0] &lt; 0 and <see cref="Transform1D"/>[<see cref="max"/>]
-    /// &gt; <see cref="max"/>, within <see cref="tolerance"/>.
+    /// &gt; <see cref="max"/>, within <see cref="tolerance"/>. If it is not, applies appropriate transformation
+    /// to ensure they are.
     /// </summary>
-    /// <param name="max"></param>
-    /// <param name="tolerance"></param>
+    /// <param name="max">The max of the range 0 to max that this fix must be applied to.</param>
+    /// <param name="hasEnds">Used for updating <see cref="TimelineLocation"/> members.</param>
+    /// <param name="tolerance">The tolerance used for doubles.</param>
     /// <returns></returns>
-    public Transform1D Fix(double max, DoubleTolerance tolerance = DoubleTolerance.Medium)
+    /// <remarks><b>Note.</b> Use this at the end of every timeline transformation.</remarks>
+    internal Transform1D Fix(
+        double max,
+        out (bool hasZero, bool hasMax) hasEnds,
+        DoubleTolerance tolerance = DoubleTolerance.Medium)
     {
         var asZeroOrigin = AsZeroOrigin;
         var leftEndValid = asZeroOrigin[0] - tolerance.AsDouble() / 2 < 0;
         var rightEndValid = asZeroOrigin[max] + tolerance.AsDouble() / 2 > max;
+
+        hasEnds = (!leftEndValid, !rightEndValid);
 
         if (!(leftEndValid || rightEndValid))
             return ApplyScale((max + asZeroOrigin.Shift) / (this[max] - this[0]));

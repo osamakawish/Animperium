@@ -30,15 +30,6 @@ public partial class AnimationCanvas
     public required TimeMarkerData MarkerData { get; init; }
     public required TimeMarkerGraphicsData MarkerGraphicsData { get; init; }
 
-    public enum TimelineLocation : byte
-    {
-        HasStart = 1,
-        HasCurrentFrame = 1 << 1,
-        HasEnd = 1 << 2,
-        FullTimeline = HasStart | HasCurrentFrame | HasEnd
-    }
-
-    public TimelineLocation TimelinePosition { get; private set; } = TimelineLocation.FullTimeline;
     internal MathAnimFile AssociatedFile { get; set; }
     public uint CurrentFrame { get; internal set; }
 
@@ -64,25 +55,9 @@ public partial class AnimationCanvas
         }
     }
 
-    private double MinimumFrameMarkerGap => ActualWidth / MarkerData.TotalTime.TotalFrames;
-
-    private double _frameMarkerGap;
-    private double FrameMarkerGap
-    {
-        get => _frameMarkerGap;
-        set
-        {
-            if (value < MinimumFrameMarkerGap) return;
-            if (Math.Abs(value - _frameMarkerGap) < 0.01) return;
-
-            // TODO: Update Frame Marker Locations
-
-            _frameMarkerGap = value;
-        }
-    }
-
     public TimeSpan CurrentTime => TimeSpan.FromSeconds((double)CurrentFrame / FramesPerSecond);
-    
+    public TimelineLocation TimelinePosition { get; private set; } = TimelineLocation.FullTimeline;
+
 
     internal static readonly double TimelineHeight = 32;
 
@@ -98,8 +73,7 @@ public partial class AnimationCanvas
         AssociatedFile = CurrentValues.CurrentFile;
         AssociatedFile.FramesPerSecondChanged += (_, b) => FramesPerSecond = b;
         AssociatedFile.TotalTimeChanged += (_, t) => MarkerData.TotalTime = t;
-
-        _frameMarkerGap = MinimumFrameMarkerGap;
+        
         Loaded += (_, _) => MarkerGraphicsData.DrawTimeMarkers();
     }
 
@@ -109,14 +83,4 @@ public partial class AnimationCanvas
     }
 
     // Better to have a keyframe as input instead.
-}
-
-public enum TimeDividers : byte
-{
-    None = 0,
-    Frames = 1,
-    Seconds = 1 << 1,
-    Minutes = 1 << 2,
-    Hours = 1 << 3,
-    All = 0b1111
 }
