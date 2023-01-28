@@ -6,10 +6,10 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using MathAnim.ColorThemes;
-using MathAnim.Controls;
+using MathAnim.FileData;
 using MathAnim.Settings;
 
-namespace MathAnim.FileData;
+namespace MathAnim.Controls;
 
 [Flags]
 public enum TimelineLocation : byte
@@ -20,17 +20,10 @@ public enum TimelineLocation : byte
     FullTimeline = HasStart | HasCurrentFrame | HasEnd
 }
 
-public class TimeMarkerGraphicsData
+public partial class AnimationCanvas
 {
-    public TimelineLocation TimelinePosition { get; internal set; } = TimelineLocation.FullTimeline;
-
-    private static readonly double TimelineHeight = AnimationCanvas.TimelineHeight;
-
-    public required AnimationCanvas AnimationCanvas { get; init; }
     internal Transform1D TimelineTransform { get; set; } = Transform1D.Identity;
-    public TimeMarkerData MarkerData => AnimationCanvas.MarkerData;
     private AnimationTime TotalTime => MarkerData.TotalTime;
-    private byte FramesPerSecond => AnimationCanvas.FramesPerSecond;
     internal Dictionary<uint, Line> FrameMarkers { get; } = new();
     internal TimelineColorTheme TimelineColorTheme { get; set; } = new(
         (Colors.Gray, 1.6d),
@@ -38,9 +31,9 @@ public class TimeMarkerGraphicsData
         (new ArgbColor(0xC0, 0xC0, 0xC0), 1.2d),
         (new ArgbColor(0xE0, 0xE0, 0xE0), 1d)
     );
-    internal double MinimumFrameMarkerGap => AnimationCanvas.ActualWidth / TotalTime.TotalFrames;
+    internal double MinimumFrameMarkerGap => ActualWidth / TotalTime.TotalFrames;
 
-    internal double Tolerance => AnimationCanvas.AssociatedFile.DoubleTolerance.AsDouble();
+    internal double Tolerance => AssociatedFile.DoubleTolerance.AsDouble();
 
 
     private double _frameMarkerGap;
@@ -71,7 +64,7 @@ public class TimeMarkerGraphicsData
         var framesUntilMinute = framesPerMinute;
         var framesUntilHour = framesPerHour;
 
-        var children = AnimationCanvas.TimelineCanvas.Children;
+        var children = TimelineCanvas.Children;
 
         for (uint i = 0; i < TotalTime.TotalFrames; i++)
         {
@@ -124,7 +117,7 @@ public class TimeMarkerGraphicsData
     public void ShowTimeMarkers(TimeDividers timeDividers)
     {
         bool HasFlag(TimeDividers divider) => timeDividers.HasFlag(divider);
-        
+
         void UpdateVisibility(TimeDividers d)
         {
             void SetVisibility(Visibility visibility) => MarkerData.DividerFrames[d]

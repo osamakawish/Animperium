@@ -28,7 +28,6 @@ public record struct TimeMarker(TimeDividers Divider, Line Line);
 public partial class AnimationCanvas
 {
     public required TimeMarkerData MarkerData { get; init; }
-    public required TimeMarkerGraphicsData MarkerGraphicsData { get; init; }
 
     internal MathAnimFile AssociatedFile { get; set; }
     public uint CurrentFrame { get; internal set; }
@@ -41,17 +40,15 @@ public partial class AnimationCanvas
         {
             if (_framesPerSecond == value) return;
 
-            var timeMarkers = MarkerGraphicsData.FrameMarkers;
-
             void RemoveMarkers(IEnumerable<Line> lines) => lines.ToList().ForEach(TimelineCanvas.Children.Remove);
-            RemoveMarkers(timeMarkers.Select(x => x.Value));
+            RemoveMarkers(FrameMarkers.Select(x => x.Value));
 
-            MarkerData.Clear(); MarkerGraphicsData.Clear();
+            MarkerData.Clear(); Clear();
 
             MarkerData.TotalTime = MarkerData.TotalTime with { FramesPerSecond = value };
             _framesPerSecond = value;
 
-            MarkerGraphicsData.DrawTimeMarkers();
+            DrawTimeMarkers();
         }
     }
 
@@ -68,13 +65,12 @@ public partial class AnimationCanvas
         CurrentValues.CurrentFile ??= new MathAnimFile();
 
         MarkerData = new TimeMarkerData { TotalTime = FileSettings.Default.AnimationTime };
-        MarkerGraphicsData = new TimeMarkerGraphicsData { AnimationCanvas = this };
 
         AssociatedFile = CurrentValues.CurrentFile;
         AssociatedFile.FramesPerSecondChanged += (_, b) => FramesPerSecond = b;
         AssociatedFile.TotalTimeChanged += (_, t) => MarkerData.TotalTime = t;
         
-        Loaded += (_, _) => MarkerGraphicsData.DrawTimeMarkers();
+        Loaded += (_, _) => DrawTimeMarkers();
     }
 
     private void UpdateTimelineLocation()

@@ -12,7 +12,7 @@ public partial class AnimationCanvas
     private void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
     {
         // TODO: Update the timeline
-        var transform = MarkerGraphicsData.TimelineTransform;
+        var transform = TimelineTransform;
         transform = transform.FromZeroFixedMapping
             (new Mapping<double>(sizeChangedEventArgs.PreviousSize.Width, sizeChangedEventArgs.NewSize.Width));
         SetTransform(transform);
@@ -23,8 +23,8 @@ public partial class AnimationCanvas
     /// </summary>
     internal void ClearKeyframes()
     {
-        foreach (var line in MarkerGraphicsData.FrameMarkers.Values) TimelineCanvas.Children.Remove(line);
-        MarkerGraphicsData.Clear(); MarkerData.Clear();
+        foreach (var line in FrameMarkers.Values) TimelineCanvas.Children.Remove(line);
+        Clear(); MarkerData.Clear();
         TimelinePosition = 0;
     }
 
@@ -32,7 +32,7 @@ public partial class AnimationCanvas
         => MoveTimeline((isForward ? 1 : -1) * (int)(time.TotalSeconds * FramesPerSecond));
 
     internal void MoveTimeline(int frames) 
-        => ApplyTransform(new Transform1D(Shift: frames * MarkerGraphicsData.FrameMarkerGap));
+        => ApplyTransform(new Transform1D(Shift: frames * FrameMarkerGap));
 
     internal void ScaleTimeline(double scale) => ApplyTransform(new Transform1D(scale));
 
@@ -41,17 +41,18 @@ public partial class AnimationCanvas
     internal void ApplyTransform(Transform1D transform, bool isSet=false)
     {
         if (TimelinePosition == TimelineLocation.FullTimeline
-            && transform.Scale < 1 + MarkerGraphicsData.Tolerance)
+            && transform.Scale < 1 + Tolerance)
             return;
 
-        MarkerGraphicsData.TimelineTransform =
-            (isSet ? transform : MarkerGraphicsData.TimelineTransform.ApplyTransform(transform))
+        TimelineTransform =
+            (isSet ? transform : TimelineTransform.ApplyTransform(transform))
             .Fix(TimelineCanvas.ActualWidth, out var hasEnds);
         
-        foreach (var line in MarkerGraphicsData.FrameMarkers.Values)
+        // DEBUG isSet=true case. Current code here applies to isSet=false.
+        foreach (var line in FrameMarkers.Values)
             Canvas.SetLeft(line, transform[Canvas.GetLeft(line)]);
         
-        if (hasEnds.hasZero) MarkerGraphicsData.TimelinePosition = TimelineLocation.HasStart;
-        if (hasEnds.hasMax) MarkerGraphicsData.TimelinePosition |= TimelineLocation.HasEnd;
+        if (hasEnds.hasZero) TimelinePosition = TimelineLocation.HasStart;
+        if (hasEnds.hasMax) TimelinePosition |= TimelineLocation.HasEnd;
     }
 }
