@@ -15,10 +15,8 @@ public partial class AnimationCanvas
 
     private void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
     {
-        var transform = TimelineTransform;
-        transform = transform.FromZeroFixedMapping
-            (new Mapping<double>(sizeChangedEventArgs.PreviousSize.Width, sizeChangedEventArgs.NewSize.Width));
-        SetTransform(transform);
+        foreach (var (frame, markerLine) in FrameMarkers)
+            Canvas.SetLeft(markerLine, TimelineTransform[frame * BaseMarkerGap]);
     }
 
     /// <summary>

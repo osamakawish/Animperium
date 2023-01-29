@@ -31,7 +31,12 @@ public partial class AnimationCanvas
         (new ArgbColor(0xC0, 0xC0, 0xC0), 1.2d),
         (new ArgbColor(0xE0, 0xE0, 0xE0), 1d)
     );
-    internal double MinimumFrameMarkerGap => ActualWidth / TotalTime.TotalFrames;
+
+    /// <summary>
+    /// The gap between frame markers when the entire timeline is fitted to the
+    /// width of the animation canvas.
+    /// </summary>
+    internal double BaseMarkerGap => ActualWidth / TotalTime.TotalFrames;
 
     internal double Tolerance => AssociatedFile.DoubleTolerance.AsDouble();
 
@@ -40,10 +45,10 @@ public partial class AnimationCanvas
     internal double FrameMarkerGap
     {
         get
-        { if (_frameMarkerGap == 0) _frameMarkerGap = MinimumFrameMarkerGap; return _frameMarkerGap; }
+        { if (_frameMarkerGap == 0) _frameMarkerGap = BaseMarkerGap; return _frameMarkerGap; }
         set
         {
-            if (value < MinimumFrameMarkerGap) return;
+            if (value < BaseMarkerGap) return;
             if (Math.Abs(value - _frameMarkerGap) < 1 + Tolerance) return;
 
             // TODO: Update Frame Marker Locations
@@ -74,7 +79,7 @@ public partial class AnimationCanvas
 
             if (i == 0) continue;
 
-            var x = FrameMarkerGap * i;
+            var x = TimelineTransform[BaseMarkerGap * i];
 
             if (framesUntilHour == 0)
             {
