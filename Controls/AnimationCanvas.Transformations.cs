@@ -1,17 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
+using MathAnim._Debug;
 using MathAnim.FileData;
 
 namespace MathAnim.Controls;
 
 public partial class AnimationCanvas
 {
+    internal FileLogger FileLogger = new($"{nameof(AnimationCanvas)}.Transformations");
+
     private void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
     {
-        // TODO: Update the timeline
         var transform = TimelineTransform;
         transform = transform.FromZeroFixedMapping
             (new Mapping<double>(sizeChangedEventArgs.PreviousSize.Width, sizeChangedEventArgs.NewSize.Width));
@@ -40,18 +43,25 @@ public partial class AnimationCanvas
 
     internal void ApplyTransform(Transform1D transform, bool isSet=false)
     {
+        FileLogger.LogLine($"{nameof(ApplyTransform)}: transform = {transform}{(isSet ? " (set)" : "")}");
+        if (transform.IsInvalid) return;
+
         if (TimelinePosition == TimelineLocation.FullTimeline
             && transform.Scale < 1 + Tolerance)
             return;
 
+        // DEBUG: ApplyTransform doesn't appear to scale properly. That, or transform is invalid too frequently.
         TimelineTransform =
             (isSet ? transform : TimelineTransform.ApplyTransform(transform))
             .Fix(TimelineCanvas.ActualWidth, out var hasEnds);
-        
-        // DEBUG isSet=true case. Current code here applies to isSet=false.
-        foreach (var line in FrameMarkers.Values)
-            Canvas.SetLeft(line, transform[Canvas.GetLeft(line)]);
-        
+
+        // kv.Key = frame, kv.Value = Line drawn for given frame.
+        // Note: This is efficient code, as it calculates isSet once for the entire collection, instead of once
+        // per line. "kv => isSet ? ..." would be slower as it would compute isSet for every individual line.
+        Func<KeyValuePair<uint, Line>, double> getLeft
+            = isSet ? kv => FrameMarkerGap * kv.Key : kv => transform[Canvas.GetLeft(kv.Value)];
+        foreach (var frameMarker in FrameMarkers) Canvas.SetLeft(frameMarker.Value, getLeft(frameMarker));
+
         if (hasEnds.hasZero) TimelinePosition = TimelineLocation.HasStart;
         if (hasEnds.hasMax) TimelinePosition |= TimelineLocation.HasEnd;
     }

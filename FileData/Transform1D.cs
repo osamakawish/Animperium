@@ -68,7 +68,7 @@ public record Transform1D(double Scale = 1, double Shift = 0, double Origin = 0)
     /// <summary>
     /// Returns the same transform but computed in a way that the origin is zero.
     /// </summary>
-    public Transform1D AsZeroOrigin => new(Scale, Shift - Scale * Origin);
+    public Transform1D AsZeroOrigin() => new(Scale, Shift - Scale * Origin);
 
     /// <summary>
     /// Produces the same transform but written in terms of the provided <see cref="origin"/>.
@@ -97,7 +97,7 @@ public record Transform1D(double Scale = 1, double Shift = 0, double Origin = 0)
         out (bool hasZero, bool hasMax) hasEnds,
         DoubleTolerance tolerance = DoubleTolerance.Medium)
     {
-        var asZeroOrigin = AsZeroOrigin;
+        var asZeroOrigin = AsZeroOrigin();
         var leftEndValid = asZeroOrigin[0] - tolerance.AsDouble() / 2 < 0;
         var rightEndValid = asZeroOrigin[max] + tolerance.AsDouble() / 2 > max;
 
@@ -112,4 +112,6 @@ public record Transform1D(double Scale = 1, double Shift = 0, double Origin = 0)
             _ => asZeroOrigin
         };
     }
+
+    public override string ToString() => $"Transform(Scale: {Scale}, Shift: {Shift}, Origin: {Origin})";
 }

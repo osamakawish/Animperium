@@ -22,7 +22,7 @@ public enum TimelineLocation : byte
 
 public partial class AnimationCanvas
 {
-    internal Transform1D TimelineTransform { get; set; } = Transform1D.Identity;
+    private Transform1D TimelineTransform { get; set; } = Transform1D.Identity;
     private AnimationTime TotalTime => MarkerData.TotalTime;
     internal Dictionary<uint, Line> FrameMarkers { get; } = new();
     internal TimelineColorTheme TimelineColorTheme { get; set; } = new(
