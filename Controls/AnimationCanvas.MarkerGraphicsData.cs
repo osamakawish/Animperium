@@ -25,6 +25,7 @@ public partial class AnimationCanvas
     private Transform1D TimelineTransform { get; set; } = Transform1D.Identity;
     private AnimationTime TotalTime => MarkerData.TotalTime;
     internal Dictionary<uint, Line> FrameMarkers { get; } = new();
+
     internal TimelineColorTheme TimelineColorTheme { get; set; } = new(
         (Colors.Gray, 1.6d),
         (new ArgbColor(0xA0, 0xA0, 0xA0), 1.4d),
@@ -42,12 +43,13 @@ public partial class AnimationCanvas
 
 
     private double _frameMarkerGap;
-    internal double FrameMarkerGap
-    {
-        get
-        { if (_frameMarkerGap == 0) _frameMarkerGap = BaseMarkerGap; return _frameMarkerGap; }
-        set
-        {
+
+    internal double FrameMarkerGap {
+        get {
+            if (_frameMarkerGap == 0) _frameMarkerGap = BaseMarkerGap;
+            return _frameMarkerGap;
+        }
+        set {
             if (value < BaseMarkerGap) return;
             if (Math.Abs(value - _frameMarkerGap) < 1 + Tolerance) return;
 
@@ -71,8 +73,7 @@ public partial class AnimationCanvas
 
         var children = TimelineCanvas.Children;
 
-        for (uint i = 0; i < TotalTime.TotalFrames; i++)
-        {
+        for (uint i = 0; i < TotalTime.TotalFrames; i++) {
             --framesUntilSecond;
             --framesUntilMinute;
             --framesUntilHour;
@@ -81,22 +82,21 @@ public partial class AnimationCanvas
 
             var x = TimelineTransform[BaseMarkerGap * i];
 
-            if (framesUntilHour == 0)
-            {
+            if (framesUntilHour == 0) {
                 DrawMarker(TimeDividers.Hours, x, i, children);
                 framesUntilHour = framesPerHour;
             }
-            else if (framesUntilMinute == 0)
-            {
+            else if (framesUntilMinute == 0) {
                 DrawMarker(TimeDividers.Minutes, x, i, children);
                 framesUntilMinute = framesPerMinute;
             }
-            else if (framesUntilSecond == 0)
-            {
+            else if (framesUntilSecond == 0) {
                 DrawMarker(TimeDividers.Seconds, x, i, children);
                 framesUntilSecond = FramesPerSecond;
             }
-            else DrawMarker(TimeDividers.Frames, x, i, children);
+            else {
+                DrawMarker(TimeDividers.Frames, x, i, children);
+            }
         }
     }
 
@@ -106,6 +106,7 @@ public partial class AnimationCanvas
         FrameMarkers.Add(frame, line);
         childCollection.Add(line);
     }
+
     internal void Clear() => FrameMarkers.Clear();
 
     private void DrawMarker(TimeDividers divider, double x, uint frame, UIElementCollection children)

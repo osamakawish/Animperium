@@ -42,9 +42,9 @@ public record Transform1D(double Scale = 1, double Shift = 0, double Origin = 0)
     /// <param name="tolerance"></param>
     /// <returns></returns>
     public Transform1D FromZeroFixedMapping(
-        DoubleMapping map,
-        DoubleTolerance tolerance = DoubleTolerance.Medium)
-    // SLOW: Possibly slow, as it may be the case that the general computation takes additional time.
+            DoubleMapping map,
+            DoubleTolerance tolerance = DoubleTolerance.Medium)
+        // SLOW: Possibly slow, as it may be the case that the general computation takes additional time.
         => FromMapping(new DoubleMapping(Inverse[0], 0), map, tolerance);
 
     public double this[double x] => Scale * (x - Origin) + Shift;
@@ -105,8 +105,7 @@ public record Transform1D(double Scale = 1, double Shift = 0, double Origin = 0)
 
         if (!(leftEndValid || rightEndValid))
             return ApplyScale((max + asZeroOrigin.Shift) / (this[max] - this[0]));
-        return leftEndValid switch
-        {
+        return leftEndValid switch {
             false when rightEndValid => ApplyShift(-asZeroOrigin.Shift),
             true when !rightEndValid => ApplyShift(asZeroOrigin[max]),
             _ => asZeroOrigin

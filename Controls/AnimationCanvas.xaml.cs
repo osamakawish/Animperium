@@ -19,7 +19,6 @@ using MathAnim.Settings;
 
 namespace MathAnim.Controls;
 
-
 public record struct TimeMarker(TimeDividers Divider, Line Line);
 
 /// <summary>
@@ -33,17 +32,17 @@ public partial class AnimationCanvas
     public uint CurrentFrame { get; internal set; }
 
     private byte _framesPerSecond = FileSettings.Default.AnimationTime.FramesPerSecond;
-    public byte FramesPerSecond
-    {
+
+    public byte FramesPerSecond {
         get => _framesPerSecond;
-        set
-        {
+        set {
             if (_framesPerSecond == value) return;
 
             void RemoveMarkers(IEnumerable<Line> lines) => lines.ToList().ForEach(TimelineCanvas.Children.Remove);
             RemoveMarkers(FrameMarkers.Select(x => x.Value));
 
-            MarkerData.Clear(); Clear();
+            MarkerData.Clear();
+            Clear();
 
             MarkerData.TotalTime = MarkerData.TotalTime with { FramesPerSecond = value };
             _framesPerSecond = value;
@@ -69,7 +68,7 @@ public partial class AnimationCanvas
         AssociatedFile = CurrentValues.CurrentFile;
         AssociatedFile.FramesPerSecondChanged += (_, b) => FramesPerSecond = b;
         AssociatedFile.TotalTimeChanged += (_, t) => MarkerData.TotalTime = t;
-        
+
         Loaded += (_, _) => DrawTimeMarkers();
     }
 
