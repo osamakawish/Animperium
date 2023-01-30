@@ -1,6 +1,6 @@
 ﻿namespace MathAnim.Controls;
 
-public partial class AnimationCanvas
+public partial class TimelinePropertyCanvas
 {
     internal void GoToPreviousFrame()
     {

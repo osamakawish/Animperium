@@ -20,7 +20,7 @@ public enum TimelineLocation : byte
     FullTimeline = HasStart | HasCurrentFrame | HasEnd
 }
 
-public partial class AnimationCanvas
+public partial class TimelinePropertyCanvas
 {
     private Transform1D TimelineTransform { get; set; } = Transform1D.Identity;
     private AnimationTime TotalTime => MarkerData.TotalTime;

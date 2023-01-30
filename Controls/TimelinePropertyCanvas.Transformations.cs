@@ -9,7 +9,7 @@ using MathAnim.FileData;
 
 namespace MathAnim.Controls;
 
-public partial class AnimationCanvas
+public partial class TimelinePropertyCanvas
 {
     //internal FileLogger FileLogger = new($"{nameof(AnimationCanvas)}.Transformations");
 

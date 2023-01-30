@@ -24,7 +24,7 @@ public record struct TimeMarker(TimeDividers Divider, Line Line);
 /// <summary>
 /// Interaction logic for AnimationCanvas.xaml
 /// </summary>
-public partial class AnimationCanvas
+public partial class TimelinePropertyCanvas
 {
     public required TimeMarkerData MarkerData { get; init; }
 
@@ -57,7 +57,7 @@ public partial class AnimationCanvas
 
     internal static readonly double TimelineHeight = 32;
 
-    public AnimationCanvas()
+    public TimelinePropertyCanvas()
     {
         InitializeComponent();
         SizeChanged += OnSizeChanged;

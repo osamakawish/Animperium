@@ -52,7 +52,7 @@
             <Path Data="M-7, -8 L-20,-16 -20,0 z" Fill="#222" Height="18" Stretch="Fill" Width="14"/>
         </Button>
 
-        <controls:AnimationCanvas Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Background="Aquamarine"/>
+        <controls:TimelinePropertyCanvas Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Background="Aquamarine"/>
 
         <Border Grid.Row="0" Grid.ColumnSpan="4" Grid.Column="0" BorderThickness="0,0,0,1" BorderBrush="Black"/>
 

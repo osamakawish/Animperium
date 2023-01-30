@@ -21,21 +21,23 @@ public class TimeMarkerData
 {
     // Essentially only manipulates these properties.
     private AnimationTime _totalTime = FileSettings.Default.AnimationTime;
-    public AnimationTime TotalTime
-    {
+
+    public AnimationTime TotalTime {
         get => _totalTime;
-        set
-        {
+        set {
             if (_totalTime == value) return;
 
             // Remove surplus markers if new value less than previous.
-            if (value < _totalTime)
-                for (var i = _totalTime.TotalFrames + 1; i <= value.TotalFrames; i++)
-                { var div = FrameDividers[i]; FrameDividers.Remove(i); DividerFrames[div].Remove(i); }
+            if (value < _totalTime) {
+                for (var i = _totalTime.TotalFrames + 1; i <= value.TotalFrames; i++) {
+                    var div = FrameDividers[i];
+                    FrameDividers.Remove(i);
+                    DividerFrames[div].Remove(i);
+                }
+            }
 
-            else if (value > _totalTime)
-            {
-                // TODO
+            else if (value > _totalTime) {
+                // TODO: Add additional frames.
             }
 
             _totalTime = value;
@@ -43,13 +45,20 @@ public class TimeMarkerData
     }
 
     public void Add(uint frame, TimeDividers divider)
-    { FrameDividers.Add(frame, divider); DividerFrames[divider].Add(frame); }
+    {
+        FrameDividers.Add(frame, divider);
+        DividerFrames[divider].Add(frame);
+    }
 
-    public void Clear() { FrameDividers.Clear(); DividerFrames.Clear(); }
+    public void Clear()
+    {
+        FrameDividers.Clear();
+        DividerFrames.Clear();
+    }
 
     internal Dictionary<uint, TimeDividers> FrameDividers { get; } = new();
-    internal Dictionary<TimeDividers, List<uint>> DividerFrames { get; } = new()
-    {
+
+    internal Dictionary<TimeDividers, List<uint>> DividerFrames { get; } = new() {
         { TimeDividers.Frames, new List<uint>() },
         { TimeDividers.Seconds, new List<uint>() },
         { TimeDividers.Minutes, new List<uint>() },
