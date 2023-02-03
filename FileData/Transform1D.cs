@@ -51,6 +51,10 @@ public record Transform1D(double Scale = 1, double Shift = 0, double Origin = 0)
 
     public IEnumerable<double> this[IEnumerable<double> doubles] => doubles.Select(x => this[x]);
 
+    /// <summary>
+    /// True if any of <see cref="Scale"/>, <see cref="Shift"/>, or <see cref="Origin"/>
+    /// are <see cref="double.NaN"/>. False otherwise.
+    /// </summary>
     public bool IsInvalid => double.IsNaN(Scale) || double.IsNaN(Shift) || double.IsNaN(Origin);
 
     public Transform1D Inverse => new(1 / Scale, Origin, Shift);
