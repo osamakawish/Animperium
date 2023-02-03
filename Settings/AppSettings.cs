@@ -3,5 +3,7 @@
 // Add color themes into this in the future.
 public class AppSettings
 {
-    public required double CanvasLength = StandardSettings.StandardAppSettings.CanvasLength;
+    public static AppSettings Default { get; internal set; } = StandardSettings.ForApp;
+
+    public required double CanvasLength = StandardSettings.ForApp.CanvasLength;
 }

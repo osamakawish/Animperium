@@ -14,9 +14,7 @@ internal static class StandardSettings
 {
     public static double AsDouble(this DoubleTolerance tolerance) => Math.Pow(10, -(int)tolerance);
 
-    public static readonly FileSettings StandardFileSettings
-        = new(DoubleTolerance.Medium, new AnimationTime(0, 1, 0, 0));
+    public static readonly FileSettings ForFile = new(DoubleTolerance.Medium, new AnimationTime(0, 1, 0, 0));
 
-    public static readonly AppSettings StandardAppSettings
-        = new() { CanvasLength = 24 };
+    public static readonly AppSettings ForApp = new() { CanvasLength = 24 };
 }

@@ -5,9 +5,9 @@ namespace MathAnim.Settings;
 /// <summary>
 /// A set of default values for the application. Can be modified by users.
 /// </summary>
-internal class FileSettings
+public class FileSettings
 {
-    internal static FileSettings Default = StandardSettings.StandardFileSettings;
+    public static FileSettings Default { get; internal set; } = StandardSettings.ForFile;
 
     /// <summary>
     /// A set of default values for the application. Can be modified by users.
