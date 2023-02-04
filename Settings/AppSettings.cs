@@ -7,5 +7,5 @@ public class AppSettings
 {
     public static AppSettings Default { get; internal set; } = StandardSettings.ForApp;
 
-    public required RelativeMeasureC RelativeMeasure = StandardSettings.ForApp.RelativeMeasure;
+    public required RelativeMeasure2D RelativeMeasure2D = StandardSettings.ForApp.RelativeMeasure2D;
 }

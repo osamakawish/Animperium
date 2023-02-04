@@ -16,5 +16,5 @@ internal static class StandardSettings
 
     public static readonly FileSettings ForFile = new(DoubleTolerance.Medium, new AnimationTime(0, 1, 0, 0));
 
-    public static readonly AppSettings ForApp = new() { RelativeMeasure = 24 };
+    public static readonly AppSettings ForApp = new() { RelativeMeasure2D = (45, 24) };
 }

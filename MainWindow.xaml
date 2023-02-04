@@ -15,7 +15,7 @@
 
         <Menu x:Name="MainMenu" Background="#222" Grid.Row="0"/>
         <Canvas x:Name="MainCanvas" Grid.Row="1" Background="#ccc">
-            <!--<Ellipse Width="20" Height="40" Fill="Red"/>-->
+            <Ellipse x:Name="TestEllipse" Width="20" Height="40" Fill="Red"/>
         </Canvas>
         <Grid x:Name="MainEditorGrid" Grid.Row="2" Background="LightGray">
             <Grid.ColumnDefinitions>
