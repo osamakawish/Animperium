@@ -1,4 +1,6 @@
-﻿namespace MathAnim.FileData;
+﻿using MathAnim.Settings;
+
+namespace MathAnim.FileData;
 
 /// <summary>
 /// Computes relative lengths on a canvas with the centre (C) of objects as their origin.
@@ -6,11 +8,10 @@
 /// </summary>
 /// <remarks>The purpose of this is to use units and size that's independent of the size
 /// of the canvas.</remarks>
-/// <param name="Factor">The factor to multiple relative lengths by.</param>
 /// <param name="RelativeCanvasLength">The relative size of the canvas, as multiples of the factor.</param>
-public record RelativeLengthC(double Factor, double RelativeCanvasLength)
+public record RelativeMeasureC(double RelativeCanvasLength)
 {
-    //public static readonly 
+    public static readonly double Standard = StandardSettings.ForApp.RelativeMeasure.RelativeCanvasLength;
 
     /// <summary>
     /// The current total length in the given direction of the screen to be relative to.
@@ -21,7 +22,7 @@ public record RelativeLengthC(double Factor, double RelativeCanvasLength)
     /// The scale factor that all lengths are scaled by. That is, the ratio of the actual canvas
     /// size to the relative canvas size multiplied by the factor.
     /// </summary>
-    public double Scale => ActualCanvasLength / (Factor * RelativeCanvasLength);
+    public double Scale => ActualCanvasLength / RelativeCanvasLength;
 
     public double CanvasLengthRatio => ActualCanvasLength / RelativeCanvasLength;
 
@@ -39,7 +40,7 @@ public record RelativeLengthC(double Factor, double RelativeCanvasLength)
     public (double min, double max) PositionRange => (-RelativeCanvasLength / 2, RelativeCanvasLength / 2);
 
     /// <summary>
-    /// The actual object position, given its relative position.
+    /// The actual object position, given its relative position, under this measure.
     /// </summary>
     /// <param name="relativeObjectPosition"></param>
     /// <returns></returns>
