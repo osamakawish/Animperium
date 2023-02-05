@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MathAnim._Debug;
 using MathAnim.FileData;
 
 namespace MathAnim.Controls
@@ -53,6 +54,7 @@ namespace MathAnim.Controls
 
             // Add object to canvas.
             Canvas.Children.Add(shape);
+            //MessageBox.Show($"{Canvas.GetLeft(shape)}, {Canvas.GetTop(shape)}");
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -60,9 +62,22 @@ namespace MathAnim.Controls
             // DEBUG
             base.OnRenderSizeChanged(sizeInfo);
 
-            // TODO: Make sure the size ratio aligns with RelativeMeasure2D's size ratio.
+            var (newWidth, newHeight) = (sizeInfo.NewSize.Width, sizeInfo.NewSize.Height);
 
-            RelativeMeasure.ActualCanvasSize = sizeInfo.NewSize;
+            var (relativeWidth, relativeHeight) = RelativeMeasure.RelativeCanvasSize;
+            var desiredWidthToHeight = relativeWidth / relativeHeight;
+
+            // TODO: Make sure the size ratio aligns with RelativeMeasure2D's size ratio.
+            if (newWidth > desiredWidthToHeight * newHeight) {
+                Canvas.Width = newHeight * desiredWidthToHeight;
+                Canvas.Height = newHeight;
+            }
+            else {
+                Canvas.Width = newWidth;
+                Canvas.Height = newWidth / desiredWidthToHeight;
+            }
+
+            RelativeMeasure.ActualCanvasSize = (Canvas.Width, Canvas.Height);
             foreach (var shape in _shapes.Keys) UpdateShapeRendering(shape);
         }
 

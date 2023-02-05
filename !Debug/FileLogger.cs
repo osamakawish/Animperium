@@ -13,6 +13,10 @@ public class FileLogger
     private readonly string _fileName;
     private string _log = "";
 
+    /// <summary>
+    /// Do NOT add .txt at end of filename.
+    /// </summary>
+    /// <param name="fileName"></param>
     public FileLogger(string fileName)
     {
         if (string.IsNullOrWhiteSpace(fileName)) fileName = "log";
