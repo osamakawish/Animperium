@@ -12,7 +12,7 @@ public abstract record BaseRelativeMeasureC<T> where T : IUnaryNegationOperators
     /// <summary>
     /// The current total length in the given direction of the screen to be relative to.
     /// </summary>
-    public abstract T ActualCanvasSize { get; set; }
+    public abstract required T ActualCanvasSize { get; set; }
 
     /// <summary>
     /// The scale factor that all lengths are scaled by. That is, the ratio of the actual canvas
@@ -34,7 +34,15 @@ public abstract record BaseRelativeMeasureC<T> where T : IUnaryNegationOperators
     /// </summary>
     /// <param name="relativeObjectSize">The relative size of a given object in units.</param>
     /// <returns>The actual size to be applied to the object.</returns>
-    public T ActualObjectSize(T relativeObjectSize) => Scale * relativeObjectSize;
+    public T ToRenderedObjectSize(T relativeObjectSize) => Scale * relativeObjectSize;
+
+    /// <summary>
+    /// The actual object position, given its relative position, under this measure.
+    /// </summary>
+    /// <param name="relativeObjectPosition"></param>
+    /// <returns></returns>
+    public T ToRenderedObjectPosition(T relativeObjectPosition)
+        => (Scale * relativeObjectPosition + ActualCanvasSize) / 2;
 
     /// <summary>
     /// The actual object position, given its relative position, under this measure.
