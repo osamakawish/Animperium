@@ -15,85 +15,78 @@ using System.Windows.Shapes;
 using MathAnim._Debug;
 using MathAnim.FileData;
 
-namespace MathAnim.Controls
+namespace MathAnim.Controls;
+
+/// <summary>
+/// Interaction logic for AnimationCanvas.xaml
+/// </summary>
+public partial class AnimationCanvas
 {
-    /// <summary>
-    /// Interaction logic for AnimationCanvas.xaml
-    /// </summary>
-    public partial class AnimationCanvas
+    internal static RelativeMeasure2D RelativeMeasure => BaseRelativeMeasureC.Standard;
+
+    private readonly Dictionary<Shape, (Double2D position, Double2D size)> _shapes = new();
+
+    public AnimationCanvas()
     {
-        internal static RelativeMeasure2D RelativeMeasure => BaseRelativeMeasureC.Standard;
+        InitializeComponent();
 
-        private readonly Dictionary<Shape, (Double2D position, Double2D size)> _shapes = new();
+        RelativeMeasure.ActualCanvasSize = (Canvas.ActualWidth, Canvas.ActualHeight);
 
-        public AnimationCanvas()
-        {
-            InitializeComponent();
+        AddShape<Ellipse>();
+    }
 
-            RelativeMeasure.ActualCanvasSize = (Canvas.ActualWidth, Canvas.ActualHeight);
+    internal void AddShape<TShape>(
+        Double2D? relativePosition = null,
+        Double2D? relativeSize = null,
+        double strokeThickness = 1,
+        SolidColorBrush? strokeColor = null,
+        SolidColorBrush? fillColor = null)
+        where TShape : Shape, new()
+    {
+        // Initialize possible nulls.
+        relativePosition ??= new Double2D(0, 0); relativeSize ??= new Double2D(1, 1);
+        strokeColor ??= Brushes.Black; fillColor ??= Brushes.Transparent;
 
-            AddShape<Ellipse>();
-        }
+        // Implement parameters into shape.
+        TShape shape = new() { StrokeThickness = strokeThickness, Stroke = strokeColor, Fill = fillColor };
+        _shapes[shape] = (relativePosition, relativeSize);
+        UpdateShapeRendering(shape);
 
-        internal void AddShape<TShape>(
-            Double2D? relativePosition = null,
-            Double2D? relativeSize = null,
-            double strokeThickness = 1,
-            SolidColorBrush? strokeColor = null,
-            SolidColorBrush? fillColor = null)
-                where TShape : Shape, new()
-        {
-            // Initialize possible nulls.
-            relativePosition ??= new Double2D(0, 0); relativeSize ??= new Double2D(1, 1);
-            strokeColor ??= Brushes.Black; fillColor ??= Brushes.Transparent;
+        // Add object to canvas.
+        Canvas.Children.Add(shape);
+        //MessageBox.Show($"{Canvas.GetLeft(shape)}, {Canvas.GetTop(shape)}");
+    }
 
-            // Implement parameters into shape.
-            TShape shape = new() { StrokeThickness = strokeThickness, Stroke = strokeColor, Fill = fillColor };
-            _shapes[shape] = (relativePosition, relativeSize);
-            UpdateShapeRendering(shape);
+    protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+    {
+        base.OnRenderSizeChanged(sizeInfo);
 
-            // Add object to canvas.
-            Canvas.Children.Add(shape);
-            //MessageBox.Show($"{Canvas.GetLeft(shape)}, {Canvas.GetTop(shape)}");
-        }
+        var (newWidth, newHeight) = (sizeInfo.NewSize.Width, sizeInfo.NewSize.Height);
 
-        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
-        {
-            // DEBUG
-            base.OnRenderSizeChanged(sizeInfo);
+        var (relativeWidth, relativeHeight) = RelativeMeasure.RelativeCanvasSize;
+        var desiredWidthToHeight = relativeWidth / relativeHeight;
 
-            var (newWidth, newHeight) = (sizeInfo.NewSize.Width, sizeInfo.NewSize.Height);
+        // Maintain aspect ratio while fitting canvas within the grid.
+        (Canvas.Width, Canvas.Height) = newWidth > desiredWidthToHeight * newHeight
+            ? (newHeight * desiredWidthToHeight, newHeight)
+            : (newWidth, newWidth / desiredWidthToHeight);
 
-            var (relativeWidth, relativeHeight) = RelativeMeasure.RelativeCanvasSize;
-            var desiredWidthToHeight = relativeWidth / relativeHeight;
+        RelativeMeasure.ActualCanvasSize = (Canvas.Width, Canvas.Height);
+        foreach (var shape in _shapes.Keys) UpdateShapeRendering(shape);
+    }
 
-            // TODO: Make sure the size ratio aligns with RelativeMeasure2D's size ratio.
-            if (newWidth > desiredWidthToHeight * newHeight) {
-                Canvas.Width = newHeight * desiredWidthToHeight;
-                Canvas.Height = newHeight;
-            }
-            else {
-                Canvas.Width = newWidth;
-                Canvas.Height = newWidth / desiredWidthToHeight;
-            }
+    /// <summary>
+    /// Updates the rendered dimensions (position and size) of the shape.
+    /// </summary>
+    /// <param name="shape"></param>
+    /// <remarks><b>Requires <see cref="_shapes"/> to be updated with the <see cref="shape"/>'s dimensions.</b></remarks>
+    private void UpdateShapeRendering(Shape shape)
+    {
+        var (relativePosition, relativeSize) = _shapes[shape];
+        var renderedPosition = RelativeMeasure.ToRenderedObjectPosition(relativePosition);
+        var renderedSize = RelativeMeasure.ToRenderedObjectSize(relativeSize);
 
-            RelativeMeasure.ActualCanvasSize = (Canvas.Width, Canvas.Height);
-            foreach (var shape in _shapes.Keys) UpdateShapeRendering(shape);
-        }
-
-        /// <summary>
-        /// Updates the rendered dimensions (position and size) of the shape.
-        /// </summary>
-        /// <param name="shape"></param>
-        /// <remarks><b>Requires <see cref="_shapes"/> to be updated with the <see cref="shape"/>'s dimensions.</b></remarks>
-        private void UpdateShapeRendering(Shape shape)
-        {
-            var (relativePosition, relativeSize) = _shapes[shape];
-            var renderedPosition = RelativeMeasure.ToRenderedObjectPosition(relativePosition);
-            var renderedSize = RelativeMeasure.ToRenderedObjectSize(relativeSize);
-
-            Canvas.SetLeft(shape, renderedPosition.X); Canvas.SetTop(shape, renderedPosition.Y);
-            (shape.Width, shape.Height) = renderedSize;
-        }
+        Canvas.SetLeft(shape, renderedPosition.X); Canvas.SetTop(shape, renderedPosition.Y);
+        (shape.Width, shape.Height) = renderedSize;
     }
 }

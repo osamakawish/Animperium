@@ -9,7 +9,7 @@ using MathAnim.ColorThemes;
 using MathAnim.FileData;
 using MathAnim.Settings;
 
-namespace MathAnim.Controls;
+namespace MathAnim.Controls.TimelinePropertyCanvas;
 
 [Flags]
 public enum TimelineLocation : byte

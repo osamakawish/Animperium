@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MathAnim.Animation"
              xmlns:controls="clr-namespace:MathAnim.Controls"
+             xmlns:timelinePropertyCanvas="clr-namespace:MathAnim.Controls.TimelinePropertyCanvas"
              mc:Ignorable="d" 
              d:DesignHeight="192" d:DesignWidth="800" d:Background="LightGray">
     <Grid>
@@ -52,7 +53,7 @@
             <Path Data="M-7, -8 L-20,-16 -20,0 z" Fill="#222" Height="18" Stretch="Fill" Width="14"/>
         </Button>
 
-        <controls:TimelinePropertyCanvas Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Background="Aquamarine"/>
+        <timelinePropertyCanvas:TimelinePropertyCanvas Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Background="Aquamarine"/>
 
         <Border Grid.Row="0" Grid.ColumnSpan="4" Grid.Column="0" BorderThickness="0,0,0,1" BorderBrush="Black"/>
 

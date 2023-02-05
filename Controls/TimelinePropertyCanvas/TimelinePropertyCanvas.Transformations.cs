@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Shapes;
-using MathAnim._Debug;
 using MathAnim.FileData;
 
-namespace MathAnim.Controls;
+namespace MathAnim.Controls.TimelinePropertyCanvas;
 
 public partial class TimelinePropertyCanvas
 {

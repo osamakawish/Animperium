@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MathAnim.Controls;
+using MathAnim.Controls.TimelinePropertyCanvas;
 using MathAnim.Settings;
 
 namespace MathAnim.FileData;
