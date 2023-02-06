@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MathAnim._Debug;
 using MathAnim.FileData;
+using MathAnim.Graphics;
 
 namespace MathAnim.Controls;
 
@@ -25,12 +26,17 @@ public partial class AnimationCanvas
     internal static RelativeMeasure2D RelativeMeasure => BaseRelativeMeasureC.Standard;
 
     private readonly Dictionary<Shape, (Double2D position, Double2D size)> _shapes = new();
+    internal GraphicsTool? GraphicsTool { get; set; } = null;
 
     public AnimationCanvas()
     {
         InitializeComponent();
 
         RelativeMeasure.ActualCanvasSize = (Canvas.ActualWidth, Canvas.ActualHeight);
+
+        MouseDown += (_, e) => GraphicsTool?.OnDown(Canvas, e);
+        MouseMove += (_, e) => GraphicsTool?.OnMove(Canvas, e);
+        MouseUp   += (_, e) => GraphicsTool?.OnUp  (Canvas, e);
 
         AddShape<Ellipse>();
     }
