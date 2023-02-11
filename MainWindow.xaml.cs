@@ -1,4 +1,5 @@
 ﻿using System.Windows.Media.Animation;
+using Animperium.Graphics;
 
 namespace Animperium;
 
@@ -9,10 +10,15 @@ public partial class MainWindow
 {
     private readonly Storyboard _storyboard = new();
 
+    // Audio tools and raster/vector/video tools go to different ui elements.
+    internal GraphicsTool GraphicsTool { get; set; } = GraphicsTools.ItemSelectTool;
+
     public MainWindow()
     {
         InitializeComponent();
-        
+
+        ToolView.ToolChanged += (_, tool) => GraphicsTool = tool;
+
         //TestAnimate();
     }
 

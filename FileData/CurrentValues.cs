@@ -4,7 +4,7 @@ namespace Animperium.FileData;
 
 internal static class CurrentValues
 {
-    internal static MathAnimFile? CurrentFile { get; set; }
+    internal static AppFile? CurrentFile { get; set; }
     internal static GraphicsObjectTree? CurrentTree => CurrentFile?.GraphicsObjectTree;
     internal static IGraphicsObject? CurrentObject
     {

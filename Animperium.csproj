@@ -7,4 +7,158 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="icons\0 cursors\Cursor-03-WF.png" />
+    <None Remove="icons\0 cursors\Cursor-08-WF.png" />
+    <None Remove="icons\0 cursors\Cursor-WF.png" />
+    <None Remove="icons\0 cursors\Cursor.png" />
+    <None Remove="icons\0 cursors\Cursors\SVG\Cursor-03-WF-48x48.svg" />
+    <None Remove="icons\0 cursors\Mouse drag-WF.png" />
+    <None Remove="icons\0 cursors\Mouse-Drag.png" />
+    <None Remove="icons\1 curves\Bezier Connector-WF.png" />
+    <None Remove="icons\1 curves\Curve.png" />
+    <None Remove="icons\1 curves\Pen-05-WF.png" />
+    <None Remove="icons\1 curves\Pen-05.png" />
+    <None Remove="icons\1 curves\Quill-01.png" />
+    <None Remove="icons\1 curves\Quill-WF.png" />
+    <None Remove="icons\2 shapes\3D shape-WF.png" />
+    <None Remove="icons\2 shapes\Rectangle-WF.png" />
+    <None Remove="icons\2 shapes\Rectangle.png" />
+    <None Remove="icons\2 shapes\Shape-Square2.png" />
+    <None Remove="icons\2 shapes\Shape-Star2.png" />
+    <None Remove="icons\2 shapes\Shape18-WF.png" />
+    <None Remove="icons\2 shapes\Shape18.png" />
+    <None Remove="icons\2 shapes\Shapes.png" />
+    <None Remove="icons\3 text\Text Decoration - 02.png" />
+    <None Remove="icons\3 text\Text Decoration - 03.png" />
+    <None Remove="icons\3 text\Text Decoration - 15.png" />
+    <None Remove="icons\3 text\Text-Normal.png" />
+    <None Remove="icons\3 text\Text.png" />
+    <None Remove="icons\4 media\Import -01.png" />
+    <None Remove="icons\4 media\Import -02.png" />
+    <None Remove="icons\4 media\Imports-WF.png" />
+    <None Remove="icons\4 media\Media Play-WF.png" />
+    <None Remove="icons\4 media\Picture-WF.png" />
+    <None Remove="icons\5 generator\Code Hexagon .png" />
+    <None Remove="icons\5 generator\Grid.png" />
+    <None Remove="icons\5 generator\Solar Panel-WF.png" />
+    <None Remove="icons\5 generator\Solar Panel.png" />
+    <None Remove="icons\5 generator\Source Code-WF.png" />
+    <None Remove="icons\5 generator\Step-WF.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="icons\0 cursors\Cursor-03-WF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\0 cursors\Cursor-08-WF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\0 cursors\Cursor-WF.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\0 cursors\Cursor.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\0 cursors\Cursors\SVG\Cursor-03-WF-48x48.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\0 cursors\Mouse drag-WF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\0 cursors\Mouse-Drag.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\1 curves\Bezier Connector-WF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\1 curves\Curve.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\1 curves\Pen-05-WF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\1 curves\Pen-05.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\1 curves\Quill-01.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\1 curves\Quill-WF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\2 shapes\3D shape-WF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\2 shapes\Rectangle-WF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\2 shapes\Rectangle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\2 shapes\Shape-Square2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\2 shapes\Shape-Star2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\2 shapes\Shape18-WF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\2 shapes\Shape18.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\2 shapes\Shapes.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\3 text\Text Decoration - 02.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\3 text\Text Decoration - 03.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\3 text\Text Decoration - 15.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\3 text\Text-Normal.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\3 text\Text.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\4 media\Import -01.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\4 media\Import -02.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\4 media\Imports-WF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\4 media\Media Play-WF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\4 media\Picture-WF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\5 generator\Code Hexagon .png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\5 generator\Grid.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\5 generator\Solar Panel-WF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\5 generator\Solar Panel.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\5 generator\Source Code-WF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="icons\5 generator\Step-WF.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
 </Project>

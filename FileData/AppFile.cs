@@ -4,7 +4,7 @@ using Animperium.Settings;
 
 namespace Animperium.FileData;
 
-internal class MathAnimFile
+internal class AppFile
 {
     public const uint SecondsPerMinute = 60;
     public const uint SecondsPerHour = 60 * 60;
@@ -45,11 +45,11 @@ internal class MathAnimFile
     internal IGraphicsObject? SelectedObject { get; set; }
     internal GraphicsObjectTree GraphicsObjectTree { get; } = new();
 
-    public MathAnimFile()
+    public AppFile()
     {
         
     }
 
-    public MathAnimFile(byte framesPerSecond, AnimationTime animationTime)
+    public AppFile(byte framesPerSecond, AnimationTime animationTime)
     { _framesPerSecond = framesPerSecond; _totalTime = animationTime; }
 }

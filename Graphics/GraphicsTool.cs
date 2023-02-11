@@ -22,14 +22,14 @@ public record GraphicsTool(
 internal static class GraphicsTools
 {
     // Mouse tool
-    internal static readonly GraphicsTool MouseSelectionTool = new(
+    internal static readonly GraphicsTool ItemSelectTool = new(
         (canvas, args) => { },
         (canvas, args) => { },
         (canvas, args) => { }
     );
 
     // Circle Tool
-    internal static readonly GraphicsTool CircleEllipseTool = new(
+    internal static readonly GraphicsTool EllipseTool = new(
         (canvas, args) => { },
         (canvas, args) => { },
         (canvas, args) => { }

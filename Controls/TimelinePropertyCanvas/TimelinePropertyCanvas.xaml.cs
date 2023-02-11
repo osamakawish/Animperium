@@ -16,7 +16,7 @@ public partial class TimelinePropertyCanvas
 {
     public required TimeMarkerData MarkerData { get; init; }
 
-    internal MathAnimFile AssociatedFile { get; set; }
+    internal AppFile AssociatedFile { get; set; }
     public uint CurrentFrame { get; internal set; }
 
     private byte _framesPerSecond = FileSettings.Default.AnimationTime.FramesPerSecond;
@@ -49,7 +49,7 @@ public partial class TimelinePropertyCanvas
     {
         InitializeComponent();
         SizeChanged += OnSizeChanged;
-        CurrentValues.CurrentFile ??= new MathAnimFile();
+        CurrentValues.CurrentFile ??= new AppFile();
 
         MarkerData = new TimeMarkerData { TotalTime = FileSettings.Default.AnimationTime };
 
