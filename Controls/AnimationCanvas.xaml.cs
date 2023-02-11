@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MathAnim._Debug;
+using MathAnim.Essentials;
 using MathAnim.FileData;
 using MathAnim.Graphics;
 
@@ -28,6 +29,9 @@ public partial class AnimationCanvas
     private readonly Dictionary<Shape, (Double2D position, Double2D size)> _shapes = new();
     internal GraphicsTool? GraphicsTool { get; set; } = null;
 
+    // For testing purposes.
+    private readonly Ellipse _ellipse;
+
     public AnimationCanvas()
     {
         InitializeComponent();
@@ -38,10 +42,10 @@ public partial class AnimationCanvas
         MouseMove += (_, e) => GraphicsTool?.OnMove(Canvas, e);
         MouseUp   += (_, e) => GraphicsTool?.OnUp  (Canvas, e);
 
-        AddShape<Ellipse>();
+        _ellipse = AddShape<Ellipse>(strokeThickness: 1);
     }
 
-    internal void AddShape<TShape>(
+    internal TShape AddShape<TShape>(
         Double2D? relativePosition = null,
         Double2D? relativeSize = null,
         double strokeThickness = 1,
@@ -61,6 +65,8 @@ public partial class AnimationCanvas
         // Add object to canvas.
         Canvas.Children.Add(shape);
         //MessageBox.Show($"{Canvas.GetLeft(shape)}, {Canvas.GetTop(shape)}");
+
+        return shape;
     }
 
     protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -79,6 +85,12 @@ public partial class AnimationCanvas
 
         RelativeMeasure.ActualCanvasSize = (Canvas.Width, Canvas.Height);
         foreach (var shape in _shapes.Keys) UpdateShapeRendering(shape);
+
+        // For DEBUG. Need to find and apply bounds to create selection rect.
+        var bounds = _ellipse.RenderedGeometry.Bounds;
+        MessageBox.Show($"Bounds: {bounds.X}, {bounds.Y}  ||  {bounds.Width}, {bounds.Height}\n" +
+                        $"Canvas: {Canvas.GetLeft(_ellipse)}, {Canvas.GetTop(_ellipse)} " +
+                        $" ||  {_ellipse.ActualWidth}, {_ellipse.ActualHeight}");
     }
 
     /// <summary>
@@ -89,7 +101,8 @@ public partial class AnimationCanvas
     private void UpdateShapeRendering(Shape shape)
     {
         var (relativePosition, relativeSize) = _shapes[shape];
-        var renderedPosition = RelativeMeasure.ToRenderedObjectPosition(relativePosition);
+        var renderedPosition = RelativeMeasure.ToRenderedObjectPosition(relativePosition)
+                               - (shape.StrokeThickness, shape.StrokeThickness);
         var renderedSize = RelativeMeasure.ToRenderedObjectSize(relativeSize);
 
         Canvas.SetLeft(shape, renderedPosition.X); Canvas.SetTop(shape, renderedPosition.Y);

@@ -25,3 +25,20 @@ public record GraphicsTool(
                                                        || StateIsPressed(e.RightButton);
     public MouseReaction<MouseEventArgs> OnMove => (o, e) => { if (IsPressed(e)) OnHold(o, e); };
 }
+
+internal static class GraphicsTools
+{
+    // Mouse tool
+    internal static readonly GraphicsTool MouseSelectionTool = new(
+        (canvas, args) => { },
+        (canvas, args) => { },
+        (canvas, args) => { }
+    );
+
+    // Circle Tool
+    internal static readonly GraphicsTool CircleEllipseTool = new(
+        (canvas, args) => { },
+        (canvas, args) => { },
+        (canvas, args) => { }
+    );
+}

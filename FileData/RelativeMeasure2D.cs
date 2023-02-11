@@ -1,4 +1,6 @@
-﻿namespace MathAnim.FileData;
+﻿using MathAnim.Essentials;
+
+namespace MathAnim.FileData;
 
 public record RelativeMeasure2D(BaseRelativeMeasureC XMeasure, BaseRelativeMeasureC YMeasure)
     : BaseRelativeMeasureC<Double2D>
