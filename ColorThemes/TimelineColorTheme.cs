@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using MathAnim.Controls;
-using MathAnim.FileData;
+using Animperium.FileData;
 
-namespace MathAnim.ColorThemes;
+namespace Animperium.ColorThemes;
 
 public record TimelineColorTheme
 (PenStrokeData Hours,

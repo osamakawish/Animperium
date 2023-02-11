@@ -1,3 +1,3 @@
-﻿namespace MathAnim.Graphics;
+﻿namespace Animperium.Graphics;
 
 internal class GraphicsObjectTree { }

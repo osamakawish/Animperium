@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
+using Animperium.Settings;
 
-namespace MathAnim.FileData;
-
-using Settings;
+namespace Animperium.FileData;
 
 public enum TimeDividers : byte
 {

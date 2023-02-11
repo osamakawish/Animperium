@@ -1,13 +1,6 @@
-﻿using System;
-using System.ComponentModel;
-using System.Timers;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
+﻿using System.Windows.Media.Animation;
 
-namespace MathAnim;
+namespace Animperium;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml

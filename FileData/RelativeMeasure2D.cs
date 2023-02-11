@@ -1,6 +1,6 @@
-﻿using MathAnim.Essentials;
+﻿using Animperium.Essentials;
 
-namespace MathAnim.FileData;
+namespace Animperium.FileData;
 
 public record RelativeMeasure2D(BaseRelativeMeasureC XMeasure, BaseRelativeMeasureC YMeasure)
     : BaseRelativeMeasureC<Double2D>

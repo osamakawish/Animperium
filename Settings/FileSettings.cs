@@ -1,6 +1,6 @@
-﻿using MathAnim.FileData;
+﻿using Animperium.FileData;
 
-namespace MathAnim.Settings;
+namespace Animperium.Settings;
 
 /// <summary>
 /// A set of default values for the application. Can be modified by users.

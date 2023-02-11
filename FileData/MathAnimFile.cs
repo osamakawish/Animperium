@@ -1,13 +1,8 @@
-﻿using MathAnim.Graphics;
-using MathAnim.Settings;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using Animperium.Graphics;
+using Animperium.Settings;
 
-namespace MathAnim.FileData;
+namespace Animperium.FileData;
 
 internal class MathAnimFile
 {

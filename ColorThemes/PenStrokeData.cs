@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace MathAnim.ColorThemes;
+namespace Animperium.ColorThemes;
 
 public record ArgbColor(byte R, byte G, byte B, byte A = 255)
 {

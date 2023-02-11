@@ -1,4 +1,4 @@
-﻿namespace MathAnim.Controls;
+﻿namespace Animperium.Controls;
 
 internal interface IAnimatablePropertyControl 
 {

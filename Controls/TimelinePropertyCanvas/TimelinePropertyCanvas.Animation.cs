@@ -1,4 +1,4 @@
-﻿namespace MathAnim.Controls.TimelinePropertyCanvas;
+﻿namespace Animperium.Controls.TimelinePropertyCanvas;
 
 public partial class TimelinePropertyCanvas
 {

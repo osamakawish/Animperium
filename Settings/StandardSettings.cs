@@ -1,7 +1,7 @@
 ﻿using System;
-using MathAnim.FileData;
+using Animperium.FileData;
 
-namespace MathAnim.Settings;
+namespace Animperium.Settings;
 
 public enum DoubleTolerance { Low = 2, Medium = 4, High = 6 }
 

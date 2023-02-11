@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace MathAnim.Animation;
+namespace Animperium.Animation;
 
 internal class AnimatableProperty<T>
 {

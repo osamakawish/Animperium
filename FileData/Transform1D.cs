@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MathAnim.Controls;
-using MathAnim.Controls.TimelinePropertyCanvas;
-using MathAnim.Settings;
+using Animperium.Controls.TimelinePropertyCanvas;
+using Animperium.Settings;
 
-namespace MathAnim.FileData;
+namespace Animperium.FileData;
 
 using DoubleMapping = Mapping<double>;
 

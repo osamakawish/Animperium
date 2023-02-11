@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace MathAnim.Graphics;
+namespace Animperium.Graphics;
 
 internal static class Functions
 {

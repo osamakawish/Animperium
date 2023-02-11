@@ -1,12 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace MathAnim.Graphics;
+namespace Animperium.Graphics;
 
 public class ShapeCollection : ICollection<Shape>
 {

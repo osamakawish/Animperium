@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MathAnim.FileData;
+namespace Animperium.FileData;
 
 public record struct AnimationTime
     (byte Hours,

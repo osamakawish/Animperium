@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
+﻿using System.Numerics;
 using System.Windows;
-using System.Windows.Documents;
 
-namespace MathAnim.Essentials;
+namespace Animperium.Essentials;
 
 /// <summary>
 /// A 2D double with element-wise addition/subtraction/multiplication/division.
@@ -40,6 +36,27 @@ public record Double2D(double X, double Y) :
     public static (bool x, bool y) operator >=(Double2D left, Double2D right) => (left.X >= right.X, left.Y >= right.Y);
     public static (bool x, bool y) operator <(Double2D left, Double2D right) => (left.X < right.X, left.Y < right.Y);
     public static (bool x, bool y) operator <=(Double2D left, Double2D right) => (left.X <= right.X, left.Y <= right.Y);
+
+    static (bool x, bool y) IEqualityOperators<Double2D, Double2D, (bool x, bool y)>.operator ==(Double2D? left,
+        Double2D? right)
+    {
+        if (left is null && right is null) return (true, true);
+        if (left is null || right is null) return (false, false);
+        // ReSharper disable once CompareOfFloatsByEqualityOperator
+        return (left.X == right.X,
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            left.Y == right.Y);
+    }
+
+    static (bool x, bool y) IEqualityOperators<Double2D, Double2D, (bool x, bool y)>.operator !=(Double2D? left, Double2D? right)
+    {
+        if (left is null && right is null) return (false, false);
+        if (left is null || right is null) return (true, true);
+        // ReSharper disable once CompareOfFloatsByEqualityOperator
+        return (left.X != right.X,
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            left.Y != right.Y);
+    }
 
     public static (Double2D Min, Double2D Max) Bounds(Double2D left, Double2D right)
     {

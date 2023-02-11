@@ -1,6 +1,6 @@
-﻿using MathAnim.Settings;
+﻿using Animperium.Settings;
 
-namespace MathAnim.FileData;
+namespace Animperium.FileData;
 
 /// <summary>
 /// Computes relative lengths on a canvas with the centre (C for centre in <see cref="BaseRelativeMeasureC"/>)

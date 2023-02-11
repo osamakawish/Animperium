@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace MathAnim.FileData;
+namespace Animperium.FileData;
 
 /// <summary>
 /// A relative measure with center (C in <see cref="BaseRelativeMeasureC{T}"/>) of the canvas as its origin (0,0) point.

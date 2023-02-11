@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MathAnim.Animation;
+namespace Animperium.Animation;
 
 internal record Keyframe<T>(T Value, Keyframe<T>? Prev = null, Keyframe<T>? Next = null)
 {

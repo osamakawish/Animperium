@@ -1,7 +1,7 @@
-﻿using MathAnim.Animation;
-using System.Windows.Media;
+﻿using System.Windows.Media;
+using Animperium.Animation;
 
-namespace MathAnim.Graphics;
+namespace Animperium.Graphics;
 
 internal interface IShape : IGraphicsObject
 {

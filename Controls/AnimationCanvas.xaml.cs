@@ -1,23 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MathAnim._Debug;
-using MathAnim.Essentials;
-using MathAnim.FileData;
-using MathAnim.Graphics;
+using Animperium.Essentials;
+using Animperium.FileData;
+using Animperium.Graphics;
 
-namespace MathAnim.Controls;
+namespace Animperium.Controls;
 
 /// <summary>
 /// Interaction logic for AnimationCanvas.xaml
@@ -29,9 +19,6 @@ public partial class AnimationCanvas
     private readonly Dictionary<Shape, (Double2D position, Double2D size)> _shapes = new();
     internal GraphicsTool? GraphicsTool { get; set; } = null;
 
-    // For testing purposes.
-    private readonly Ellipse _ellipse;
-
     public AnimationCanvas()
     {
         InitializeComponent();
@@ -42,7 +29,8 @@ public partial class AnimationCanvas
         MouseMove += (_, e) => GraphicsTool?.OnMove(Canvas, e);
         MouseUp   += (_, e) => GraphicsTool?.OnUp  (Canvas, e);
 
-        _ellipse = AddShape<Ellipse>(strokeThickness: 1);
+        // For Debugging only.
+        AddShape<Ellipse>(strokeThickness: 1);
     }
 
     internal TShape AddShape<TShape>(
@@ -64,7 +52,6 @@ public partial class AnimationCanvas
 
         // Add object to canvas.
         Canvas.Children.Add(shape);
-        //MessageBox.Show($"{Canvas.GetLeft(shape)}, {Canvas.GetTop(shape)}");
 
         return shape;
     }
@@ -85,12 +72,6 @@ public partial class AnimationCanvas
 
         RelativeMeasure.ActualCanvasSize = (Canvas.Width, Canvas.Height);
         foreach (var shape in _shapes.Keys) UpdateShapeRendering(shape);
-
-        // For DEBUG. Need to find and apply bounds to create selection rect.
-        var bounds = _ellipse.RenderedGeometry.Bounds;
-        MessageBox.Show($"Bounds: {bounds.X}, {bounds.Y}  ||  {bounds.Width}, {bounds.Height}\n" +
-                        $"Canvas: {Canvas.GetLeft(_ellipse)}, {Canvas.GetTop(_ellipse)} " +
-                        $" ||  {_ellipse.ActualWidth}, {_ellipse.ActualHeight}");
     }
 
     /// <summary>

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Shapes;
-using MathAnim.FileData;
-using MathAnim.Settings;
+using Animperium.FileData;
+using Animperium.Settings;
 
-namespace MathAnim.Controls.TimelinePropertyCanvas;
+namespace Animperium.Controls.TimelinePropertyCanvas;
 
 public record struct TimeMarker(TimeDividers Divider, Line Line);
 

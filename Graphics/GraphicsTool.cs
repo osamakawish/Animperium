@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
-using MathAnim.Controls;
 
-namespace MathAnim.Graphics;
+namespace Animperium.Graphics;
 
 public delegate void MouseReaction<in T>(Canvas canvas, T mouseButtonEventArgs)
     where T : MouseEventArgs;

@@ -1,6 +1,6 @@
-﻿using MathAnim.FileData;
+﻿using Animperium.FileData;
 
-namespace MathAnim.Settings;
+namespace Animperium.Settings;
 
 // Add color themes into this in the future.
 public class AppSettings

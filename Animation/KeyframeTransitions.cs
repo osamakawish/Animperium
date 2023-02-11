@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace MathAnim.Animation;
+namespace Animperium.Animation;
 
 internal static class KeyframeTransitions
 {

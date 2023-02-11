@@ -5,11 +5,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using MathAnim.ColorThemes;
-using MathAnim.FileData;
-using MathAnim.Settings;
+using Animperium.ColorThemes;
+using Animperium.FileData;
+using Animperium.Settings;
 
-namespace MathAnim.Controls.TimelinePropertyCanvas;
+namespace Animperium.Controls.TimelinePropertyCanvas;
 
 [Flags]
 public enum TimelineLocation : byte
