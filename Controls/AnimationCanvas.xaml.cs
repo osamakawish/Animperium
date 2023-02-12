@@ -17,7 +17,12 @@ public partial class AnimationCanvas
     internal static RelativeMeasure2D RelativeMeasure => BaseRelativeMeasureC.Standard;
 
     private readonly Dictionary<Shape, (Double2D position, Double2D size)> _shapes = new();
-    internal GraphicsTool? GraphicsTool { get; set; } = null;
+
+    private AnimationTool _animationTool = AnimationTools.ItemSelectTool;
+    internal AnimationTool AnimationTool {
+        get => _animationTool;
+        set => _animationTool = value.IsAuditory ? AnimationTools.ItemSelectTool : value;
+    }
 
     public AnimationCanvas()
     {
@@ -25,9 +30,9 @@ public partial class AnimationCanvas
 
         RelativeMeasure.ActualCanvasSize = (Canvas.ActualWidth, Canvas.ActualHeight);
 
-        MouseDown += (_, e) => GraphicsTool?.OnDown(Canvas, e);
-        MouseMove += (_, e) => GraphicsTool?.OnMove(Canvas, e);
-        MouseUp   += (_, e) => GraphicsTool?.OnUp  (Canvas, e);
+        MouseDown += (_, e) => AnimationTool.OnDown(Canvas, e);
+        MouseMove += (_, e) => AnimationTool.OnMove(Canvas, e);
+        MouseUp   += (_, e) => AnimationTool.OnUp  (Canvas, e);
 
         // For Debugging only.
         AddShape<Ellipse>(strokeThickness: 1);

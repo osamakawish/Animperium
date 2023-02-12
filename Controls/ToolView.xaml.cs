@@ -10,14 +10,14 @@ namespace Animperium.Controls;
 /// </summary>
 public partial class ToolView
 {
-    private GraphicsTool _graphicsTool = GraphicsTools.ItemSelectTool;
+    private AnimationTool _animationTool = AnimationTools.ItemSelectTool;
 
-    internal GraphicsTool GraphicsTool {
-        get => _graphicsTool;
-        private set { _graphicsTool = value; ToolChanged?.Invoke(this, value); }
+    internal AnimationTool AnimationTool {
+        get => _animationTool;
+        private set { _animationTool = value; ToolChanged?.Invoke(this, value); }
     }
 
-    internal event EventHandler<GraphicsTool>? ToolChanged;
+    internal event EventHandler<AnimationTool>? ToolChanged;
 
     public ToolView()
     {
@@ -25,11 +25,11 @@ public partial class ToolView
     }
 
     // Oversimplified for easier debugging.
-    private void OnCursorButtonClick(object sender, RoutedEventArgs e) => GraphicsTool = GraphicsTools.ItemSelectTool;
+    private void OnCursorButtonClick(object sender, RoutedEventArgs e) => AnimationTool = AnimationTools.ItemSelectTool;
     private void OnCurveButtonClick(object sender, RoutedEventArgs e) { }
 
     // Oversimplified for easier debugging.
-    private void OnShapeButtonClick(object sender, RoutedEventArgs e) => GraphicsTool = GraphicsTools.EllipseTool;
+    private void OnShapeButtonClick(object sender, RoutedEventArgs e) => AnimationTool = AnimationTools.EllipseTool;
 
     private void OnTextButtonClick(object sender, RoutedEventArgs e) { }
     private void OnMediaButtonClick(object sender, RoutedEventArgs e) { }

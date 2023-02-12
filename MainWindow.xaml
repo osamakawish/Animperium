@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
 
         <Menu x:Name="MainMenu" Background="#222" Grid.Row="0"/>
-        <controls:AnimationCanvas Grid.Row="1"/>
+        <controls:AnimationCanvas x:Name="AnimationCanvas" Grid.Row="1"/>
         <Grid x:Name="MainEditorGrid" Grid.Row="2" Background="LightGray">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="144"/>
