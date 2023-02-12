@@ -11,13 +11,13 @@ public partial class MainWindow
     private readonly Storyboard _storyboard = new();
 
     // Audio tools and raster/vector/video tools go to different ui elements.
-    internal AnimationTool AnimationTool => ToolView.AnimationTool;
+    internal VisualAnimationTool VisualAnimationTool => ToolView.VisualAnimationTool;
 
     public MainWindow()
     {
         InitializeComponent();
 
-        ToolView.ToolChanged += (_, tool) => AnimationCanvas.AnimationTool = tool;
+        ToolView.ToolChanged += (_, tool) => AnimationCanvas.VisualAnimationTool = tool;
 
         //TestAnimate();
     }
