@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Shapes;
 using Animperium.Controls;
 
@@ -18,8 +19,11 @@ public static class ShapeExtensions
     public static void SetShapeRegion(this Shape shape, Rect region)
         => shape.GetAnimationCanvas().SetShapeRegion(shape, region);
 
-    public static Shape Create<TShape>() where TShape : Shape
-    {
-        throw new NotImplementedException();
-    }
+    public static Shape Create<TShape>(double strokeThickness = 1, SolidColorBrush? stroke = null, SolidColorBrush? fill = null)
+        where TShape : Shape, new()
+        => AnimationCanvas.Current!.AddShape<TShape>(
+            relativeSize: (0, 0),
+            strokeThickness: strokeThickness,
+            strokeColor: stroke ?? Brushes.Black,
+            fillColor: fill ?? Brushes.Black);
 }

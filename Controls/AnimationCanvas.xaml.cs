@@ -16,6 +16,12 @@ namespace Animperium.Controls;
 /// </summary>
 public partial class AnimationCanvas
 {
+    /// <summary>
+    /// The current animation canvas. Should be modified as the current animation canvas is changed
+    /// (ie. when a file changes).
+    /// </summary>
+    internal static AnimationCanvas? Current { get; set; }
+
     // For quickly accessing shapes' canvases.
     internal static readonly Dictionary<ShapeCollection, AnimationCanvas> ShapeToAssociatedCanvas = new();
 
@@ -30,6 +36,7 @@ public partial class AnimationCanvas
     public AnimationCanvas()
     {
         InitializeComponent();
+        Current = this;
 
         RelativeMeasure.ActualCanvasSize = (Canvas.ActualWidth, Canvas.ActualHeight);
 
@@ -46,8 +53,12 @@ public partial class AnimationCanvas
             // with other buttons later.
             if (eventArgs.LeftButton.HasFlag(MouseButtonState.Released)) return;
 
-            var point2 = eventArgs.GetPosition(this);
+            // Get the points relative to canvas.
+            var point2 = eventArgs.GetPosition(Canvas); // May not compute Canvas.Left and Canvas.Top like desired.
             var point1 = _mouseRect?.Location ?? point2;
+            // Get relative positions of the points.
+            point1 = RelativeMeasure.ToRelativeObjectPosition(point1);
+            point2 = RelativeMeasure.ToRelativeObjectPosition(point2);
 
             var rect = new Rect(point1, point2);
             mouseEventReaction(rect, ShapeCollection, eventArgs);
@@ -123,9 +134,9 @@ public partial class AnimationCanvas
     private void UpdateShapeRendering(Shape shape)
     {
         var (relativePosition, relativeSize) = _shapes[shape];
-        var renderedPosition = RelativeMeasure.ToRenderedObjectPosition(relativePosition)
+        var renderedPosition = RelativeMeasure.ToActualObjectPosition(relativePosition)
                                - (shape.StrokeThickness, shape.StrokeThickness);
-        var renderedSize = RelativeMeasure.ToRenderedObjectSize(relativeSize);
+        var renderedSize = RelativeMeasure.ToActualObjectSize(relativeSize);
 
         Canvas.SetLeft(shape, renderedPosition.X); Canvas.SetTop(shape, renderedPosition.Y);
         (shape.Width, shape.Height) = renderedSize;

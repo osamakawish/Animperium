@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Shapes;
 using Animperium.Controls;
 
 namespace Animperium.Graphics;
@@ -57,10 +58,11 @@ internal static class AnimationTools
         (rect, shapes, args) => { }
     );
 
-    // Ellipse Tool
+    // Ellipse Tool: To be tested.
+    private static Shape? _ellipse;
     internal static readonly VisualAnimationTool EllipseTool = new(
-        (rect, shapes, args) => { },
-        (rect, shapes, args) => { },
-        (rect, shapes, args) => { }
+        (_, _, _) => _ellipse = ShapeExtensions.Create<Ellipse>(),
+        (rect, _, _) => _ellipse!.SetShapeRegion(rect),
+        (rect, _, _) => { _ellipse!.SetShapeRegion(rect); _ellipse = null; }
     );
 }

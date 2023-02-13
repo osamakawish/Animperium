@@ -6,8 +6,10 @@ namespace Animperium.FileData;
 /// A relative measure with center (C in <see cref="BaseRelativeMeasureC{T}"/>) of the canvas as its origin (0,0) point.
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public abstract record BaseRelativeMeasureC<T> where T : IUnaryNegationOperators<T, T>, IAdditionOperators<T,T,T>,
-    IMultiplyOperators<T, T, T>, IDivisionOperators<T, double, T>, IDivisionOperators<T, T, T>
+public abstract record BaseRelativeMeasureC<T>
+        where T : IUnaryNegationOperators<T, T>, IAdditionOperators<T,T,T>, ISubtractionOperators<T, T, T>,
+        IMultiplyOperators<T, T, T>, IMultiplyOperators<T, double, T>,
+        IDivisionOperators<T, double, T>, IDivisionOperators<T, T, T>
 {
     /// <summary>
     /// The current total length in the given direction of the screen to be relative to.
@@ -34,14 +36,14 @@ public abstract record BaseRelativeMeasureC<T> where T : IUnaryNegationOperators
     /// </summary>
     /// <param name="relativeObjectSize">The relative size of a given object in units.</param>
     /// <returns>The actual size to be applied to the object.</returns>
-    public T ToRenderedObjectSize(T relativeObjectSize) => Scale * relativeObjectSize;
+    public T ToActualObjectSize(T relativeObjectSize) => Scale * relativeObjectSize;
 
     /// <summary>
     /// The actual object position, given its relative position, under this measure.
     /// </summary>
     /// <param name="relativeObjectPosition"></param>
     /// <returns></returns>
-    public T ToRenderedObjectPosition(T relativeObjectPosition)
+    public T ToActualObjectPosition(T relativeObjectPosition)
         => (Scale * relativeObjectPosition + ActualCanvasSize) / 2;
 
     /// <summary>
@@ -50,4 +52,18 @@ public abstract record BaseRelativeMeasureC<T> where T : IUnaryNegationOperators
     /// <param name="relativeObjectPosition"></param>
     /// <returns></returns>
     public T this[T relativeObjectPosition] => (Scale * relativeObjectPosition + ActualCanvasSize) / 2;
+
+    /// <summary>
+    /// The relative object position, given the actual position, under this measure.
+    /// </summary>
+    /// <param name="actualObjectPosition"></param>
+    /// <returns></returns>
+    public T ToRelativeObjectPosition(T actualObjectPosition) => (actualObjectPosition * 2 - ActualCanvasSize) / Scale;
+
+    /// <summary>
+    /// The relative object size, given the actual size, under this measure.
+    /// </summary>
+    /// <param name="actualObjectSize"></param>
+    /// <returns></returns>
+    public T ToRelativeObjectSize(T actualObjectSize) => actualObjectSize / Scale;
 }

@@ -31,6 +31,8 @@ public record Double2D(double X, double Y) :
 
     public static implicit operator Double2D((double x, double y) pair) => new(pair.x, pair.y);
     public static implicit operator Double2D(Size size) => new(size.Width, size.Height);
+    public static implicit operator Double2D(Point point) => new(point.X, point.Y);
+    public static implicit operator Point(Double2D double2D) => new(double2D.X, double2D.Y);
 
     public static (bool x, bool y) operator >(Double2D left, Double2D right) => (left.X > right.X, left.Y > right.Y);
     public static (bool x, bool y) operator >=(Double2D left, Double2D right) => (left.X >= right.X, left.Y >= right.Y);
