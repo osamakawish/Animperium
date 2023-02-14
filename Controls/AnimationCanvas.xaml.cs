@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -51,7 +53,10 @@ public partial class AnimationCanvas
         {
             // Currently handling left mouse button events only. Will deal
             // with other buttons later.
-            if (eventArgs.LeftButton.HasFlag(MouseButtonState.Released)) return;
+            if (!eventArgs.LeftButton.HasFlag(MouseButtonState.Pressed) && !isMouseUp) {
+                _mouseRect = null;
+                return;
+            }
 
             // Get the points relative to canvas.
             var point2 = eventArgs.GetPosition(Canvas); // May not compute Canvas.Left and Canvas.Top like desired.
@@ -63,6 +68,11 @@ public partial class AnimationCanvas
             var rect = new Rect(point1, point2);
             mouseEventReaction(rect, ShapeCollection, eventArgs);
             _mouseRect = isMouseUp ? null : rect;
+            if (isMouseUp)
+                MessageBox.Show(
+                    $"{string.Join(", ",
+                        new[] { rect.X, rect.Y, rect.Width, rect.Height }
+                        .Select(x => Math.Round(x, 2)))}");
         }
         MouseDown += (_, e) => MouseEventBehaviour(e, VisualAnimationTool.OnDown);
         MouseMove += (_, e) => MouseEventBehaviour(e, VisualAnimationTool.OnMove);

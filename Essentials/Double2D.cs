@@ -13,7 +13,8 @@ namespace Animperium.Essentials;
 /// </remarks>
 public record Double2D(double X, double Y) :
     IUnaryNegationOperators<Double2D, Double2D>,
-    IAdditionOperators<Double2D, Double2D, Double2D>, ISubtractionOperators<Double2D, Double2D, Double2D>,
+    IAdditionOperators<Double2D, Double2D, Double2D>, IAdditionOperators<Double2D, double, Double2D>, 
+    ISubtractionOperators<Double2D, Double2D, Double2D>, ISubtractionOperators<Double2D, double, Double2D>,
     IMultiplyOperators<Double2D, Double2D, Double2D>, IMultiplyOperators<Double2D, double, Double2D>,
     IDivisionOperators<Double2D, double, Double2D>, IDivisionOperators<Double2D, Double2D, Double2D>,
     IComparisonOperators<Double2D, Double2D, (bool x, bool y)>
@@ -21,7 +22,9 @@ public record Double2D(double X, double Y) :
     public static Double2D operator -(Double2D value) => new(-value.X, -value.Y);
 
     public static Double2D operator +(Double2D left, Double2D right) => new(left.X + right.X, left.Y + right.Y);
+    public static Double2D operator +(Double2D left, double right) => (left.X + right, left.Y + right);
     public static Double2D operator -(Double2D left, Double2D right) => new(left.X - right.X, left.Y - right.Y);
+    public static Double2D operator -(Double2D left, double right) => new(left.X - right, left.Y - right);
 
     public static Double2D operator *(Double2D left, double value) => new(left.X / value, left.Y / value);
     public static Double2D operator *(Double2D left, Double2D right) => new(left.X * right.X, left.Y * right.Y);

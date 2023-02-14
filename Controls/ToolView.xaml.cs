@@ -29,7 +29,7 @@ public partial class ToolView
     private void OnCurveButtonClick(object sender, RoutedEventArgs e) { }
 
     // Oversimplified for easier debugging.
-    private void OnShapeButtonClick(object sender, RoutedEventArgs e) => VisualAnimationTool = AnimationTools.EllipseTool;
+    private void OnShapeButtonClick(object sender, RoutedEventArgs e) => VisualAnimationTool = AnimationTools.RectangleTool;
 
     private void OnTextButtonClick(object sender, RoutedEventArgs e) { }
     private void OnMediaButtonClick(object sender, RoutedEventArgs e) { }

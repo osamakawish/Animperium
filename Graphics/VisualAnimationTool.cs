@@ -38,6 +38,9 @@ public record VisualAnimationTool(
     VisualMouseReaction<MouseEventArgs> OnHold,
     VisualMouseReaction<MouseButtonEventArgs> OnUp)
 {
+    public string Name { get; set; } = "";
+    public override string ToString() => (string.IsNullOrEmpty(Name) ? base.ToString() : Name)!;
+
     public static VisualAnimationTool FromReactor(IVisualMouseReactor reactor)
         => new(reactor.OnDown, reactor.OnHold, reactor.OnUp);
 
@@ -56,13 +59,22 @@ internal static class AnimationTools
         (rect, shapes, args) => { },
         (rect, shapes, args) => { },
         (rect, shapes, args) => { }
-    );
+    ) { Name = "Mouse Tool" };
 
-    // Ellipse Tool: To be tested.
+    // Rect Tool: DEBUG
+    private static Shape? _rect;
+    internal static readonly VisualAnimationTool RectangleTool = new(
+            (rect, _, _) => _rect = ShapeExtensions.Create<Rectangle>(rect.Location),
+            (rect, _, _) => _rect!.SetShapeRegion(rect),
+            (rect, _, _) => { _rect!.SetShapeRegion(rect); _rect = null; }
+        )
+        { Name = "Ellipse Tool" };
+
+    // Ellipse Tool: DEBUG on down event
     private static Shape? _ellipse;
     internal static readonly VisualAnimationTool EllipseTool = new(
-        (_, _, _) => _ellipse = ShapeExtensions.Create<Ellipse>(),
+        (rect, _, _) => _ellipse = ShapeExtensions.Create<Ellipse>(rect.Location),
         (rect, _, _) => _ellipse!.SetShapeRegion(rect),
         (rect, _, _) => { _ellipse!.SetShapeRegion(rect); _ellipse = null; }
-    );
+    ) { Name = "Ellipse Tool" };
 }

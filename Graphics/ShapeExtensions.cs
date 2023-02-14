@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Animperium.Controls;
+using Animperium.Essentials;
 
 namespace Animperium.Graphics;
 
@@ -19,11 +20,16 @@ public static class ShapeExtensions
     public static void SetShapeRegion(this Shape shape, Rect region)
         => shape.GetAnimationCanvas().SetShapeRegion(shape, region);
 
-    public static Shape Create<TShape>(double strokeThickness = 1, SolidColorBrush? stroke = null, SolidColorBrush? fill = null)
-        where TShape : Shape, new()
+    public static Shape Create<TShape>(
+        Double2D? relativePosition = null,
+        double strokeThickness = 1,
+        SolidColorBrush? stroke = null,
+        SolidColorBrush? fill = null)
+            where TShape : Shape, new()
         => AnimationCanvas.Current!.AddShape<TShape>(
-            relativeSize: (0, 0),
-            strokeThickness: strokeThickness,
-            strokeColor: stroke ?? Brushes.Black,
-            fillColor: fill ?? Brushes.Black);
+                relativePosition ?? (0, 0),
+                (0, 0),
+                strokeThickness,
+                stroke ?? Brushes.Black,
+                fill ?? Brushes.Transparent);
 }
