@@ -3,24 +3,32 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using Animperium.Controls;
+using Animperium.Essentials;
 
 namespace Animperium.Graphics;
+
+public class VisualMouseEventArgs<T> where T : MouseEventArgs
+{
+    public Point Start { get; internal init; }
+    public Point End { get; internal init; }
+    public ShapeCollection Shapes { get; internal init; } = null!;
+    public T MouseEventArgs { get; internal init; } = null!;
+
+    public Rect Rect => new(Start, End);
+}
 
 /// <summary>
 /// 
 /// </summary>
 /// <typeparam name="T"></typeparam>
-/// <param name="mousePathRect">The rectangle from the starting point of the mouse press to where it is now.</param>
-/// <param name="shapes"></param>
-/// <param name="mouseEventArgs"></param>
-public delegate void VisualMouseReaction<in T>(Rect mousePathRect, ShapeCollection shapes, T mouseEventArgs)
+public delegate void VisualMouseReaction<T>(VisualMouseEventArgs<T> mouseEventArgs)
     where T : MouseEventArgs;
 
 public interface IVisualMouseReactor
 {
-    void OnDown(Rect mouseRect, ShapeCollection shapes, MouseButtonEventArgs e);
-    void OnHold(Rect mouseRect, ShapeCollection shapes, MouseEventArgs e);
-    void OnUp(Rect mouseRect, ShapeCollection shapes, MouseButtonEventArgs e);
+    void OnDown(VisualMouseEventArgs<MouseButtonEventArgs> e);
+    void OnHold(VisualMouseEventArgs<MouseEventArgs> e);
+    void OnUp(VisualMouseEventArgs<MouseButtonEventArgs> e);
 }
 
 //public delegate void AuditoryMouseReaction
@@ -49,32 +57,33 @@ public record VisualAnimationTool(
     private static bool IsPressed(MouseEventArgs e) => StateIsPressed(e.LeftButton)
                                                        || StateIsPressed(e.MiddleButton)
                                                        || StateIsPressed(e.RightButton);
-    public VisualMouseReaction<MouseEventArgs> OnMove => (r, o, e) => { if (IsPressed(e)) OnHold(r, o, e); };
+    public VisualMouseReaction<MouseEventArgs> OnMove => 
+        (args) => { if (IsPressed(args.MouseEventArgs)) OnHold(args); };
 }
 
 internal static class AnimationTools
 {
     // Mouse tool
     internal static readonly VisualAnimationTool ItemSelectTool = new(
-        (rect, shapes, args) => { },
-        (rect, shapes, args) => { },
-        (rect, shapes, args) => { }
+        args => { },
+        args => { },
+        args => { }
     ) { Name = "Mouse Tool" };
 
     // Rect Tool: DEBUG
     private static Shape? _rect;
     internal static readonly VisualAnimationTool RectangleTool = new(
-            (rect, _, _) => _rect = ShapeExtensions.Create<Rectangle>(rect.Location),
-            (rect, _, _) => _rect!.SetShapeRegion(rect),
-            (rect, _, _) => { _rect!.SetShapeRegion(rect); _rect = null; }
-        )
-        { Name = "Ellipse Tool" };
+        args => _rect = ShapeExtensions.Create<Rectangle>(args.Start),
+        args => _rect!.SetShapeRegion(args.Start, args.End),
+        args => { _rect!.SetShapeRegion(args.Start, args.End); _rect = null; }
+    )
+    { Name = "Ellipse Tool" };
 
     // Ellipse Tool: DEBUG on down event
     private static Shape? _ellipse;
     internal static readonly VisualAnimationTool EllipseTool = new(
-        (rect, _, _) => _ellipse = ShapeExtensions.Create<Ellipse>(rect.Location),
-        (rect, _, _) => _ellipse!.SetShapeRegion(rect),
-        (rect, _, _) => { _ellipse!.SetShapeRegion(rect); _ellipse = null; }
+        args => _ellipse = ShapeExtensions.Create<Ellipse>(args.Start),
+        args => _ellipse!.SetShapeRegion(args.Start, args.End),
+        args => { _ellipse!.SetShapeRegion(args.Start, args.End); _ellipse = null; }
     ) { Name = "Ellipse Tool" };
 }

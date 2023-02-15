@@ -33,7 +33,7 @@ public partial class AnimationCanvas
 
     internal VisualAnimationTool VisualAnimationTool { get; set; } = AnimationTools.ItemSelectTool;
     private ShapeCollection ShapeCollection { get; }
-    private Rect? _mouseRect;
+    private Point? _start;
 
     public AnimationCanvas()
     {
@@ -53,26 +53,22 @@ public partial class AnimationCanvas
         {
             // Currently handling left mouse button events only. Will deal
             // with other buttons later.
-            if (!eventArgs.LeftButton.HasFlag(MouseButtonState.Pressed) && !isMouseUp) {
-                _mouseRect = null;
-                return;
-            }
+            if (!eventArgs.LeftButton.HasFlag(MouseButtonState.Pressed) && !isMouseUp) return;
 
             // Get the points relative to canvas.
-            var point2 = eventArgs.GetPosition(Canvas); // May not compute Canvas.Left and Canvas.Top like desired.
-            var point1 = _mouseRect?.Location ?? point2;
+            var point2 = eventArgs.GetPosition(Canvas);
+            var point1 = _start ??= point2;
             // Get relative positions of the points.
-            point1 = RelativeMeasure.ToRelativeObjectPosition(point1);
+            var point = RelativeMeasure.ToRelativeObjectPosition(point1);
             point2 = RelativeMeasure.ToRelativeObjectPosition(point2);
 
             var rect = new Rect(point1, point2);
-            mouseEventReaction(rect, ShapeCollection, eventArgs);
-            _mouseRect = isMouseUp ? null : rect;
-            if (isMouseUp)
-                MessageBox.Show(
-                    $"{string.Join(", ",
-                        new[] { rect.X, rect.Y, rect.Width, rect.Height }
-                        .Select(x => Math.Round(x, 2)))}");
+            mouseEventReaction(new VisualMouseEventArgs<TMouseEventArgs> {
+                Start = point,
+                End = point2,
+                Shapes = ShapeCollection,
+                MouseEventArgs = eventArgs
+            });
         }
         MouseDown += (_, e) => MouseEventBehaviour(e, VisualAnimationTool.OnDown);
         MouseMove += (_, e) => MouseEventBehaviour(e, VisualAnimationTool.OnMove);
@@ -81,7 +77,8 @@ public partial class AnimationCanvas
         ShapeToAssociatedCanvas.Add(ShapeCollection, this);
 
         // For Debugging only.
-        AddShape<Ellipse>(strokeThickness: 1);
+        var rect = ShapeExtensions.Create<Rectangle>((0,0));
+        rect.SetShapeRegion(new Point(0, 0), new Point(6, 6));
     }
 
     internal TShape AddShape<TShape>(

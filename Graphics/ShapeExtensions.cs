@@ -17,8 +17,8 @@ public static class ShapeExtensions
         => AnimationCanvas.ShapeToAssociatedCanvas[
             AnimationCanvas.ShapeToAssociatedCanvas.Keys.First(set => set.Contains(shape))];
 
-    public static void SetShapeRegion(this Shape shape, Rect region)
-        => shape.GetAnimationCanvas().SetShapeRegion(shape, region);
+    public static void SetShapeRegion(this Shape shape, Point point1, Point point2)
+        => shape.GetAnimationCanvas().SetShapeRegion(shape, new Rect(point1, point2));
 
     public static Shape Create<TShape>(
         Double2D? relativePosition = null,
