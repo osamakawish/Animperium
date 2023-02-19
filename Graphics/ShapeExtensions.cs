@@ -20,7 +20,7 @@ public static class ShapeExtensions
     public static void SetShapeRegion(this Shape shape, Point point1, Point point2)
         => shape.GetAnimationCanvas().SetShapeRegion(shape, new Rect(point1, point2));
 
-    public static Shape Create<TShape>(
+    public static TShape Create<TShape>(
         Double2D? relativePosition = null,
         double strokeThickness = 1,
         SolidColorBrush? stroke = null,

@@ -8,7 +8,7 @@ namespace Animperium.Graphics;
 internal interface IGraphicsObject
 {
     AnimatableProperty<SizeF> Size { get; set; }
-    AnimatableProperty<PointF> Position { get; set; }
+    AnimatableProperty<Point> Position { get; set; }
     AnimatableProperty<Transform> TransformTransform { get; set; }
     AnimatableProperty<bool> Visibility { get; set; }
 }

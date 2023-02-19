@@ -71,7 +71,7 @@ internal static class AnimationTools
     ) { Name = "Mouse Tool" };
 
     // Rect Tool: DEBUG
-    private static Shape? _rect;
+    private static Rectangle? _rect;
     internal static readonly VisualAnimationTool RectangleTool = new(
         args => _rect = ShapeExtensions.Create<Rectangle>(args.Start),
         args => _rect!.SetShapeRegion(args.Start, args.End),
@@ -80,7 +80,7 @@ internal static class AnimationTools
     { Name = "Ellipse Tool" };
 
     // Ellipse Tool: DEBUG on down event
-    private static Shape? _ellipse;
+    private static Ellipse? _ellipse;
     internal static readonly VisualAnimationTool EllipseTool = new(
         args => _ellipse = ShapeExtensions.Create<Ellipse>(args.Start),
         args => _ellipse!.SetShapeRegion(args.Start, args.End),
