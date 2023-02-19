@@ -54,7 +54,9 @@ public abstract record BaseRelativeMeasureC<T>
     /// <param name="actualObjectPosition"></param>
     /// <returns></returns>
     public T ToRelativeObjectPosition(T actualObjectPosition)
-        => RelativeCanvasSize * (actualObjectPosition / ActualCanvasSize - 0.5);
+    {
+        return RelativeCanvasSize * (actualObjectPosition / ActualCanvasSize - 0.5);
+    }
 
     /// <summary>
     /// The relative object size, given the actual size, under this measure.

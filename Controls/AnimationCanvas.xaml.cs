@@ -77,8 +77,19 @@ public partial class AnimationCanvas
         ShapeToAssociatedCanvas.Add(ShapeCollection, this);
 
         // For Debugging only.
-        var rect = ShapeExtensions.Create<Rectangle>((0,0));
-        rect.SetShapeRegion(new Point(0, 0), new Point(6, 6));
+        var rect = ShapeExtensions.Create<Ellipse>();
+        rect.SetShapeRegion(new Point(1, 1), new Point(6, 6));
+
+        Loaded += (_, _) =>
+        {
+            var selectionRect = rect.GetRelativeBounds();
+            selectionRect = new Rect(-new Double2D(.5, .5) + selectionRect.Location,
+                selectionRect.Size + new Double2D(1, 1));
+            var drawnSelectionRect = AddShape<Rectangle>(strokeThickness: 2.15);
+            drawnSelectionRect.Stroke = Brushes.DodgerBlue;
+            drawnSelectionRect.StrokeDashArray = new DoubleCollection(new double[] { 2, 3, 2, 2 });
+            SetShapeRegion(drawnSelectionRect, selectionRect);
+        };
     }
 
     internal TShape AddShape<TShape>(

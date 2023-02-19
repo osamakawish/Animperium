@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Animperium.Controls;
@@ -32,4 +33,26 @@ public static class ShapeExtensions
                 strokeThickness,
                 stroke ?? Brushes.Black,
                 fill ?? Brushes.Transparent);
+
+    /// <summary>
+    /// Actual top left of the shape's position, ignoring stroke thickness.
+    /// </summary>
+    /// <param name="shape"></param>
+    /// <param name="withThickness"></param>
+    /// <returns>The *actual* top left value position of the shape's position during initialization.</returns>
+    internal static Point GetTopLeft(this Shape shape, double withThickness)
+        => new(Canvas.GetLeft(shape) + withThickness, Canvas.GetTop(shape) + withThickness);
+
+    public static Rect GetRelativeBounds(this Shape shape, double withThickness = double.NaN)
+    {
+        withThickness = double.IsNaN(withThickness) || double.IsInfinity(withThickness) ? shape.StrokeThickness : withThickness;
+
+        var bounds = shape.RenderedGeometry.GetRenderBounds(new Pen(shape.Stroke, shape.StrokeThickness));
+        var measure = AnimationCanvas.RelativeMeasure;
+
+        var location = measure.ToRelativeObjectPosition(shape.GetTopLeft(withThickness));
+        var size = measure.ToRelativeObjectSize(bounds.Size);
+        
+        return new Rect(location, new Size(size.X, size.Y));
+    }
 }
