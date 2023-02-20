@@ -1,4 +1,5 @@
-﻿using System.Windows.Media.Animation;
+﻿using System.Windows;
+using System.Windows.Media.Animation;
 using Animperium.Graphics;
 
 namespace Animperium;
@@ -17,6 +18,7 @@ public partial class MainWindow
     {
         InitializeComponent();
 
+        WindowState = WindowState.Maximized;
         ToolView.ToolChanged += (_, tool) => AnimationCanvas.VisualAnimationTool = tool;
 
         //TestAnimate();

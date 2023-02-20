@@ -11,14 +11,16 @@ namespace Animperium.Essentials;
 /// <remarks><b>Note.</b> It is much cleaner to introduce construct these objects via a
 /// (<see cref="double"/>, <see cref="double"/>) tuple.<br/>
 /// </remarks>
-public record Double2D(double X, double Y) :
-    IUnaryNegationOperators<Double2D, Double2D>,
+public record Double2D(double X, double Y) : IAdditiveIdentity<Double2D, Double2D>,
+    IMultiplicativeIdentity<Double2D, Double2D>, IUnaryNegationOperators<Double2D, Double2D>,
     IAdditionOperators<Double2D, Double2D, Double2D>, IAdditionOperators<Double2D, double, Double2D>, 
     ISubtractionOperators<Double2D, Double2D, Double2D>, ISubtractionOperators<Double2D, double, Double2D>,
     IMultiplyOperators<Double2D, Double2D, Double2D>, IMultiplyOperators<Double2D, double, Double2D>,
     IDivisionOperators<Double2D, double, Double2D>, IDivisionOperators<Double2D, Double2D, Double2D>,
     IComparisonOperators<Double2D, Double2D, (bool x, bool y)>
 {
+    public static Double2D AdditiveIdentity => new(0, 0);
+    public static Double2D MultiplicativeIdentity => new(1, 1);
     public static Double2D operator -(Double2D value) => new(-value.X, -value.Y);
 
     public static Double2D operator +(Double2D left, Double2D right) => new(left.X + right.X, left.Y + right.Y);
@@ -34,6 +36,7 @@ public record Double2D(double X, double Y) :
 
     public static implicit operator Double2D((double x, double y) pair) => new(pair.x, pair.y);
     public static implicit operator Double2D(Size size) => new(size.Width, size.Height);
+    public static implicit operator Size(Double2D double2D) => new(double2D.X, double2D.Y);
     public static implicit operator Double2D(Point point) => new(point.X, point.Y);
     public static implicit operator Point(Double2D double2D) => new(double2D.X, double2D.Y);
 

@@ -77,16 +77,24 @@ public partial class AnimationCanvas
         ShapeToAssociatedCanvas.Add(ShapeCollection, this);
 
         // For Debugging only.
-        var rect = ShapeExtensions.Create<Ellipse>();
-        rect.SetShapeRegion(new Point(1, 1), new Point(6, 6));
+        var rect1 = AddShape<Rectangle>(strokeThickness: 12);
+        //var rect2 = AddShape<Rectangle>(strokeColor: new SolidColorBrush(Colors.Red), strokeThickness: 1);
+        rect1.SetShapeRegion(new Point(0, 0), new Point(6, 6));
+        //rect2.SetShapeRegion(new Point(0, 0), new Point(6, 6));
 
         Loaded += (_, _) =>
         {
-            var selectionRect = rect.GetRelativeBounds();
-            selectionRect = new Rect(-new Double2D(.5, .5) + selectionRect.Location,
-                selectionRect.Size + new Double2D(1, 1));
-            var drawnSelectionRect = AddShape<Rectangle>(strokeThickness: 2.15);
-            drawnSelectionRect.Stroke = Brushes.DodgerBlue;
+            // Selection rectangle stroke thickness is dependent on its size, and vice versa.
+            // Rect size is in relative coordinates. Stroke thickness is absolute coordinates.
+            // Stroke thickness should take relative values to consideration.
+            var selectionRect = rect1.GetRelativeBounds();
+            var strokeThickness = 12;
+            var relStroke = RelativeMeasure.XMeasure.ToRelativeObjectSize(strokeThickness);
+
+            selectionRect = new Rect(selectionRect.TopLeft, selectionRect.BottomRight);
+            selectionRect.Offset(-relStroke, -relStroke);
+            var drawnSelectionRect = AddShape<Rectangle>(strokeThickness: strokeThickness);
+            drawnSelectionRect.Stroke = Brushes.OrangeRed;
             drawnSelectionRect.StrokeDashArray = new DoubleCollection(new double[] { 2, 3, 2, 2 });
             SetShapeRegion(drawnSelectionRect, selectionRect);
         };
@@ -145,7 +153,12 @@ public partial class AnimationCanvas
     }
 
     /// <summary>
-    /// Updates the rendered dimensions (position and size) of the shape.
+    /// Updates the rendered dimensions (position and size) of the shape.<br/><br/>
+    /// <para>
+    /// (Remove this paragraph when implemented.) This currently draws the stroke inside the bounds.<br/>
+    /// It needs to be updated with the options of inside/along/outside the bounds. Ideally with a choice of values between -1 to 1,<br/>
+    /// with -1 for inside, 0 for along ,and +1 for outside. Fractional values should give in-between results if required.
+    /// </para>
     /// </summary>
     /// <param name="shape"></param>
     /// <remarks><b>Requires <see cref="_shapes"/> to be updated with the <see cref="shape"/>'s dimensions.</b></remarks>
@@ -156,7 +169,8 @@ public partial class AnimationCanvas
                                - (shape.StrokeThickness, shape.StrokeThickness);
         var renderedSize = RelativeMeasure.ToActualObjectSize(relativeSize);
 
-        Canvas.SetLeft(shape, renderedPosition.X); Canvas.SetTop(shape, renderedPosition.Y);
+        Canvas.SetLeft(shape, renderedPosition.X + shape.StrokeThickness);
+        Canvas.SetTop(shape, renderedPosition.Y + shape.StrokeThickness);
         (shape.Width, shape.Height) = renderedSize;
     }
 }
