@@ -87,12 +87,10 @@ public partial class AnimationCanvas
             // Selection rectangle stroke thickness is dependent on its size, and vice versa.
             // Rect size is in relative coordinates. Stroke thickness is absolute coordinates.
             // Stroke thickness should take relative values to consideration.
+            var strokeThickness = 16;
             var selectionRect = rect1.GetRelativeBounds();
-            var strokeThickness = 12;
-            var relStroke = RelativeMeasure.XMeasure.ToRelativeObjectSize(strokeThickness);
 
             selectionRect = new Rect(selectionRect.TopLeft, selectionRect.BottomRight);
-            selectionRect.Offset(-relStroke, -relStroke);
             var drawnSelectionRect = AddShape<Rectangle>(strokeThickness: strokeThickness);
             drawnSelectionRect.Stroke = Brushes.OrangeRed;
             drawnSelectionRect.StrokeDashArray = new DoubleCollection(new double[] { 2, 3, 2, 2 });
