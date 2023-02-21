@@ -48,8 +48,8 @@ public static class ShapeExtensions
         var measure = AnimationCanvas.RelativeMeasure;
 
         var location = measure.ToRelativeObjectPosition(shape.GetTopLeft());
-        var size = measure.ToRelativeObjectSize(bounds.Size);
-        
-        return new Rect(location, new Size(size.X, size.Y));
+        Size size = measure.ToRelativeObjectSize(bounds.Size);
+
+        return new Rect(location, size.IsEmpty ? new Size(0, 0) : size);
     }
 }

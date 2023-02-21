@@ -34,14 +34,22 @@ On top of the tool view, you have the tools being divided into the following **T
 2. **Curves.** These are tools for creating curves via curve interpolations. They allow for various customized shapes and objects.
 3. **Shapes.** These tools create all sorts of basic shapes with a couple of parameters that allow for easier modifications.
 4. **Text.** This allows for the writing of various types of text onto the canvas. (Possible future implementation: Automated speech may be included here.)
-5. **Media.** This tool group imports images, video, and audio. It can also contain predefined media for custom use. The media can be added for a specific file, or be treated as part of the application so it may be used in future files.
+5. **Media.** This tool group imports images, video, and audio. It can also contain predefined media for custom use. The media can be added for a specific file, or be treated as part of the application so it may be used in future files. (Recording media may need to be implemented in the future.)
 6. **Effects.** This tool group is for producing new objects or modifying selected data (visual objects or audio). This includes features such as offsets for vectors, drop shadows for images, visual effects for animations, and noise reduction for audio. If nothing is selected, effects can be used to manipulate all objects or the Canvas itself (which is selected by default).
+   * Mesh warp: Allows gradient warping of a mesh.
+     * Raster: Distorts and reshapes the image.
+     * Vector: Produces coloured overlay, via a gradient mesh warp.
 
 ### Items
 
 Once a tool with its given parameters is selected, it interacts primarily the **Canvas**. Curve, Shape, Visual Text, and Visual Media tools all create new items on the **canvas**, and are called **visual items**. The canvas itself is also a visual item. Cursors selected and manipulate existing items directly, in simple and limited ways. Effects do so in advanced ways that requires additional code. Effects are also considered items. In contrast to visual items, **auditory items** are audio.
 
 Once an item has been created, it is selected and added to the **Item View**. The item view is first divided into visual vs auditory, then  organizes the existing items into **layers**.
+
+Layer features include:
+
+* Clipping
+* Blend modes
 
 ### Animation
 
@@ -85,6 +93,8 @@ Combine tools combine 2 or more curves to produce new vectors.
 * (Apply Alignment Button)
 
 ### Binding
+
+Not entirely sure how to implement this.
 
 * 
 

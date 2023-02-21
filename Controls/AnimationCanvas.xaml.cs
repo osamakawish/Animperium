@@ -42,7 +42,7 @@ public partial class AnimationCanvas
 
         RelativeMeasure.ActualCanvasSize = (Canvas.ActualWidth, Canvas.ActualHeight);
 
-        ShapeCollection = new ShapeCollection();
+        ShapeCollection = new ShapeCollection(this);
 
         // Handle the mouse events, given the visual animation tool.
         void MouseEventBehaviour<TMouseEventArgs>(
@@ -77,33 +77,37 @@ public partial class AnimationCanvas
         ShapeToAssociatedCanvas.Add(ShapeCollection, this);
 
         // For Debugging only.
-        var rect1 = AddShape<Rectangle>(strokeThickness: 12);
-        //var rect2 = AddShape<Rectangle>(strokeColor: new SolidColorBrush(Colors.Red), strokeThickness: 1);
+        var rect1 = AddShape<Rectangle>(strokeThickness: 12, strokeColor: Brushes.OrangeRed);
         rect1.SetShapeRegion(new Point(0, 0), new Point(6, 6));
-        //rect2.SetShapeRegion(new Point(0, 0), new Point(6, 6));
 
         Loaded += (_, _) =>
         {
-            // Selection rectangle stroke thickness is dependent on its size, and vice versa.
-            // Rect size is in relative coordinates. Stroke thickness is absolute coordinates.
-            // Stroke thickness should take relative values to consideration.
-            var strokeThickness = 16;
-            var selectionRect = rect1.GetRelativeBounds();
-
-            selectionRect = new Rect(selectionRect.TopLeft, selectionRect.BottomRight);
-            var drawnSelectionRect = AddShape<Rectangle>(strokeThickness: strokeThickness);
-            drawnSelectionRect.Stroke = Brushes.OrangeRed;
-            drawnSelectionRect.StrokeDashArray = new DoubleCollection(new double[] { 2, 3, 2, 2 });
-            SetShapeRegion(drawnSelectionRect, selectionRect);
+            ShapeCollection.Select(rect1);
+            ShapeCollection.ShowSelectionRect();
         };
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TShape"></typeparam>
+    /// <param name="relativePosition"></param>
+    /// <param name="relativeSize"></param>
+    /// <param name="strokeThickness"></param>
+    /// <param name="strokeColor"></param>
+    /// <param name="fillColor"></param>
+    /// <param name="isDecorative">For elements not included in the shape collection.<br/>
+    /// A reference must be stored somewhere as it cannot be found in the ShapeCollection.<br/>
+    /// Decorative shapes are hidden by default.
+    /// </param>
+    /// <returns></returns>
     internal TShape AddShape<TShape>(
         Double2D? relativePosition = null,
         Double2D? relativeSize = null,
         double strokeThickness = 1,
         SolidColorBrush? strokeColor = null,
-        SolidColorBrush? fillColor = null)
+        SolidColorBrush? fillColor = null,
+        bool isDecorative = false)
         where TShape : Shape, new()
     {
         // Initialize possible nulls.
@@ -112,8 +116,16 @@ public partial class AnimationCanvas
 
         // Implement parameters and fields into shape.
         TShape shape = new() { StrokeThickness = strokeThickness, Stroke = strokeColor, Fill = fillColor };
-        _shapes[shape] = (relativePosition, relativeSize); ShapeCollection.Add(shape);
-        UpdateShapeRendering(shape);
+
+        if (!isDecorative) {
+            _shapes[shape] = (relativePosition, relativeSize);
+            ShapeCollection.Add(shape);
+            UpdateShapeRendering(shape);
+        }
+        else {
+            shape.Visibility = Visibility.Collapsed;
+            Redraw(shape, relativePosition, relativeSize);
+        }
 
         // Add object to canvas.
         Canvas.Children.Add(shape);
@@ -151,18 +163,18 @@ public partial class AnimationCanvas
     }
 
     /// <summary>
-    /// Updates the rendered dimensions (position and size) of the shape.<br/><br/>
-    /// <para>
-    /// (Remove this paragraph when implemented.) This currently draws the stroke inside the bounds.<br/>
-    /// It needs to be updated with the options of inside/along/outside the bounds. Ideally with a choice of values between -1 to 1,<br/>
-    /// with -1 for inside, 0 for along ,and +1 for outside. Fractional values should give in-between results if required.
-    /// </para>
+    /// Updates the rendered dimensions (position and size) of the shape.
     /// </summary>
     /// <param name="shape"></param>
     /// <remarks><b>Requires <see cref="_shapes"/> to be updated with the <see cref="shape"/>'s dimensions.</b></remarks>
     private void UpdateShapeRendering(Shape shape)
     {
         var (relativePosition, relativeSize) = _shapes[shape];
+        Redraw(shape, relativePosition, relativeSize);
+    }
+
+    internal static void Redraw(Shape shape, Double2D relativePosition, Double2D relativeSize)
+    {
         var renderedPosition = RelativeMeasure.ToActualObjectPosition(relativePosition)
                                - (shape.StrokeThickness, shape.StrokeThickness);
         var renderedSize = RelativeMeasure.ToActualObjectSize(relativeSize);
@@ -170,5 +182,10 @@ public partial class AnimationCanvas
         Canvas.SetLeft(shape, renderedPosition.X + shape.StrokeThickness);
         Canvas.SetTop(shape, renderedPosition.Y + shape.StrokeThickness);
         (shape.Width, shape.Height) = renderedSize;
+    }
+
+    internal void HideSelectionRect()
+    {
+        ShapeCollection.SelectionRectangle.Visibility = Visibility.Collapsed;
     }
 }

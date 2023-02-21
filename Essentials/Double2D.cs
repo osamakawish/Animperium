@@ -19,8 +19,13 @@ public record Double2D(double X, double Y) : IAdditiveIdentity<Double2D, Double2
     IDivisionOperators<Double2D, double, Double2D>, IDivisionOperators<Double2D, Double2D, Double2D>,
     IComparisonOperators<Double2D, Double2D, (bool x, bool y)>
 {
-    public static Double2D AdditiveIdentity => new(0, 0);
-    public static Double2D MultiplicativeIdentity => new(1, 1);
+    public static Double2D Zero { get; } = new(0, 0);
+    public static Double2D AdditiveIdentity => Zero;
+
+    public static Double2D Unit { get; } = new(1, 1);
+
+    public static Double2D MultiplicativeIdentity => Unit;
+
     public static Double2D operator -(Double2D value) => new(-value.X, -value.Y);
 
     public static Double2D operator +(Double2D left, Double2D right) => new(left.X + right.X, left.Y + right.Y);
@@ -36,7 +41,8 @@ public record Double2D(double X, double Y) : IAdditiveIdentity<Double2D, Double2
 
     public static implicit operator Double2D((double x, double y) pair) => new(pair.x, pair.y);
     public static implicit operator Double2D(Size size) => new(size.Width, size.Height);
-    public static implicit operator Size(Double2D double2D) => new(double2D.X, double2D.Y);
+    public static implicit operator Size(Double2D double2D)
+        => double2D.X < 0 || double2D.Y < 0 ? new Size(0, 0) : new Size(double2D.X, double2D.Y);
     public static implicit operator Double2D(Point point) => new(point.X, point.Y);
     public static implicit operator Point(Double2D double2D) => new(double2D.X, double2D.Y);
 
