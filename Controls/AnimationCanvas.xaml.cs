@@ -76,14 +76,30 @@ public partial class AnimationCanvas
 
         ShapeToAssociatedCanvas.Add(ShapeCollection, this);
 
-        // For Debugging only.
-        var rect1 = AddShape<Rectangle>(strokeThickness: 12, strokeColor: Brushes.OrangeRed);
-        rect1.SetShapeRegion(new Point(0, 0), new Point(6, 6));
+        // For Debugging only
+        var arc = new Path { Stroke = Brushes.OrangeRed, StrokeThickness = 1 };
+        var pathGeometry = new PathGeometry();
+        var pathFigure = new PathFigure { StartPoint = new Point(0, 0) };
+        pathFigure.Segments.Add(new ArcSegment(new Point(40, 300), new Size(80, 35), 0, true, SweepDirection.Clockwise, true));
+        pathGeometry.Figures.Add(pathFigure);
+        arc.Data = pathGeometry;
+        Panel.SetZIndex(arc, 5); // Up until now, only AddShape updates drawing. It didn't have one.
+        Canvas.SetLeft(arc, 0); Canvas.SetTop(arc, 0);
+        Canvas.Children.Add(arc);
+
+        Canvas.SetLeft(Path2, 0);
+        Canvas.SetTop(Path2, 0);
 
         Loaded += (_, _) =>
         {
-            ShapeCollection.Select(rect1);
-            ShapeCollection.ShowSelectionRect();
+            MessageBox.Show($"{Canvas.GetLeft(arc)}, {Canvas.GetTop(arc)}\n" +
+                            $"{arc.Visibility}, {arc.StrokeThickness}\n" +
+                            $"{arc.Data}\n" +
+                            $"{arc.GetRelativeBounds()}\n\n" +
+                            $"{Canvas.GetLeft(Path2)}, {Canvas.GetTop(Path2)}\n" +
+                            $"{Path2.Visibility}, {Path2.StrokeThickness}\n" + 
+                            $"{Path2.Data}\n" +
+                            $"{Path2.GetRelativeBounds()}");
         };
     }
 

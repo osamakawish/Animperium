@@ -48,8 +48,10 @@ Once an item has been created, it is selected and added to the **Item View**. Th
 
 Layer features include:
 
-* Clipping
-* Blend modes
+* **Clipping.** 
+* **Blend modes.** 
+* **Property Pairing.** Properties of different items can be paired. Alternatively, one property can be used to pair with another of the same item.
+* **Combine FX.** Same effect as combining curves, but as an animation.
 
 ### Animation
 
@@ -91,12 +93,6 @@ Combine tools combine 2 or more curves to produce new vectors.
   * For Both, Gaps = X/Y/Forward Diagonal/Back Diagonal/Origin
 * Relative to Selected Items or to Canvas
 * (Apply Alignment Button)
-
-### Binding
-
-Not entirely sure how to implement this.
-
-* 
 
 ### Snapping
 

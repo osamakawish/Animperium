@@ -7,6 +7,17 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid Background="Blue">
-        <Canvas Name="Canvas" Background="Aquamarine" ClipToBounds="True"/>
+        <Canvas Name="Canvas" Background="Aquamarine" ClipToBounds="True">
+            <Path Stroke="Black" x:Name="Path2">
+                <Path.Data>
+                    <!--<EllipseGeometry Center="80, 80" RadiusX="12" RadiusY="15"/>-->
+                    <PathGeometry>
+                        <PathFigure StartPoint="40,40">
+                            <ArcSegment Point="40,200" Size="80,24" RotationAngle="90" SweepDirection="Clockwise"/>
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </Canvas>
     </Grid>
 </UserControl>
