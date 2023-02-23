@@ -59,7 +59,7 @@ public static class ShapeExtensions
         var arc = canvas.AddShape<Path>(rect.Location, rect.Size);
 
         // Should be in terms of absolute coordinates.
-        var centerAndRadii = Double2D.FromSize(rect.Size);
+        var centerAndRadii = Double2D.FromSize(rect.Size) / 2;
 
         // Not sure to convert to absolute size or position here -> need to double check math.
         centerAndRadii = AnimationCanvas.RelativeMeasure.ToActualObjectSize(centerAndRadii); 
