@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using System.Windows;
 
 namespace Animperium.Essentials;
@@ -19,6 +20,8 @@ public record Double2D(double X, double Y) : IAdditiveIdentity<Double2D, Double2
     IDivisionOperators<Double2D, double, Double2D>, IDivisionOperators<Double2D, Double2D, Double2D>,
     IComparisonOperators<Double2D, Double2D, (bool x, bool y)>
 {
+    public static Double2D FromSize(Size size) => size.IsEmpty ? (0, 0) : (size.Width, size.Height);
+
     public static Double2D Zero { get; } = new(0, 0);
     public static Double2D AdditiveIdentity => Zero;
 
@@ -39,17 +42,17 @@ public record Double2D(double X, double Y) : IAdditiveIdentity<Double2D, Double2
     public static Double2D operator /(Double2D left, double value) => new(left.X / value, left.Y / value);
     public static Double2D operator /(Double2D left, Double2D right) => new(left.X / right.X, left.Y / right.Y);
 
-    public static implicit operator Double2D((double x, double y) pair) => new(pair.x, pair.y);
-    public static implicit operator Double2D(Size size) => new(size.Width, size.Height);
-    public static implicit operator Size(Double2D double2D)
-        => double2D.X < 0 || double2D.Y < 0 ? new Size(0, 0) : new Size(double2D.X, double2D.Y);
-    public static implicit operator Double2D(Point point) => new(point.X, point.Y);
-    public static implicit operator Point(Double2D double2D) => new(double2D.X, double2D.Y);
-
     public static (bool x, bool y) operator >(Double2D left, Double2D right) => (left.X > right.X, left.Y > right.Y);
     public static (bool x, bool y) operator >=(Double2D left, Double2D right) => (left.X >= right.X, left.Y >= right.Y);
     public static (bool x, bool y) operator <(Double2D left, Double2D right) => (left.X < right.X, left.Y < right.Y);
     public static (bool x, bool y) operator <=(Double2D left, Double2D right) => (left.X <= right.X, left.Y <= right.Y);
+
+    public static implicit operator Double2D((double x, double y) pair) => new(pair.x, pair.y);
+    public static implicit operator Double2D(Size size) => FromSize(size);
+    public static implicit operator Size(Double2D double2D)
+        => double2D.X < 0 || double2D.Y < 0 ? new Size(0, 0) : new Size(double2D.X, double2D.Y);
+    public static implicit operator Double2D(Point point) => new(point.X, point.Y);
+    public static implicit operator Point(Double2D double2D) => new(double2D.X, double2D.Y);
 
     static (bool x, bool y) IEqualityOperators<Double2D, Double2D, (bool x, bool y)>.operator ==(Double2D? left,
         Double2D? right)
@@ -93,4 +96,6 @@ public record Double2D(double X, double Y) : IAdditiveIdentity<Double2D, Double2
 
         return ((minX, minY), (maxX, maxY));
     }
+
+    public static Double2D ToCirclePoint(double angle) => new(Math.Cos(angle), Math.Sin(angle));
 }

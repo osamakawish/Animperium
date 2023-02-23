@@ -13,5 +13,5 @@ public record ArgbColor(byte R, byte G, byte B, byte A = 255)
 public record PenStrokeData(ArgbColor Color, double Thickness)
 {
     public static implicit operator PenStrokeData((ArgbColor color, double thickness) strokeData)
-        => new PenStrokeData(strokeData.color, strokeData.thickness);
+        => new(strokeData.color, strokeData.thickness);
 }

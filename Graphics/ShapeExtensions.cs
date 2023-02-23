@@ -52,4 +52,34 @@ public static class ShapeExtensions
 
         return new Rect(location, size.IsEmpty ? new Size(0, 0) : size);
     }
+
+    // TODO: Debug this.
+    internal static Path AddArc(this AnimationCanvas canvas, Rect rect, Double2D angleRange)
+    {
+        var arc = canvas.AddShape<Path>(rect.Location, rect.Size);
+
+        // Should be in terms of absolute coordinates.
+        var centerAndRadii = Double2D.FromSize(rect.Size);
+
+        // Not sure to convert to absolute size or position here -> need to double check math.
+        centerAndRadii = AnimationCanvas.RelativeMeasure.ToActualObjectSize(centerAndRadii); 
+        Double2D EllipsePoint(double angle)
+            => centerAndRadii + centerAndRadii * Double2D.ToCirclePoint(angle);
+        
+        var arcSegment = new ArcSegment(
+            EllipsePoint(angleRange.Y),
+            centerAndRadii, 0,
+            Math.Abs(angleRange.X - angleRange.Y) >= Math.PI,
+            SweepDirection.Counterclockwise,
+            true);
+
+        var pathFigure = new PathFigure {
+            StartPoint = EllipsePoint(angleRange.X),
+            Segments = new PathSegmentCollection { arcSegment }
+        };
+        
+        arc.Data = new PathGeometry(new[] { pathFigure });
+
+        return arc;
+    }
 }

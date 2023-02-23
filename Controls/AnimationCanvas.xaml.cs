@@ -118,9 +118,9 @@ public partial class AnimationCanvas
     /// </param>
     /// <returns></returns>
     internal TShape AddShape<TShape>(
-        Double2D? relativePosition = null,
+        Double2D? relativePosition = null, // Use a rect here for cleaner code -> Hand rect.Empty and negative/zero Rect cases.
         Double2D? relativeSize = null,
-        double strokeThickness = 1,
+        double strokeThickness = 1, // Use PenStrokeData instead here, to clean up code.
         SolidColorBrush? strokeColor = null,
         SolidColorBrush? fillColor = null,
         bool isDecorative = false)
