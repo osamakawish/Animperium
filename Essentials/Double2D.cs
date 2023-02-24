@@ -31,12 +31,13 @@ public record Double2D(double X, double Y) : IAdditiveIdentity<Double2D, Double2
 
     public static Double2D operator -(Double2D value) => new(-value.X, -value.Y);
 
+    public static Double2D operator +(double left, Double2D right) => (left + right.X, left + right.Y);
     public static Double2D operator +(Double2D left, Double2D right) => new(left.X + right.X, left.Y + right.Y);
     public static Double2D operator +(Double2D left, double right) => (left.X + right, left.Y + right);
     public static Double2D operator -(Double2D left, Double2D right) => new(left.X - right.X, left.Y - right.Y);
     public static Double2D operator -(Double2D left, double right) => new(left.X - right, left.Y - right);
 
-    public static Double2D operator *(Double2D left, double value) => new(left.X / value, left.Y / value);
+    public static Double2D operator *(Double2D left, double value) => new(left.X * value, left.Y * value);
     public static Double2D operator *(Double2D left, Double2D right) => new(left.X * right.X, left.Y * right.Y);
 
     public static Double2D operator /(Double2D left, double value) => new(left.X / value, left.Y / value);
@@ -97,5 +98,10 @@ public record Double2D(double X, double Y) : IAdditiveIdentity<Double2D, Double2
         return ((minX, minY), (maxX, maxY));
     }
 
-    public static Double2D ToCirclePoint(double angle) => new(Math.Cos(angle), Math.Sin(angle));
+    /// <summary>
+    /// This assumes top left of the canvas as (0, 0).
+    /// </summary>
+    /// <param name="angle"></param>
+    /// <returns></returns>
+    public static Double2D ToCirclePoint(double angle) => new(Math.Cos(angle), -Math.Sin(angle));
 }

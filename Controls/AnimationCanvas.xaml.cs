@@ -83,10 +83,11 @@ public partial class AnimationCanvas
         Loaded += (_, _) =>
         {
             // For Debugging only
-            var arc = this.AddArc(new Rect(new Point(3, 3), new Size(8, 8)), (0, Math.PI));
+            //var arc = this.AddArc(new Rect(new Point(3, 3), new Size(8, 8)), (Math.PI / 6, - 2 * Math.PI / 3));
+            var arc = this.AddArc(new Point(4, 4), (4, 4), (0, Math.PI));
             arc.Stroke = Brushes.BlueViolet;
 
-            var rect = AddShape<Rectangle>((3, 3), (8, 8), strokeColor: Brushes.DarkRed);
+            var rect = AddShape<Rectangle>((0, 0), (8, 8), strokeColor: Brushes.DarkRed);
         };
     }
 
