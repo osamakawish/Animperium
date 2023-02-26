@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -97,6 +98,12 @@ public class ShapeCollection : ICollection<Shape>
         SelectionRectangle.Visibility = Visibility.Visible;
         return true;
     }
+
+    internal void ShowRotationButtons()
+    {
+        // Note: All rotation buttons behave effectively the same way:
+        // rotate by angle between point clicked current cursor position.
+    }
 }
 
 public record SelectionRectColorTheme(
@@ -104,3 +111,35 @@ public record SelectionRectColorTheme(
     DoubleCollection StrokeDashArray,
     double Thickness = 1.5,
     double Offset = 0);
+
+internal record RotationArcButton(AnimationCanvas Canvas, Point Center, double Radius, double BaseAngle)
+{
+    internal required Point Center { get; set; } = Center; // Modify Arc upon change.
+    internal required double Angle { get; set; } = BaseAngle; // Modify arc upon change.
+    internal Path Arc { get; } = Canvas.AddArc(Center, (Radius, Radius), (BaseAngle, BaseAngle + Math.PI), true);
+    private ArcSegment ArcSegment => (ArcSegment)((PathGeometry)Arc.Data).Figures[0].Segments[0];
+}
+
+internal record RotationButtons(
+    RotationArcButton TopLeft,
+    RotationArcButton TopRight,
+    RotationArcButton BottomLeft,
+    RotationArcButton BottomRight)
+{
+    private double _additionalRotation;
+
+    private void ApplyToEach(Action<RotationArcButton> action)
+        { action(TopLeft); action(TopRight); action(BottomLeft); action(BottomRight); }
+
+    internal void SetPoints(Point topLeft, Point topRight, Point bottomLeft, Point bottomRight)
+        => (TopLeft.Center, TopRight.Center, BottomLeft.Center, BottomRight.Center)
+            = (topLeft, topRight, bottomLeft, bottomRight);
+
+    internal double AdditionalRotation {
+        get => _additionalRotation;
+        set {
+            ApplyToEach(x => x.Angle = x.BaseAngle + value);
+            _additionalRotation = value;
+        }
+    }
+}

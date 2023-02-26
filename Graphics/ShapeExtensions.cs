@@ -14,6 +14,8 @@ namespace Animperium.Graphics;
 /// </summary>
 public static class ShapeExtensions
 {
+    public static Rect ZeroRect { get; } = new(0, 0, 0, 0);
+
     internal static AnimationCanvas GetAnimationCanvas(this Shape shape)
         => AnimationCanvas.ShapeToAssociatedCanvas[
             AnimationCanvas.ShapeToAssociatedCanvas.Keys.First(set => set.Contains(shape))];
@@ -58,9 +60,9 @@ public static class ShapeExtensions
 
     // TODO: Debug
     internal static Path AddArc(this AnimationCanvas canvas, Point ellipseCenter, Double2D ellipseRadii,
-        Double2D angleRange)
+        Double2D angleRange, bool isDecorative=false)
     {
-        var arc = canvas.AddShape<Path>((Double2D)ellipseCenter - ellipseRadii, ellipseRadii * 2);
+        var arc = canvas.AddShape<Path>((Double2D)ellipseCenter - ellipseRadii, ellipseRadii * 2, isDecorative:isDecorative);
         
         ellipseRadii = AnimationCanvas.RelativeMeasure.ToActualObjectSize(ellipseRadii);
         Double2D EllipsePoint(double angle)
