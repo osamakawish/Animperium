@@ -56,10 +56,10 @@ public static class ShapeExtensions
     }
 
     internal static Path AddArc(this AnimationCanvas canvas, Rect rect, Double2D angleRange)
-        { var radii = (Double2D)rect.Size / 2; return AddArc(canvas, rect.Location + radii, radii, angleRange); }
+        { var radii = (Double2D)rect.Size / 2; return AddArc(canvas, rect.Location + radii, radii, angleRange).Path; }
 
     // TODO: Debug
-    internal static Path AddArc(this AnimationCanvas canvas, Point ellipseCenter, Double2D ellipseRadii,
+    internal static ArcData AddArc(this AnimationCanvas canvas, Point ellipseCenter, Double2D ellipseRadii,
         Double2D angleRange, bool isDecorative=false)
     {
         var arc = canvas.AddShape<Path>((Double2D)ellipseCenter - ellipseRadii, ellipseRadii * 2, isDecorative:isDecorative);
@@ -83,6 +83,17 @@ public static class ShapeExtensions
 
         arc.Data = new PathGeometry(new[] { pathFigure });
 
-        return arc;
+        return new ArcData(arc, pathFigure, arcSegment);
     }
+}
+
+// Q: Preferable to make it an arc record that handles arc rotations and the like?
+internal readonly ref struct ArcData
+{
+    internal Path Path { get; init; }
+    internal readonly PathFigure Figure;
+    internal readonly ArcSegment ArcSegment;
+
+    internal ArcData(Path path, PathFigure figure, ArcSegment arcSegment)
+        { Path = path; Figure = figure; ArcSegment = arcSegment; }
 }

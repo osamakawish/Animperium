@@ -76,7 +76,6 @@ public partial class AnimationCanvas
 
         ShapeToAssociatedCanvas.Add(ShapeCollection, this);
 
-
         Canvas.SetLeft(Path2, 0);
         Canvas.SetTop(Path2, 0);
 
@@ -85,9 +84,12 @@ public partial class AnimationCanvas
             // For Debugging only
             //var arc = this.AddArc(new Rect(new Point(3, 3), new Size(8, 8)), (Math.PI / 6, - 2 * Math.PI / 3));
             var arc = this.AddArc(new Point(4, 4), (4, 4), (0, Math.PI));
-            arc.Stroke = Brushes.BlueViolet;
+            arc.Path.Stroke = Brushes.BlueViolet;
 
             var rect = AddShape<Rectangle>((0, 0), (8, 8), strokeColor: Brushes.DarkRed);
+
+            var arc2 = AddShape<Arc>((-4, -4), (4, 4), strokeColor: Brushes.Crimson);
+            var rect2 = AddShape<Rectangle>((-4, -4), (4, 4));
         };
     }
 
