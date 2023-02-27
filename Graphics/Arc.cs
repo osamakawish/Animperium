@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Animperium.Essentials;
@@ -22,6 +23,16 @@ public class Arc : Shape
     public double EndAngle {
         get => (double)GetValue(EndAngleProperty);
         set => SetValue(EndAngleProperty, value);
+    }
+    
+    public Double2D EllipseRadii {
+        get => (Width, Height);
+        set => (Width, Height) = value;
+    }
+
+    public Point Center {
+        get => new(Canvas.GetLeft(this) + Width / 2, Canvas.GetTop(this) + Height / 2);
+        set { Canvas.SetLeft(this, value.X - Width / 2); Canvas.SetTop(this, value.Y - Height / 2); }
     }
 
     protected override Geometry DefiningGeometry {
@@ -47,9 +58,17 @@ public class Arc : Shape
         }
     }
 
+    /// <summary>
+    /// Creates a semicircle.
+    /// </summary>
     public Arc()
         => (StartAngle, EndAngle) = (0, Math.PI);
 
+    /// <summary>
+    /// Creates an arc given the provided angle range. By default, this angle range is from 0 to pi, creating a semicircle.
+    /// </summary>
+    /// <param name="startAngle"></param>
+    /// <param name="endAngle"></param>
     public Arc(double startAngle=0, double endAngle=Math.PI)
         => (StartAngle, EndAngle) = (startAngle, endAngle);
 }

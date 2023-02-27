@@ -112,38 +112,11 @@ public record SelectionRectColorTheme(
     double Thickness = 1.5,
     double Offset = 0);
 
-internal record RotationArcButton
+internal record RotationArcButton(AnimationCanvas Canvas, Point Center, double Radius, double BaseAngle)
 {
-    public RotationArcButton(AnimationCanvas canvas, Point center, double radius, double baseAngle)
-    {
-        Canvas = canvas;
-        Radius = radius;
-        BaseAngle = baseAngle;
-        Center = center;
-        Angle = baseAngle;
-        var arcData = canvas.AddArc(center, (radius, radius), (baseAngle, baseAngle + Math.PI), true);
-        Arc = arcData.Path;
-        Figure = arcData.Figure;
-        ArcSegment = arcData.ArcSegment;
-    }
-    private Path Arc { get; }
-    private PathFigure Figure { get; }
-    private ArcSegment ArcSegment { get; }
-
-    internal required Point Center { get; set; } // Modify Arc upon change.
-    internal required double Angle { get; set; } // Modify arc upon change.
-
-    public AnimationCanvas Canvas { get; init; }
-    public double Radius { get; init; }
-    public double BaseAngle { get; init; }
-
-    public void Deconstruct(out AnimationCanvas canvas, out Point center, out double radius, out double baseAngle)
-    {
-        canvas = Canvas;
-        center = Center;
-        radius = Radius;
-        baseAngle = BaseAngle;
-    }
+    internal Point Center { get; set; }
+    internal Arc Arc { get; } = Canvas.AddArc(Center, (Radius, Radius), (BaseAngle, BaseAngle + Math.PI), true);
+    internal double Angle { get; set; }
 }
 
 internal record RotationButtons(

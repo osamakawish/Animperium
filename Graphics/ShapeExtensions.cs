@@ -55,45 +55,12 @@ public static class ShapeExtensions
         return new Rect(location, size.IsEmpty ? new Size(0, 0) : size);
     }
 
-    internal static Path AddArc(this AnimationCanvas canvas, Rect rect, Double2D angleRange)
-        { var radii = (Double2D)rect.Size / 2; return AddArc(canvas, rect.Location + radii, radii, angleRange).Path; }
-
-    // TODO: Debug
-    internal static ArcData AddArc(this AnimationCanvas canvas, Point ellipseCenter, Double2D ellipseRadii,
+    internal static Arc AddArc(this AnimationCanvas canvas, Point ellipseCenter, Double2D ellipseRadii,
         Double2D angleRange, bool isDecorative=false)
     {
-        var arc = canvas.AddShape<Path>((Double2D)ellipseCenter - ellipseRadii, ellipseRadii * 2, isDecorative:isDecorative);
-        
-        ellipseRadii = AnimationCanvas.RelativeMeasure.ToActualObjectSize(ellipseRadii);
-        Double2D EllipsePoint(double angle)
-            => ellipseRadii * (1 + Double2D.ToCirclePoint(angle));
+        var arc = canvas.AddShape<Arc>((Double2D)ellipseCenter - ellipseRadii, ellipseRadii * 2, isDecorative:isDecorative);
+        arc.StartAngle = angleRange.X; arc.EndAngle = angleRange.Y;
 
-        var arcSegment = new ArcSegment(
-            point: EllipsePoint(angleRange.Y),
-            size: ellipseRadii, 0,
-            isLargeArc: Math.Abs(angleRange.X - angleRange.Y) >= Math.PI,
-            sweepDirection: angleRange.Y > angleRange.X ? SweepDirection.Counterclockwise : SweepDirection.Clockwise,
-            isStroked: true);
-
-        var pathFigure = new PathFigure
-        {
-            StartPoint = EllipsePoint(angleRange.X),
-            Segments = new PathSegmentCollection { arcSegment }
-        };
-
-        arc.Data = new PathGeometry(new[] { pathFigure });
-
-        return new ArcData(arc, pathFigure, arcSegment);
+        return arc;
     }
-}
-
-// Q: Preferable to make it an arc record that handles arc rotations and the like?
-internal readonly ref struct ArcData
-{
-    internal Path Path { get; init; }
-    internal readonly PathFigure Figure;
-    internal readonly ArcSegment ArcSegment;
-
-    internal ArcData(Path path, PathFigure figure, ArcSegment arcSegment)
-        { Path = path; Figure = figure; ArcSegment = arcSegment; }
 }
