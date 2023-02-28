@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Shapes;
 using Animperium.Controls;
 using Animperium.Essentials;
@@ -12,9 +13,10 @@ public class VisualMouseEventArgs<T> where T : MouseEventArgs
     public Point Start { get; internal init; }
     public Point End { get; internal init; }
     public ShapeCollection Shapes { get; internal init; } = null!;
-    public T MouseEventArgs { get; internal init; } = null!;
+    internal T MouseEventArgs { get; init; } = null!;
 
     public Rect Rect => new(Start, End);
+    public HitTestResult? HitTestResult { get; internal init; }
 }
 
 /// <summary>

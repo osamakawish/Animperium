@@ -34,6 +34,7 @@ public partial class AnimationCanvas
     internal VisualAnimationTool VisualAnimationTool { get; set; } = AnimationTools.ItemSelectTool;
     private ShapeCollection ShapeCollection { get; }
     private Point? _start;
+    private HitTestResult? _hitTestResult;
 
     public AnimationCanvas()
     {
@@ -51,8 +52,7 @@ public partial class AnimationCanvas
             bool isMouseUp = false)
                 where TMouseEventArgs : MouseEventArgs
         {
-            // Currently handling left mouse button events only. Will deal
-            // with other buttons later.
+            // Currently handling left mouse button events only. Will deal with other buttons later.
             if (!eventArgs.LeftButton.HasFlag(MouseButtonState.Pressed) && !isMouseUp) return;
 
             // Get the points relative to canvas.
@@ -61,14 +61,18 @@ public partial class AnimationCanvas
             // Get relative positions of the points.
             var point = RelativeMeasure.ToRelativeObjectPosition(point1);
             point2 = RelativeMeasure.ToRelativeObjectPosition(point2);
-
-            var rect = new Rect(point1, point2);
+            
             mouseEventReaction(new VisualMouseEventArgs<TMouseEventArgs> {
                 Start = point,
                 End = point2,
                 Shapes = ShapeCollection,
-                MouseEventArgs = eventArgs
+                MouseEventArgs = eventArgs,
+                HitTestResult = _hitTestResult ??= VisualTreeHelper.HitTest(Canvas, eventArgs.GetPosition(Canvas))
             });
+            
+            if (!isMouseUp) return;
+            _start = null;
+            _hitTestResult = null;
         }
         MouseDown += (_, e) => MouseEventBehaviour(e, VisualAnimationTool.OnDown);
         MouseMove += (_, e) => MouseEventBehaviour(e, VisualAnimationTool.OnMove);
@@ -84,7 +88,7 @@ public partial class AnimationCanvas
             // For Debugging only
             //var arc = this.AddArc(new Rect(new Point(3, 3), new Size(8, 8)), (Math.PI / 6, - 2 * Math.PI / 3));
             var arc = this.AddArc(new Point(4, 4), (4, 4), (0, Math.PI));
-            arc.Path.Stroke = Brushes.BlueViolet;
+            arc.Stroke = Brushes.BlueViolet;
 
             var rect = AddShape<Rectangle>((0, 0), (8, 8), strokeColor: Brushes.DarkRed);
 

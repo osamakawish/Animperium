@@ -26,8 +26,8 @@ public class Arc : Shape
     }
     
     public Double2D EllipseRadii {
-        get => (Width, Height);
-        set => (Width, Height) = value;
+        get => (Width / 2, Height / 2);
+        set => (Width, Height) = value * 2;
     }
 
     public Point Center {

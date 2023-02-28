@@ -104,4 +104,6 @@ public record Double2D(double X, double Y) : IAdditiveIdentity<Double2D, Double2
     /// <param name="angle"></param>
     /// <returns></returns>
     public static Double2D ToCirclePoint(double angle) => new(Math.Cos(angle), -Math.Sin(angle));
+
+    public double Sum { get; } = X + Y;
 }

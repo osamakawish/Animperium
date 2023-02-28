@@ -18,6 +18,14 @@ public class ShapeCollection : ICollection<Shape>
         SelectionRectangle = animationCanvas.AddShape<Rectangle>(relativeSize: (2, 2), isDecorative: true);
         SelectionColorTheme = new SelectionRectColorTheme(Brushes.Black, new DoubleCollection(new double[] { 2, 3, 2, 3 }));
         Panel.SetZIndex(SelectionRectangle, int.MaxValue);
+
+        const double halfPi = 0.5 * Math.PI;
+        RotationButtons = new RotationButtons(
+            new RotationArcButton(animationCanvas, new Point(0, 0), .5, 0),
+            new RotationArcButton(animationCanvas, new Point(0, 0), .5, -halfPi),
+            new RotationArcButton(animationCanvas, new Point(0, 0), .5, halfPi),
+            new RotationArcButton(animationCanvas, new Point(0, 0), .5, Math.PI)
+        );
     }
 
     private readonly HashSet<Shape> _shapes = new();
@@ -37,6 +45,8 @@ public class ShapeCollection : ICollection<Shape>
             _selectionRectColorTheme = value;
         }
     }
+
+    private RotationButtons RotationButtons { get; }
 
     internal readonly Rectangle SelectionRectangle;
 
@@ -99,11 +109,12 @@ public class ShapeCollection : ICollection<Shape>
         return true;
     }
 
-    internal void ShowRotationButtons()
-    {
+    internal void ShowRotationButtons() =>
         // Note: All rotation buttons behave effectively the same way:
         // rotate by angle between point clicked current cursor position.
-    }
+        RotationButtons.ForEach(button => button.Arc.Visibility = Visibility.Visible);
+
+    internal void HideRotationButtons() => RotationButtons.ForEach(button => button.Arc.Visibility = Visibility.Collapsed);
 }
 
 public record SelectionRectColorTheme(
@@ -112,11 +123,27 @@ public record SelectionRectColorTheme(
     double Thickness = 1.5,
     double Offset = 0);
 
-internal record RotationArcButton(AnimationCanvas Canvas, Point Center, double Radius, double BaseAngle)
+internal record RotationArcButton(
+    AnimationCanvas Canvas,
+    Point Center,
+    double Radius,
+    double BaseAngle,
+    double AngleSpan = RotationArcButton.ThreePiOverFour)
 {
-    internal Point Center { get; set; }
+    internal const double ThreePiOverFour = 3 * Math.PI / 4;
+
+    internal double AngleSpan { get; set; } = AngleSpan;
+    internal Point Center { get => Arc.Center; set => Arc.Center = value; }
+
+    internal double AdditionalAngle {
+        get => Arc.StartAngle - BaseAngle;
+        set {
+            Arc.StartAngle = BaseAngle + value;
+            Arc.EndAngle = Arc.StartAngle + AngleSpan;
+        }
+    }
+
     internal Arc Arc { get; } = Canvas.AddArc(Center, (Radius, Radius), (BaseAngle, BaseAngle + Math.PI), true);
-    internal double Angle { get; set; }
 }
 
 internal record RotationButtons(
@@ -127,17 +154,23 @@ internal record RotationButtons(
 {
     private double _additionalRotation;
 
-    private void ApplyToEach(Action<RotationArcButton> action)
+    internal void ForEach(Action<RotationArcButton> action)
         { action(TopLeft); action(TopRight); action(BottomLeft); action(BottomRight); }
 
+    // TODO: Again, handle the angle ranges here as well.
+    internal void SetRect(Rect rect)
+        => (TopLeft.Center, TopRight.Center, BottomLeft.Center, BottomRight.Center)
+        = (rect.TopLeft, rect.TopRight, rect.BottomLeft, rect.BottomRight);
+
+    // TODO: Need to handle angles based on the points.
     internal void SetPoints(Point topLeft, Point topRight, Point bottomLeft, Point bottomRight)
         => (TopLeft.Center, TopRight.Center, BottomLeft.Center, BottomRight.Center)
-            = (topLeft, topRight, bottomLeft, bottomRight);
+        = (topLeft, topRight, bottomLeft, bottomRight);
 
     internal double AdditionalRotation {
         get => _additionalRotation;
         set {
-            ApplyToEach(x => x.Angle = x.BaseAngle + value);
+            ForEach(x => x.AdditionalAngle = value);
             _additionalRotation = value;
         }
     }
