@@ -4,7 +4,8 @@ using Animperium.FileData;
 namespace Animperium.ColorThemes;
 
 public record TimelineColorTheme
-(PenStrokeData Hours,
+(
+    PenStrokeData Hours,
     PenStrokeData Minutes,
     PenStrokeData Seconds,
     PenStrokeData Frames)

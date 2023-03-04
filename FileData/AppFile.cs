@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Shapes;
 using Animperium.Graphics;
 using Animperium.Settings;
 
@@ -42,7 +43,7 @@ internal class AppFile
         }
     }
 
-    internal IGraphicsObject? SelectedObject { get; set; }
+    internal Shape? SelectedItem { get; set; }
     internal GraphicsObjectTree GraphicsObjectTree { get; } = new();
 
     public AppFile()
