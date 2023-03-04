@@ -14,6 +14,7 @@ public record struct TimeMarker(TimeDividers Divider, Line Line);
 /// </summary>
 public partial class TimelinePropertyCanvas
 {
+    // Handles purely computational component of the time markers.
     public required TimeMarkerData MarkerData { get; init; }
 
     internal AppFile AssociatedFile { get; set; }

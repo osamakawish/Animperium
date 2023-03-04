@@ -16,7 +16,9 @@ public class VisualMouseEventArgs<T> where T : MouseEventArgs
     internal T MouseEventArgs { get; init; } = null!;
 
     public Rect Rect => new(Start, End);
-    public HitTestResult? HitTestResult { get; internal init; }
+    internal HitTestResult? HitTestResult { get; init; }
+
+    public Shape? ElementHitByMouseDown => HitTestResult?.VisualHit as Shape;
 }
 
 /// <summary>

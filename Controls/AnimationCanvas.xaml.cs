@@ -25,7 +25,7 @@ public partial class AnimationCanvas
     internal static AnimationCanvas? Current { get; set; }
 
     // For quickly accessing shapes' canvases.
-    internal static readonly Dictionary<ShapeCollection, AnimationCanvas> ShapeToAssociatedCanvas = new();
+    internal static Dictionary<ShapeCollection, AnimationCanvas> ShapeToAssociatedCanvas { get; } = new();
 
     internal static RelativeMeasure2D RelativeMeasure => BaseRelativeMeasureC.Standard;
 
@@ -33,6 +33,8 @@ public partial class AnimationCanvas
 
     internal VisualAnimationTool VisualAnimationTool { get; set; } = AnimationTools.ItemSelectTool;
     private ShapeCollection ShapeCollection { get; }
+
+    // Parameters for mouse events.
     private Point? _start;
     private HitTestResult? _hitTestResult;
 
@@ -56,18 +58,21 @@ public partial class AnimationCanvas
             if (!eventArgs.LeftButton.HasFlag(MouseButtonState.Pressed) && !isMouseUp) return;
 
             // Get the points relative to canvas.
-            var point2 = eventArgs.GetPosition(Canvas);
+            var cursorPoint = eventArgs.GetPosition(Canvas);
+            var point2 = cursorPoint;
             var point1 = _start ??= point2;
             // Get relative positions of the points.
             var point = RelativeMeasure.ToRelativeObjectPosition(point1);
             point2 = RelativeMeasure.ToRelativeObjectPosition(point2);
-            
+
+            // May want to convert hit test result point hit to relative coordinates.
+            var hitTestResult = _hitTestResult ??= VisualTreeHelper.HitTest(Canvas, cursorPoint);
             mouseEventReaction(new VisualMouseEventArgs<TMouseEventArgs> {
                 Start = point,
                 End = point2,
                 Shapes = ShapeCollection,
                 MouseEventArgs = eventArgs,
-                HitTestResult = _hitTestResult ??= VisualTreeHelper.HitTest(Canvas, eventArgs.GetPosition(Canvas))
+                HitTestResult = hitTestResult
             });
             
             if (!isMouseUp) return;
@@ -86,7 +91,6 @@ public partial class AnimationCanvas
         Loaded += (_, _) =>
         {
             // For Debugging only
-            //var arc = this.AddArc(new Rect(new Point(3, 3), new Size(8, 8)), (Math.PI / 6, - 2 * Math.PI / 3));
             var arc = this.AddArc(new Point(4, 4), (4, 4), (0, Math.PI));
             arc.Stroke = Brushes.BlueViolet;
 

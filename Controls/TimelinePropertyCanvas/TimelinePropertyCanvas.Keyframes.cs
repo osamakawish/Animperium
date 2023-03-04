@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Windows.Controls;
 
 namespace Animperium.Controls.TimelinePropertyCanvas;
 
 public partial class TimelinePropertyCanvas
 {
+    private double GetLeft(uint frame) => Canvas.GetLeft(FrameMarkers[frame]);
+
+    private double GetLeft(TimeSpan timespan) => GetLeft(GetFrame(timespan));
+
     internal void AddKeyframe(TimeSpan time)
     {
         // TODO

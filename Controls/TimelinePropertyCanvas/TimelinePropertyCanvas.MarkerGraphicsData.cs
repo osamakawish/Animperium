@@ -24,6 +24,9 @@ public partial class TimelinePropertyCanvas
 {
     private Transform1D TimelineTransform { get; set; } = Transform1D.Identity;
     private AnimationTime TotalTime => MarkerData.TotalTime;
+    /// <summary>
+    /// Stores the drawn time marker line at the given frame.
+    /// </summary>
     internal Dictionary<uint, Line> FrameMarkers { get; } = new();
 
     internal TimelineColorTheme TimelineColorTheme { get; set; } = new(
@@ -82,20 +85,28 @@ public partial class TimelinePropertyCanvas
 
             var x = TimelineTransform[BaseMarkerGap * i];
 
+            void DrawMarker(TimeDividers divider, uint frame)
+            {
+                var line = new Line { X1 = 0, Y1 = 0, X2 = 0, Y2 = TimelineHeight };
+                Canvas.SetLeft(line, x); Panel.SetZIndex(line, (int)divider);
+                (line.Stroke, line.StrokeThickness) = TimelineColorTheme[divider];
+                Add(frame, divider, line, children);
+            }
+
             if (framesUntilHour == 0) {
-                DrawMarker(TimeDividers.Hours, x, i, children);
+                DrawMarker(TimeDividers.Hours, i);
                 framesUntilHour = framesPerHour;
             }
             else if (framesUntilMinute == 0) {
-                DrawMarker(TimeDividers.Minutes, x, i, children);
+                DrawMarker(TimeDividers.Minutes, i);
                 framesUntilMinute = framesPerMinute;
             }
             else if (framesUntilSecond == 0) {
-                DrawMarker(TimeDividers.Seconds, x, i, children);
+                DrawMarker(TimeDividers.Seconds, i);
                 framesUntilSecond = FramesPerSecond;
             }
             else {
-                DrawMarker(TimeDividers.Frames, x, i, children);
+                DrawMarker(TimeDividers.Frames, i);
             }
         }
     }
@@ -108,14 +119,7 @@ public partial class TimelinePropertyCanvas
     }
 
     internal void Clear() => FrameMarkers.Clear();
-
-    private void DrawMarker(TimeDividers divider, double x, uint frame, UIElementCollection children)
-    {
-        var line = new Line { X1 = 0, Y1 = 0, X2 = 0, Y2 = TimelineHeight };
-        Canvas.SetLeft(line, x); Panel.SetZIndex(line, (int)divider);
-        (line.Stroke, line.StrokeThickness) = TimelineColorTheme[divider];
-        Add(frame, divider, line, children);
-    }
+    
 
     /// <summary>
     /// Hides time dividers marked 0, and shows the ones marked 1.
@@ -135,5 +139,15 @@ public partial class TimelinePropertyCanvas
         void UpdateVisibilities(params TimeDividers[] dividers) => dividers.ToList().ForEach(UpdateVisibility);
 
         UpdateVisibilities(TimeDividers.Frames, TimeDividers.Seconds, TimeDividers.Minutes, TimeDividers.Hours);
+    }
+
+    private uint GetFrame(TimeSpan timespan)
+    {
+        var framesPerMinute = FramesPerSecond * 60;
+        var framesPerHour = framesPerMinute * 60;
+
+        return (uint)(timespan.Hours * framesPerHour
+                      + timespan.Minutes * framesPerMinute
+                      + (timespan.Seconds + timespan.Milliseconds / 1000) * FramesPerSecond);
     }
 }

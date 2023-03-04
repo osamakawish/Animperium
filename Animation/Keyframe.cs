@@ -12,3 +12,4 @@ internal record KeyframeTransition<T>(Keyframe<T> Start, Animation<T> Transition
 {
     internal Keyframe<T> End => Start.Next ?? throw new NullReferenceException();
 }
+

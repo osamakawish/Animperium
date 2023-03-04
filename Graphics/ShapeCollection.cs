@@ -48,6 +48,7 @@ public class ShapeCollection : ICollection<Shape>
 
     private RotationButtons RotationButtons { get; }
 
+    // TODO: Use SelectionRectangle class for this later.
     internal readonly Rectangle SelectionRectangle;
 
     /// <summary>
@@ -115,63 +116,4 @@ public class ShapeCollection : ICollection<Shape>
         RotationButtons.ForEach(button => button.Arc.Visibility = Visibility.Visible);
 
     internal void HideRotationButtons() => RotationButtons.ForEach(button => button.Arc.Visibility = Visibility.Collapsed);
-}
-
-public record SelectionRectColorTheme(
-    SolidColorBrush Brush,
-    DoubleCollection StrokeDashArray,
-    double Thickness = 1.5,
-    double Offset = 0);
-
-internal record RotationArcButton(
-    AnimationCanvas Canvas,
-    Point Center,
-    double Radius,
-    double BaseAngle,
-    double AngleSpan = RotationArcButton.ThreePiOverFour)
-{
-    internal const double ThreePiOverFour = 3 * Math.PI / 4;
-
-    internal double AngleSpan { get; set; } = AngleSpan;
-    internal Point Center { get => Arc.Center; set => Arc.Center = value; }
-
-    internal double AdditionalAngle {
-        get => Arc.StartAngle - BaseAngle;
-        set {
-            Arc.StartAngle = BaseAngle + value;
-            Arc.EndAngle = Arc.StartAngle + AngleSpan;
-        }
-    }
-
-    internal Arc Arc { get; } = Canvas.AddArc(Center, (Radius, Radius), (BaseAngle, BaseAngle + Math.PI), true);
-}
-
-internal record RotationButtons(
-    RotationArcButton TopLeft,
-    RotationArcButton TopRight,
-    RotationArcButton BottomLeft,
-    RotationArcButton BottomRight)
-{
-    private double _additionalRotation;
-
-    internal void ForEach(Action<RotationArcButton> action)
-        { action(TopLeft); action(TopRight); action(BottomLeft); action(BottomRight); }
-
-    // TODO: Again, handle the angle ranges here as well.
-    internal void SetRect(Rect rect)
-        => (TopLeft.Center, TopRight.Center, BottomLeft.Center, BottomRight.Center)
-        = (rect.TopLeft, rect.TopRight, rect.BottomLeft, rect.BottomRight);
-
-    // TODO: Need to handle angles based on the points.
-    internal void SetPoints(Point topLeft, Point topRight, Point bottomLeft, Point bottomRight)
-        => (TopLeft.Center, TopRight.Center, BottomLeft.Center, BottomRight.Center)
-        = (topLeft, topRight, bottomLeft, bottomRight);
-
-    internal double AdditionalRotation {
-        get => _additionalRotation;
-        set {
-            ForEach(x => x.AdditionalAngle = value);
-            _additionalRotation = value;
-        }
-    }
 }
