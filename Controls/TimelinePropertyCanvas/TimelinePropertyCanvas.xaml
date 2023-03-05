@@ -10,13 +10,19 @@
             <RowDefinition Height="32"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        
-        <Canvas x:Name="KeyframeCanvas" Grid.RowSpan="2">
-
-        </Canvas>
 
         <Canvas x:Name="TimelineCanvas" Grid.Row="0">
             <Line Canvas.Left="15" X1="0" Y1="0" X2="0" Y2="32" StrokeThickness="5" Stroke="Black"/>
+        </Canvas>
+
+        <Canvas x:Name="KeyframeCanvas" Grid.Row="0" Grid.RowSpan="2">
+            <Ellipse Canvas.Top="45" Canvas.Left="80" Stroke="Black " Width="15" Height="15"/>
+
+            <Path x:Name="Path2" Canvas.Left="120" Canvas.Top="120" Stroke="Black">
+                <Path.Data>
+                    <EllipseGeometry Center="0,0" RadiusX="15" RadiusY="15"/>
+                </Path.Data>
+            </Path>
         </Canvas>
     </Grid>
 </UserControl>

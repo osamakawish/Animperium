@@ -102,7 +102,7 @@ public partial class AnimationCanvas
     }
 
     /// <summary>
-    /// 
+    /// Creates a shape of the given type, and adds it to the canvas.
     /// </summary>
     /// <typeparam name="TShape"></typeparam>
     /// <param name="relativePosition"></param>
@@ -131,6 +131,20 @@ public partial class AnimationCanvas
         // Implement parameters and fields into shape.
         TShape shape = new() { StrokeThickness = strokeThickness, Stroke = strokeColor, Fill = fillColor };
 
+        AddShape(shape, relativePosition, relativeSize, isDecorative);
+
+        return shape;
+    }
+
+    /// <summary>
+    /// Adds a predefined shape to the canvas.
+    /// </summary>
+    /// <param name="shape"></param>
+    /// <param name="relativePosition"></param>
+    /// <param name="relativeSize"></param>
+    /// <param name="isDecorative"></param>
+    public void AddShape(Shape shape, Double2D relativePosition, Double2D relativeSize, bool isDecorative = false)
+    {
         if (!isDecorative) {
             _shapes[shape] = (relativePosition, relativeSize);
             ShapeCollection.Add(shape);
@@ -143,8 +157,6 @@ public partial class AnimationCanvas
 
         // Add object to canvas.
         Canvas.Children.Add(shape);
-
-        return shape;
     }
 
     /// <summary>

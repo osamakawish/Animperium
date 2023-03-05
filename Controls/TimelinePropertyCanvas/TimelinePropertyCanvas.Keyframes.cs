@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Animperium.Controls.TimelinePropertyCanvas;
 
@@ -9,9 +12,20 @@ public partial class TimelinePropertyCanvas
 
     private double GetLeft(TimeSpan timespan) => GetLeft(GetFrame(timespan));
 
-    internal void AddKeyframe(TimeSpan time)
+    private static Path ConstantKeyframe => new() {
+        StrokeThickness = 1,
+        Stroke = Brushes.DarkRed,
+        Fill = Brushes.DarkOrange
+    };
+
+    internal void AddKeyframe(KeyframeType keyframeType, TimeSpan time)
     {
         // TODO
+        var kf = ConstantKeyframe;
+        KeyframeCanvas.Children.Add(kf);
+        Canvas.SetLeft(kf, GetLeft(time)); Canvas.SetTop(kf, 64);
+        kf.Data = new EllipseGeometry(new Point(0, 0), 6, 6);
+        Panel.SetZIndex(kf, 20);
     }
 
     internal void RemoveKeyframe(TimeSpan time)
@@ -29,3 +43,5 @@ public partial class TimelinePropertyCanvas
         // TODO
     }
 }
+
+public enum KeyframeType : byte { Constant = 0, Linear = 1, Quadratic = 2, Cubic = 3, Custom = 255 }

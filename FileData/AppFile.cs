@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Animperium.Graphics;
 using Animperium.Settings;
@@ -19,6 +21,13 @@ internal class AppFile
     private AnimationTime _totalTime = FileSettings.Default.AnimationTime;
 
     internal DoubleTolerance DoubleTolerance = FileSettings.Default.Tolerance;
+
+    internal List<Storyboard> Storyboards { get; } = new() { new Storyboard() };
+    private int _currentStoryboardIndex;
+
+    internal Storyboard CurrentStoryboard => Storyboards[_currentStoryboardIndex];
+    internal Storyboard GoToNextStoryboard() => Storyboards[++_currentStoryboardIndex % Storyboards.Count];
+    internal Storyboard GoToPreviousStoryboard() => Storyboards[--_currentStoryboardIndex % Storyboards.Count];
 
     internal byte FramesPerSecond
     {

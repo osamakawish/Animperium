@@ -1,5 +1,10 @@
-﻿using System.Windows;
+﻿using System;
+using System.Threading;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Shapes;
 using Animperium.Graphics;
 
 namespace Animperium;
@@ -21,28 +26,34 @@ public partial class MainWindow
         WindowState = WindowState.Maximized;
         ToolView.ToolChanged += (_, tool) => AnimationCanvas.VisualAnimationTool = tool;
 
-        //TestAnimate();
+        Loaded += (_, _) => TestAnimate();
     }
 
-    //private void TestAnimate()
-    //{
-    //    // Create rectangle on canvas.
-    //    var rect = new Rectangle
-    //    {
-    //        Name = "Rect",
-    //        Width = 200,
-    //        Height = 80,
-    //        Fill = Brushes.Brown
-    //    };
-    //    RegisterName(rect.Name, rect);
-    //    MainCanvas.Children.Add(rect);
-    //    Canvas.SetLeft(rect, 110); Canvas.SetTop(rect, 43);
+    private void TestAnimate()
+    {
+        // Create rectangle on canvas.
+        var rect = new Rectangle
+        {
+            Name = "Rect",
+            Width = 200,
+            Height = 80,
+            Fill = Brushes.Brown
+        };
+        RegisterName(rect.Name, rect);
+        AnimationCanvas.AddShape(rect, (0, 0), (4, 4));
 
-    //    // Add animation to the storyboard
-    //    var doubleAnim = new DoubleAnimation(43, 166d, new Duration(TimeSpan.FromSeconds(5)));
-    //    _storyboard.Children.Add(doubleAnim);
-    //    Storyboard.SetTarget(doubleAnim, rect);
-    //    Storyboard.SetTargetProperty(doubleAnim, new PropertyPath(Canvas.TopProperty));
-    //    rect.Loaded += (_, _) => _storyboard.Begin(this);
-    //}
+        // Add animation to the storyboard
+        var doubleAnim = new DoubleAnimation(43, 266d, new Duration(TimeSpan.FromSeconds(5)));
+        _storyboard.Children.Add(doubleAnim);
+        Storyboard.SetTarget(doubleAnim, rect);
+        Storyboard.SetTargetProperty(doubleAnim, new PropertyPath(Canvas.TopProperty));
+        rect.Loaded += delegate
+        {
+            _storyboard.Begin(this, true);
+            _storyboard.Pause(this);
+
+            // Jump to 2 seconds in.
+            _storyboard.SeekAlignedToLastTick(this, TimeSpan.FromSeconds(2), TimeSeekOrigin.BeginTime);
+        };
+    }
 }

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Animperium.FileData;
 using Animperium.Settings;
@@ -18,7 +21,26 @@ public partial class TimelinePropertyCanvas
     public required TimeMarkerData MarkerData { get; init; }
 
     internal AppFile AssociatedFile { get; set; }
-    public uint CurrentFrame { get; internal set; }
+    internal Storyboard CurrentStoryboard => AssociatedFile.CurrentStoryboard;
+
+    private Line _currentFrameLine { get; } = new() {
+        StrokeThickness = 1.25,
+        StrokeDashArray = new DoubleCollection(new double[] { 2, 3 }),
+        Stroke = Brushes.Black,
+    };
+    private uint _currentFrame;
+    public uint CurrentFrame {
+        get => _currentFrame;
+        internal set {
+            // Move current frame line.
+            Canvas.SetLeft(_currentFrameLine, GetLeft(value));
+
+            // Move storyboard to given frame.
+            //CurrentStoryboard.Begin();
+
+            _currentFrame = value;
+        }
+    }
 
     private byte _framesPerSecond = FileSettings.Default.AnimationTime.FramesPerSecond;
 
@@ -27,7 +49,8 @@ public partial class TimelinePropertyCanvas
         set {
             if (_framesPerSecond == value) return;
 
-            void RemoveMarkers(IEnumerable<Line> lines) => lines.ToList().ForEach(TimelineCanvas.Children.Remove);
+            void RemoveMarkers(IEnumerable<Line> lines)
+                => lines.ToList().ForEach(TimelineCanvas.Children.Remove);
             RemoveMarkers(FrameMarkers.Select(x => x.Value));
 
             MarkerData.Clear();
@@ -58,7 +81,13 @@ public partial class TimelinePropertyCanvas
         AssociatedFile.FramesPerSecondChanged += (_, b) => FramesPerSecond = b;
         AssociatedFile.TotalTimeChanged += (_, t) => MarkerData.TotalTime = t;
 
-        Loaded += (_, _) => DrawTimeMarkers();
+        TimelineCanvas.Children.Add(_currentFrameLine);
+
+        Loaded += delegate
+        {
+            DrawTimeMarkers();
+            AddKeyframe(KeyframeType.Constant, TimeSpan.FromSeconds(30));
+        };
     }
 
     private void UpdateTimelineLocation()
