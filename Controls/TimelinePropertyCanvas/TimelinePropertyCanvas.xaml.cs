@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -23,17 +24,18 @@ public partial class TimelinePropertyCanvas
     internal AppFile AssociatedFile { get; set; }
     internal Storyboard CurrentStoryboard => AssociatedFile.CurrentStoryboard;
 
-    private Line _currentFrameLine { get; } = new() {
-        StrokeThickness = 1.25,
+    private Path CurrentFrameLine { get; } = new() {
+        StrokeThickness = 1.5,
         StrokeDashArray = new DoubleCollection(new double[] { 2, 3 }),
         Stroke = Brushes.Black,
+        Data = new LineGeometry(new Point(0, 0), new Point(0, 800))
     };
     private uint _currentFrame;
     public uint CurrentFrame {
         get => _currentFrame;
         internal set {
             // Move current frame line.
-            Canvas.SetLeft(_currentFrameLine, GetLeft(value));
+            Canvas.SetLeft(CurrentFrameLine, GetLeft(value));
 
             // Move storyboard to given frame.
             //CurrentStoryboard.Begin();
@@ -81,14 +83,18 @@ public partial class TimelinePropertyCanvas
         AssociatedFile.FramesPerSecondChanged += (_, b) => FramesPerSecond = b;
         AssociatedFile.TotalTimeChanged += (_, t) => MarkerData.TotalTime = t;
 
-        TimelineCanvas.Children.Add(_currentFrameLine);
+        TimelineCanvas.Children.Add(CurrentFrameLine);
+        Panel.SetZIndex(CurrentFrameLine, int.MaxValue - 1);
 
         Loaded += delegate
         {
             DrawTimeMarkers();
             AddKeyframe(KeyframeType.Constant, TimeSpan.FromSeconds(30));
+            CurrentFrame = ToFrame(TimeSpan.FromSeconds(20));
         };
     }
+
+    private uint ToFrame(TimeSpan timeSpan) => (uint)(timeSpan.TotalSeconds * FramesPerSecond);
 
     private void UpdateTimelineLocation()
     {

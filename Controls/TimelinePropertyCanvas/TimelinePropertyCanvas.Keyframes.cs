@@ -20,12 +20,13 @@ public partial class TimelinePropertyCanvas
 
     internal void AddKeyframe(KeyframeType keyframeType, TimeSpan time)
     {
-        // TODO
-        var kf = ConstantKeyframe;
-        KeyframeCanvas.Children.Add(kf);
-        Canvas.SetLeft(kf, GetLeft(time)); Canvas.SetTop(kf, 64);
-        kf.Data = new EllipseGeometry(new Point(0, 0), 6, 6);
-        Panel.SetZIndex(kf, 20);
+        var constantKeyframe = ConstantKeyframe;
+        KeyframeCanvas.Children.Add(constantKeyframe);
+        Canvas.SetLeft(constantKeyframe, GetLeft(time));
+        Canvas.SetTop(constantKeyframe, 64); // Modify top value as needed.
+        constantKeyframe.Data = new EllipseGeometry(new Point(0, 0), 6, 6);
+        Panel.SetZIndex(constantKeyframe, 20);
+        
     }
 
     internal void RemoveKeyframe(TimeSpan time)
