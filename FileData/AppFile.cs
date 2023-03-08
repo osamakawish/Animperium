@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using Animperium.Essentials;
 using Animperium.Graphics;
 using Animperium.Settings;
 
@@ -16,26 +19,31 @@ internal class AppFile
 
     internal EventHandler<AnimationTime>? TotalTimeChanged;
     internal EventHandler<byte>? FramesPerSecondChanged;
-
-    private byte _framesPerSecond = FileSettings.Default.AnimationTime.FramesPerSecond;
-    private AnimationTime _totalTime = FileSettings.Default.AnimationTime;
+    
+    private AnimationTime _totalTime;
 
     internal DoubleTolerance DoubleTolerance = FileSettings.Default.Tolerance;
 
-    internal List<Storyboard> Storyboards { get; } = new() { new Storyboard() };
+    private readonly List<AnimationProperties> _animationProperties;
     private int _currentStoryboardIndex;
 
-    internal Storyboard CurrentStoryboard => Storyboards[_currentStoryboardIndex];
-    internal Storyboard GoToNextStoryboard() => Storyboards[++_currentStoryboardIndex % Storyboards.Count];
-    internal Storyboard GoToPreviousStoryboard() => Storyboards[--_currentStoryboardIndex % Storyboards.Count];
+    internal ReadOnlyCollection<AnimationProperties> AnimationProperties => _animationProperties.AsReadOnly();
+    internal ReadOnlyCollection<Storyboard> Storyboards
+        => _animationProperties.Select(x => x.Storyboard).ToList().AsReadOnly();
+
+    internal Storyboard CurrentStoryboard => AnimationProperties[_currentStoryboardIndex].Storyboard;
+    internal Storyboard GoToNextStoryboard()
+        => AnimationProperties[++_currentStoryboardIndex % AnimationProperties.Count].Storyboard;
+    internal Storyboard GoToPreviousStoryboard()
+        => AnimationProperties[--_currentStoryboardIndex % AnimationProperties.Count].Storyboard;
 
     internal byte FramesPerSecond
     {
-        get => _framesPerSecond;
+        get => _totalTime.FramesPerSecond;
         set
         {
-            if (_framesPerSecond == value) return;
-            _framesPerSecond = value;
+            if (_totalTime.FramesPerSecond == value) return;
+            _totalTime.FramesPerSecond = value;
             FramesPerSecondChanged?.Invoke(this, value);
         }
     }
@@ -57,9 +65,13 @@ internal class AppFile
 
     public AppFile()
     {
-        
+        _totalTime = AppSettings.Default.AnimationTime;
+        _animationProperties = new List<AnimationProperties> { new() };
     }
 
     public AppFile(byte framesPerSecond, AnimationTime animationTime)
-    { _framesPerSecond = framesPerSecond; _totalTime = animationTime; }
+    {
+        _totalTime = animationTime;
+        _animationProperties = new List<AnimationProperties> { new() };
+    }
 }

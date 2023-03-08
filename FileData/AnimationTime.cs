@@ -57,6 +57,9 @@ public record struct AnimationTime
         }
     }
 
+    public static implicit operator AnimationTime(TimeSpan time)
+        => new((byte)time.Hours, (byte)time.Minutes, (byte)time.Seconds, 0);
+
     public override string ToString() 
         => $"AnimationTime[{FramesPerSecond}]({Hours}: {Minutes}: {Seconds}; {Frames})" +
            $"{(HasLegalInputs ? string.Empty : "?")}";

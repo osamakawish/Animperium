@@ -21,6 +21,8 @@ internal class AnimationProperties : ICollection<AnimationProperty>
     private readonly PropertyAnimationDictionary _dictionary = new();
     private readonly HashSet<AnimationProperty> _set = new();
 
+    internal Storyboard Storyboard { get; } = new();
+
     public IEnumerator<AnimationProperty> GetEnumerator()
         => _dictionary.SelectMany(x => x.Value
             .Select(y => new AnimationProperty(x.Key, y.Key, y.Value)))
@@ -36,12 +38,10 @@ internal class AnimationProperties : ICollection<AnimationProperty>
         _dictionary[shape].Add(property, animation);
         _set.Add(new AnimationProperty(shape, property, animation));
     }
+
     public void Add(AnimationProperty item) => Add(item.Shape, item.Property, item.Animation);
 
-    public void Clear()
-    {
-        _dictionary.Clear(); 
-    }
+    public void Clear() { _dictionary.Clear(); _set.Clear(); }
 
     public bool Contains(AnimationProperty item)
         => _dictionary.ContainsKey(item.Shape)
@@ -53,6 +53,7 @@ internal class AnimationProperties : ICollection<AnimationProperty>
         foreach (var property in this)
             if (arrayIndex <= array.Length) array[arrayIndex++] = property;
     }
+
     public bool Remove(AnimationProperty item)
     {
         if (!_set.Contains(item)) return false;
@@ -66,18 +67,16 @@ internal class AnimationProperties : ICollection<AnimationProperty>
         return true;
     }
 
-    public int Count => _dictionary.Values.Sum(animation => animation.Count);
+    public int Count => _set.Count;
 
     public void ForEach(Action<AnimationProperty> action)
     { foreach (var animationProperty in _set) action(animationProperty); }
 
     public void ForEach(Action<Shape, DependencyProperty,  AnimationTimeline> action)
     {
-        foreach (var (shape, animationTimelines) in _dictionary) {
-            foreach (var (property, animation) in animationTimelines) {
-                action(shape, property, animation);
-            }
-        }
+        foreach (var (shape, animationTimelines) in _dictionary)
+        foreach (var (property, animation) in animationTimelines)
+            action(shape, property, animation);
     }
 
     public bool IsReadOnly => false;
