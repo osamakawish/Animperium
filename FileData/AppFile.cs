@@ -24,18 +24,18 @@ internal class AppFile
 
     internal DoubleTolerance DoubleTolerance = FileSettings.Default.Tolerance;
 
-    private readonly List<AnimationProperties> _animationProperties;
+    private readonly List<StoryboardAnimation> _animationProperties;
     private int _currentStoryboardIndex;
 
-    internal ReadOnlyCollection<AnimationProperties> AnimationProperties => _animationProperties.AsReadOnly();
+    internal ReadOnlyCollection<StoryboardAnimation> StoryboardAnimation { get; }
     internal ReadOnlyCollection<Storyboard> Storyboards
         => _animationProperties.Select(x => x.Storyboard).ToList().AsReadOnly();
 
-    internal Storyboard CurrentStoryboard => AnimationProperties[_currentStoryboardIndex].Storyboard;
+    internal Storyboard CurrentStoryboard => StoryboardAnimation[_currentStoryboardIndex].Storyboard;
     internal Storyboard GoToNextStoryboard()
-        => AnimationProperties[++_currentStoryboardIndex % AnimationProperties.Count].Storyboard;
+        => StoryboardAnimation[++_currentStoryboardIndex % StoryboardAnimation.Count].Storyboard;
     internal Storyboard GoToPreviousStoryboard()
-        => AnimationProperties[--_currentStoryboardIndex % AnimationProperties.Count].Storyboard;
+        => StoryboardAnimation[--_currentStoryboardIndex % StoryboardAnimation.Count].Storyboard;
 
     internal byte FramesPerSecond
     {
@@ -66,12 +66,14 @@ internal class AppFile
     public AppFile()
     {
         _totalTime = AppSettings.Default.AnimationTime;
-        _animationProperties = new List<AnimationProperties> { new() };
+        _animationProperties = new List<StoryboardAnimation> { new() };
+        StoryboardAnimation = new ReadOnlyCollection<StoryboardAnimation>(_animationProperties);
     }
 
     public AppFile(byte framesPerSecond, AnimationTime animationTime)
     {
         _totalTime = animationTime;
-        _animationProperties = new List<AnimationProperties> { new() };
+        _animationProperties = new List<StoryboardAnimation> { new() };
+        StoryboardAnimation = new ReadOnlyCollection<StoryboardAnimation>(_animationProperties);
     }
 }

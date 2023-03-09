@@ -29,6 +29,9 @@ public partial class MainWindow
         Loaded += (_, _) => TestAnimate();
     }
 
+    /// <summary>
+    /// Do NOT delete this method. It covers a basic example regarding how to implement animations.
+    /// </summary>
     private void TestAnimate()
     {
         // Create rectangle on canvas.
