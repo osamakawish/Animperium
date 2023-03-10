@@ -37,12 +37,12 @@ public partial class MainWindow
         // Create rectangle on canvas.
         var rect = new Rectangle
         {
-            Name = "Rect",
+            //Name = "Rect", // Line not required
             Width = 200,
             Height = 80,
             Fill = Brushes.Brown
         };
-        RegisterName(rect.Name, rect);
+        //RegisterName(rect.Name, rect); // Line not required.
         AnimationCanvas.AddShape(rect, (0, 0), (4, 4));
 
         // Add animation to the storyboard
@@ -53,10 +53,10 @@ public partial class MainWindow
         rect.Loaded += delegate
         {
             _storyboard.Begin(this, true);
-            _storyboard.Pause(this);
+            //_storyboard.Pause(this);
 
             // Jump to 2 seconds in.
-            _storyboard.SeekAlignedToLastTick(this, TimeSpan.FromSeconds(2), TimeSeekOrigin.BeginTime);
+            //_storyboard.SeekAlignedToLastTick(this, TimeSpan.FromSeconds(2), TimeSeekOrigin.BeginTime);
         };
     }
 }

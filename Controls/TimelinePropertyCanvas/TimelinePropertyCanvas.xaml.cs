@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
@@ -95,10 +96,25 @@ public partial class TimelinePropertyCanvas
     }
 
     private uint ToFrame(TimeSpan timeSpan) => (uint)(timeSpan.TotalSeconds * FramesPerSecond);
+    private TimeSpan ToTimeSpan(uint frame) => TimeSpan.FromSeconds((double)frame / FramesPerSecond);
+
+    /// <summary>
+    /// Retrieves one of the nearest frames with provided <see cref="Canvas.GetLeft"/> result. Very close to actual nearest.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <returns></returns>
+    private uint NearestFrameFromLeft(double left) => (uint)(TimelineTransform.Inverse[left] / BaseMarkerGap);
 
     private void UpdateTimelineLocation()
     {
         // TODO
+    }
+
+    protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+    {
+        base.OnMouseLeftButtonDown(e);
+        
+        CurrentFrame = NearestFrameFromLeft(e.GetPosition(this).X);
     }
 
     // Better to have a keyframe as input instead.

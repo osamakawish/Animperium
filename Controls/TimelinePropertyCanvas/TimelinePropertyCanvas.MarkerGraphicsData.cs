@@ -56,7 +56,9 @@ public partial class TimelinePropertyCanvas
             if (value < BaseMarkerGap) return;
             if (Math.Abs(value - _frameMarkerGap) < 1 + Tolerance) return;
 
-            // TODO: Update Frame Marker Locations
+            // May be SLOW.
+            Clear(); 
+            DrawTimeMarkers();
 
             _frameMarkerGap = value;
         }
@@ -74,8 +76,6 @@ public partial class TimelinePropertyCanvas
         var framesUntilMinute = framesPerMinute;
         var framesUntilHour = framesPerHour;
 
-        var children = TimelineCanvas.Children;
-
         for (uint i = 0; i < TotalTime.TotalFrames; i++) {
             --framesUntilSecond;
             --framesUntilMinute;
@@ -90,7 +90,7 @@ public partial class TimelinePropertyCanvas
                 var line = new Line { X1 = 0, Y1 = 0, X2 = 0, Y2 = TimelineHeight };
                 Canvas.SetLeft(line, x); Panel.SetZIndex(line, (int)divider);
                 (line.Stroke, line.StrokeThickness) = TimelineColorTheme[divider];
-                Add(frame, divider, line, children);
+                Add(frame, divider, line);
             }
 
             if (framesUntilHour == 0) {
@@ -111,15 +111,20 @@ public partial class TimelinePropertyCanvas
         }
     }
 
-    internal void Add(uint frame, TimeDividers divider, Line line, UIElementCollection childCollection)
+    internal void Add(uint frame, TimeDividers divider, Line line)
     {
         MarkerData.Add(frame, divider);
         FrameMarkers.Add(frame, line);
-        childCollection.Add(line);
+        TimelineCanvas.Children.Add(line);
     }
 
-    internal void Clear() => FrameMarkers.Clear();
-    
+    internal void Clear()
+    {
+        FrameMarkers.Values.ToList()
+            .ForEach(TimelineCanvas.Children.Remove);
+        FrameMarkers.Clear();
+    }
+
 
     /// <summary>
     /// Hides time dividers marked 0, and shows the ones marked 1.
