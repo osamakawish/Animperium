@@ -22,7 +22,7 @@ public partial class MainWindow
     public MainWindow()
     {
         InitializeComponent();
-
+        
         WindowState = WindowState.Maximized;
         ToolView.ToolChanged += (_, tool) => AnimationCanvas.VisualAnimationTool = tool;
 

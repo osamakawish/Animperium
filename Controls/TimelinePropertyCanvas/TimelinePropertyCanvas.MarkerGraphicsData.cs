@@ -105,9 +105,8 @@ public partial class TimelinePropertyCanvas
                 DrawMarker(TimeDividers.Seconds, i);
                 framesUntilSecond = FramesPerSecond;
             }
-            else {
+            else
                 DrawMarker(TimeDividers.Frames, i);
-            }
         }
     }
 

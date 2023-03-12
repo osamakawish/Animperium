@@ -51,7 +51,9 @@
             <Path Data="M-7, -8 L-20,-16 -20,0 z" Fill="#222" Height="18" Stretch="Fill" Width="14"/>
         </Button>
 
-        <timelinePropertyCanvas:TimelinePropertyCanvas Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Background="Aquamarine"/>
+        <timelinePropertyCanvas:TimelinePropertyCanvas 
+            x:Name="TimelinePropertyCanvas"
+            Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Background="Aquamarine"/>
 
         <Border Grid.Row="0" Grid.ColumnSpan="4" Grid.Column="0" BorderThickness="0,0,0,1" BorderBrush="Black"/>
 
@@ -80,5 +82,20 @@
             <StackPanel x:Name="AnimationPropertyMins" Grid.Column="1" Grid.Row="1"/>
             <StackPanel x:Name="AnimationPropertyMaxs" Grid.Column="2" Grid.Row="1"/>
         </Grid>
+
+        <StackPanel Grid.Row="1" Grid.Column="1">
+            <StackPanel.Resources>
+                <Style TargetType="ToggleButton">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Style>
+            </StackPanel.Resources>
+            <ToggleButton x:Name="ConstantToggleButton" Width="32" Height="32" ToolTip="Constant" IsChecked="True">
+                <Path Stroke="Black" Data="M -9,-6 L 0,3 9,-6"/>
+            </ToggleButton>
+            <ToggleButton x:Name="LinearToggleButton" Width="32" Height="32" ToolTip="Linear"/>
+            <ToggleButton x:Name="QuadraticToggleButton" Width="32" Height="32" ToolTip="Quadratic"/>
+            <ToggleButton x:Name="CubicToggleButton" Width="32" Height="32" ToolTip="Cubic"/>
+            <ToggleButton x:Name="CustomToggleButton" Width="32" Height="32" ToolTip="Custom"/>
+        </StackPanel>
     </Grid>
 </UserControl>

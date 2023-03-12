@@ -66,7 +66,7 @@ public partial class TimelinePropertyCanvas
         }
     }
 
-    public TimeSpan CurrentTime => TimeSpan.FromSeconds((double)CurrentFrame / FramesPerSecond);
+    public TimeSpan CurrentTime => ToTimeSpan(CurrentFrame);
     public TimelineLocation TimelinePosition { get; private set; } = TimelineLocation.FullTimeline;
 
 
