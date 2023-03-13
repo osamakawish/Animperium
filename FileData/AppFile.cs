@@ -62,6 +62,7 @@ internal class AppFile
 
     internal Shape? SelectedItem { get; set; }
     internal GraphicsObjectTree GraphicsObjectTree { get; } = new();
+    public Double2D DoubleRange { get; set; } = new(-4000, 4000);
 
     public AppFile()
     {

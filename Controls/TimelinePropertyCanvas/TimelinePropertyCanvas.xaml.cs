@@ -90,8 +90,8 @@ public partial class TimelinePropertyCanvas
         Loaded += delegate
         {
             DrawTimeMarkers();
-            AddKeyframe(KeyframeType.Constant, TimeSpan.FromSeconds(30));
             CurrentFrame = ToFrame(TimeSpan.FromSeconds(20));
+            AddKeyframe(KeyframeType.Constant);
         };
     }
 

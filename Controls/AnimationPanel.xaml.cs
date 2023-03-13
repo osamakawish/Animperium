@@ -25,9 +25,6 @@ public partial class AnimationPanel
         }
     }
 
-    private Dictionary<KeyframeType, Geometry> KeyframeIconInsides { get; } = new();
-    private Dictionary<KeyframeType, Geometry> KeyframeIconOutsides { get; } = new();
-
     private Dictionary<ToggleButton, KeyframeType> ToggleButtonKeyframes { get; }
 
     public AnimationPanel()
@@ -76,18 +73,20 @@ public partial class AnimationPanel
 
             button.Content = canvas;
         }
+
+        CustomToggleButton.IsEnabled = false;
     }
 
     private static Geometry GetButtonIconInner(KeyframeType keyframeType)
         => keyframeType switch {
-            KeyframeType.Constant  => new LineGeometry(new Point(-10, 0), new Point(10, 0)),
-            KeyframeType.Linear    => new LineGeometry(new Point(-10, 10), new Point(10, -10)),
-            KeyframeType.Quadratic => Geometry.Parse("M -8,-10 Q 0,16 8,-10"),
-            KeyframeType.Cubic     => Geometry.Parse("M -9,10 C -3,-24 1,24 9,-10"),
-            KeyframeType.Custom    => Geometry.Parse("M -9,-6 L 0,3 9,-6"),
+            KeyframeType.Constant  => new LineGeometry(new Point(-8, 0), new Point(8, 0)),
+            KeyframeType.Linear    => new LineGeometry(new Point(-8, 8), new Point(8, -8)),
+            KeyframeType.Quadratic => Geometry.Parse("M -8,-8 Q 0,12 8,-8"),
+            KeyframeType.Cubic     => Geometry.Parse("M -8,8 C -3,-20 1,20 8,-8"),
+            KeyframeType.Custom    => Geometry.Parse("M -8,-6 L 0,3 8,-6"),
             _ => throw new ArgumentOutOfRangeException(nameof(keyframeType), keyframeType, null)
         };
 
     private static Geometry GetButtonIconOuter(KeyframeType keyframeType)
-        => new RectangleGeometry(new Rect(new Point(-10, -10), new Point(10, 10)));
+        => new RectangleGeometry(new Rect(new Point(-8, -8), new Point(8, 8)));
 }

@@ -105,5 +105,13 @@ public record Double2D(double X, double Y) : IAdditiveIdentity<Double2D, Double2
     /// <returns></returns>
     public static Double2D ToCirclePoint(double angle) => new(Math.Cos(angle), -Math.Sin(angle));
 
+    public bool BetweenXAndY(double value) => X <= value && value <= Y;
+
+    /// <summary>
+    /// </summary>
+    /// <param name="dFunc"></param>
+    /// <returns>A new instance with <see cref="dFunc"/> applied to this <see cref="Double2D"/>.</returns>
+    public Double2D With(Func<double, double> dFunc) => new(dFunc(X), dFunc(Y));
+
     public double Sum { get; } = X + Y;
 }

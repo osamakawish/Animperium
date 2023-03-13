@@ -145,13 +145,5 @@ public partial class TimelinePropertyCanvas
         UpdateVisibilities(TimeDividers.Frames, TimeDividers.Seconds, TimeDividers.Minutes, TimeDividers.Hours);
     }
 
-    private uint GetFrame(TimeSpan timespan)
-    {
-        var framesPerMinute = FramesPerSecond * 60;
-        var framesPerHour = framesPerMinute * 60;
-
-        return (uint)(timespan.Hours * framesPerHour
-                      + timespan.Minutes * framesPerMinute
-                      + (timespan.Seconds + timespan.Milliseconds / 1000) * FramesPerSecond);
-    }
+    private uint GetFrame(TimeSpan timespan) => (uint)(timespan.TotalSeconds * FramesPerSecond);
 }

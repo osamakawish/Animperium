@@ -12,8 +12,9 @@ public record struct Mapping<T>(T From, T To);
 
 public record Transform1D(double Scale = 1, double Shift = 0, double Origin = 0)
 {
-    public static Transform1D InvalidTransform => new(double.NaN, double.NaN, double.NaN);
-    public static Transform1D Identity => new();
+    public static Transform1D InvalidTransform { get; } = new(double.NaN, double.NaN, double.NaN);
+
+    public static Transform1D Identity { get; } = new();
 
     public static Transform1D FromMapping(
         DoubleMapping map1,
