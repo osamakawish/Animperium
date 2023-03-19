@@ -9,9 +9,9 @@ using System.Windows.Shapes;
 namespace Animperium.Essentials;
 
 using PropertyAnimationDictionary
-    = Dictionary<Shape, Dictionary<DependencyProperty, AnimationTimeline>>;
-
-internal record PropertyAnimation(Shape Shape, DependencyProperty Property, AnimationTimeline Animation);
+    = Dictionary<Shape,
+        Dictionary<DependencyProperty,
+            AnimationTimeline>>;
 
 /// <summary>
 /// Handles the properties of items on a canvas that are being animated.
@@ -88,7 +88,7 @@ internal class StoryboardAnimation : ICollection<PropertyAnimation>
     public void ForEach(Action<PropertyAnimation> action)
     { foreach (var animationProperty in _set) action(animationProperty); }
 
-    public void ForEach(Action<Shape, DependencyProperty,  AnimationTimeline> action)
+    public void ForEach(Action<Shape, DependencyProperty, AnimationTimeline> action)
     {
         foreach (var (shape, animationTimelines) in _dictionary)
         foreach (var (property, animation) in animationTimelines)

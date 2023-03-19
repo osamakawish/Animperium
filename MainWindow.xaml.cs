@@ -45,11 +45,17 @@ public partial class MainWindow
         //RegisterName(rect.Name, rect); // Line not required.
         AnimationCanvas.AddShape(rect, (0, 0), (4, 4));
 
-        // Add animation to the storyboard
-        var doubleAnim = new DoubleAnimation(43, 266d, new Duration(TimeSpan.FromSeconds(5)));
-        _storyboard.Children.Add(doubleAnim);
-        Storyboard.SetTarget(doubleAnim, rect);
-        Storyboard.SetTargetProperty(doubleAnim, new PropertyPath(Canvas.TopProperty));
+        // Add animation to the storyboard -> Switch to this approach in StoryboardAnimation.cs
+        var doubleAnimationUsingKeyFrames = new DoubleAnimationUsingKeyFrames {
+            KeyFrames = new DoubleKeyFrameCollection {
+                new LinearDoubleKeyFrame(43, KeyTime.FromTimeSpan(TimeSpan.Zero)),
+                new LinearDoubleKeyFrame(266, KeyTime.FromTimeSpan(TimeSpan.FromSeconds(5))),
+                new SplineDoubleKeyFrame(400, KeyTime.FromTimeSpan(TimeSpan.FromSeconds(10)), new KeySpline(0, 0.3, 0.5, 0.7))
+            }
+        };
+        _storyboard.Children.Add(doubleAnimationUsingKeyFrames);
+        Storyboard.SetTarget(doubleAnimationUsingKeyFrames, rect);
+        Storyboard.SetTargetProperty(doubleAnimationUsingKeyFrames, new PropertyPath(Canvas.TopProperty));
         rect.Loaded += delegate
         {
             _storyboard.Begin(this, true);

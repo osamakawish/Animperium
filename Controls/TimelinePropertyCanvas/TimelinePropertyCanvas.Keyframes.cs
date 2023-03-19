@@ -18,29 +18,26 @@ public partial class TimelinePropertyCanvas
 
     internal Double2D DoubleRange => AssociatedFile.DoubleRange;
 
-    private bool TryGetCanvasBottom(double actualValue, out double canvasBottom)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="actualValue"></param>
+    /// <returns>The <see cref="Canvas.BottomProperty"/> for a keyframe given its relative value to the two extremes.</returns>
+    private double GetCanvasBottom(double actualValue)
     {
         var value =
             actualValue <= DoubleRange.X ? DoubleRange.X :
             actualValue >= DoubleRange.Y ? DoubleRange.Y :
             actualValue;
-
-        // Q: Need to apply func so that it's about logarithmic, but also with 0 in center.
-        double Func(double x)
-        {
-            var sign = Math.Sign(x);
-            var log = Math.Log(Math.Abs(x) + 1);
-            return sign * log;
-        }
+        
+        double Func(double x) => Math.Sign(x) * Math.Log(x * x + 1);
         value = Func(value);
         var range = DoubleRange.With(Func);
 
         var transform = Transform1D.FromMapping(
             new Mapping<double>(range.X, CanvasKeyframeMargin),
             new Mapping<double>(range.Y, ActualHeight - TimelineCanvas.ActualHeight - CanvasKeyframeMargin));
-        canvasBottom = transform[value];
-        
-        return DoubleRange.BetweenXAndY(actualValue);
+        return transform[value];
     }
 
     private static Path ConstantKeyframe => new() {
@@ -87,20 +84,18 @@ public partial class TimelinePropertyCanvas
         _ => throw new ArgumentOutOfRangeException(nameof(keyframeType), keyframeType, null)
     };
 
-    internal void AddKeyframe(KeyframeType keyframeType, TimeSpan? time = null)
+    internal void AddKeyframe(KeyframeType keyframeType, TimeSpan? time = null, double value=0)
     {
         time ??= CurrentTime;
 
         var path = GetPath(keyframeType);
         KeyframeCanvas.Children.Add(path);
         
-        TryGetCanvasBottom(0, out var bottom);
         Canvas.SetLeft(path, GetLeft(time.Value));
-        Canvas.SetBottom(path, bottom);
+        Canvas.SetBottom(path, GetCanvasBottom(value));
 
         Panel.SetZIndex(path, 20);
     }
-
 
     internal void RemoveKeyframe(TimeSpan time)
     {
