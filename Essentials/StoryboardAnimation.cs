@@ -21,6 +21,8 @@ internal class StoryboardAnimation : ICollection<PropertyAnimation>
     private readonly PropertyAnimationDictionary _dictionary = new();
     private readonly HashSet<PropertyAnimation> _set = new();
 
+    internal PropertyAnimation? SelectedPropertyAnimation { get; set; }
+
     /// <summary>
     /// The storyboard for this animation. Do not modify directly, but use this
     /// <see cref="StoryboardAnimation"/> to modify the animation instead, as it keeps track of the information
@@ -31,10 +33,11 @@ internal class StoryboardAnimation : ICollection<PropertyAnimation>
     public IEnumerator<PropertyAnimation> GetEnumerator()
         => _dictionary.SelectMany(x => x.Value
             .Select(y => new PropertyAnimation(x.Key, y.Key, y.Value)))
-        .GetEnumerator();
+            .GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+    // TODO: Needs to be modified to add a keyframe instead of a full animation.
     public void Add(Shape shape, DependencyProperty property, AnimationTimeline animation)
     {
         if (!_dictionary.ContainsKey(shape))
@@ -89,11 +92,7 @@ internal class StoryboardAnimation : ICollection<PropertyAnimation>
     { foreach (var animationProperty in _set) action(animationProperty); }
 
     public void ForEach(Action<Shape, DependencyProperty, AnimationTimeline> action)
-    {
-        foreach (var (shape, animationTimelines) in _dictionary)
-        foreach (var (property, animation) in animationTimelines)
-            action(shape, property, animation);
-    }
+        => ForEach(pA => action(pA.Shape, pA.Property, pA.Animation));
 
     public bool IsReadOnly => false;
 

@@ -56,6 +56,7 @@ public partial class MainWindow
         _storyboard.Children.Add(doubleAnimationUsingKeyFrames);
         Storyboard.SetTarget(doubleAnimationUsingKeyFrames, rect);
         Storyboard.SetTargetProperty(doubleAnimationUsingKeyFrames, new PropertyPath(Canvas.TopProperty));
+
         rect.Loaded += delegate
         {
             _storyboard.Begin(this, true);

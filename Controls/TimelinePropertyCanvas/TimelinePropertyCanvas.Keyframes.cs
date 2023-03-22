@@ -89,8 +89,14 @@ public partial class TimelinePropertyCanvas
         time ??= CurrentTime;
 
         var path = GetPath(keyframeType);
-        KeyframeCanvas.Children.Add(path);
-        
+        var button = new Button { Content = path };
+        button.Click += (_, e) =>
+        {
+            // Set selected keyframe to this keyframe.
+            
+        };
+        KeyframeCanvas.Children.Add(button);
+
         Canvas.SetLeft(path, GetLeft(time.Value));
         Canvas.SetBottom(path, GetCanvasBottom(value));
 
