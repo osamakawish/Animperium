@@ -25,7 +25,7 @@ public partial class AnimationCanvas
     internal static AnimationCanvas? Current { get; set; }
 
     // For quickly accessing shapes' canvases.
-    internal static Dictionary<ShapeCollection, AnimationCanvas> ShapeToAssociatedCanvas { get; } = new();
+    internal static Dictionary<Shape, AnimationCanvas> ShapeToAssociatedCanvas { get; } = new();
 
     internal static RelativeMeasure2D RelativeMeasure => BaseRelativeMeasureC.Standard;
 
@@ -82,8 +82,6 @@ public partial class AnimationCanvas
         MouseDown += (_, e) => MouseEventBehaviour(e, VisualAnimationTool.OnDown);
         MouseMove += (_, e) => MouseEventBehaviour(e, VisualAnimationTool.OnMove);
         MouseUp   += (_, e) => MouseEventBehaviour(e, VisualAnimationTool.OnUp, isMouseUp: true);
-
-        ShapeToAssociatedCanvas.Add(ShapeCollection, this);
 
         Canvas.SetLeft(Path2, 0);
         Canvas.SetTop(Path2, 0);
@@ -148,6 +146,7 @@ public partial class AnimationCanvas
         if (!isDecorative) {
             _shapes[shape] = (relativePosition, relativeSize);
             ShapeCollection.Add(shape);
+            ShapeToAssociatedCanvas.Add(shape, this);
             UpdateShapeRendering(shape);
         }
         else {
@@ -211,7 +210,5 @@ public partial class AnimationCanvas
     }
 
     internal void HideSelectionRect()
-    {
-        ShapeCollection.SelectionRectangle.Visibility = Visibility.Collapsed;
-    }
+        => ShapeCollection.SelectionRectangle.Visibility = Visibility.Collapsed;
 }

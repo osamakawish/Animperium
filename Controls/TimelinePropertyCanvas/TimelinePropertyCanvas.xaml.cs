@@ -91,7 +91,7 @@ public partial class TimelinePropertyCanvas
         {
             DrawTimeMarkers();
             CurrentFrame = ToFrame(TimeSpan.FromSeconds(20));
-            AddKeyframe(KeyframeType.Constant);
+            AddKeyframe(KeyframeType.Constant); // DEBUG
         };
     }
 

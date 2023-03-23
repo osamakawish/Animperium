@@ -17,8 +17,7 @@ public static class ShapeExtensions
     public static Rect ZeroRect { get; } = new(0, 0, 0, 0);
 
     internal static AnimationCanvas GetAnimationCanvas(this Shape shape)
-        => AnimationCanvas.ShapeToAssociatedCanvas[
-            AnimationCanvas.ShapeToAssociatedCanvas.Keys.First(set => set.Contains(shape))];
+        => AnimationCanvas.ShapeToAssociatedCanvas[shape];
 
     public static void SetShapeRegion(this Shape shape, Point point1, Point point2)
         => shape.GetAnimationCanvas().SetShapeRegion(shape, new Rect(point1, point2));

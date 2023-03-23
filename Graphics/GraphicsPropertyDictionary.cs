@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
+using Animperium.Controls;
 
 namespace Animperium.Graphics;
 
@@ -11,10 +12,10 @@ internal static class GraphicsPropertyDictionary
 {
     internal static Dictionary<Type, AnimationProperty[]> Properties = new() {
         { typeof(Shape), new[] {
-            new AnimationProperty(Canvas.LeftProperty, "X"), // Need to set an AnimationCanvas.X property
-            new AnimationProperty(Canvas.TopProperty, "Y"),  // Need to set an AnimationCanvas.Y property
-            new AnimationProperty(FrameworkElement.WidthProperty),
-            new AnimationProperty(FrameworkElement.HeightProperty),
+            new AnimationProperty(AnimationCanvas.XProperty),
+            new AnimationProperty(AnimationCanvas.YProperty),
+            new AnimationProperty(AnimationCanvas.ItemWidthProperty,  "Width"),
+            new AnimationProperty(AnimationCanvas.ItemHeightProperty, "Height"),
             new AnimationProperty(Shape.StrokeProperty),
             new AnimationProperty(Shape.FillProperty),
             new AnimationProperty(Shape.StrokeThicknessProperty)
