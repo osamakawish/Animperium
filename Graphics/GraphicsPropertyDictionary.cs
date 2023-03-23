@@ -14,8 +14,8 @@ internal static class GraphicsPropertyDictionary
         { typeof(Shape), new[] {
             new AnimationProperty(AnimationCanvas.XProperty),
             new AnimationProperty(AnimationCanvas.YProperty),
-            new AnimationProperty(AnimationCanvas.ItemWidthProperty,  "Width"),
-            new AnimationProperty(AnimationCanvas.ItemHeightProperty, "Height"),
+            new AnimationProperty(AnimationCanvas.ShapeWidthProperty,  "Width"),
+            new AnimationProperty(AnimationCanvas.ShapeHeightProperty, "Height"),
             new AnimationProperty(Shape.StrokeProperty),
             new AnimationProperty(Shape.FillProperty),
             new AnimationProperty(Shape.StrokeThicknessProperty)

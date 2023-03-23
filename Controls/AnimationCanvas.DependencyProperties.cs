@@ -6,7 +6,7 @@ namespace Animperium.Controls;
 public partial class AnimationCanvas
 {
     public static readonly DependencyProperty XProperty
-        = DependencyProperty.Register(
+        = DependencyProperty.RegisterAttached(
             name: "X",
             propertyType: typeof(double),
             ownerType: typeof(AnimationCanvas),
@@ -28,7 +28,7 @@ public partial class AnimationCanvas
     public static double GetX(Shape shape) => ShapeToAssociatedCanvas[shape]._shapes[shape].position.X;
 
     public static readonly DependencyProperty YProperty
-        = DependencyProperty.Register(
+        = DependencyProperty.RegisterAttached(
             name: "Y",
             propertyType: typeof(double),
             ownerType: typeof(AnimationCanvas),
@@ -49,9 +49,9 @@ public partial class AnimationCanvas
     public static void SetY(Shape shape, double y) => shape.SetValue(YProperty, y);
     public static double GetY(Shape shape) => ShapeToAssociatedCanvas[shape]._shapes[shape].position.Y;
 
-    public static readonly DependencyProperty ItemWidthProperty
-        = DependencyProperty.Register(
-            name: "ItemWidth",
+    public static readonly DependencyProperty ShapeWidthProperty
+        = DependencyProperty.RegisterAttached(
+            name: "ShapeWidth",
             propertyType: typeof(double),
             ownerType: typeof(AnimationCanvas),
             new FrameworkPropertyMetadata(1d,
@@ -68,12 +68,12 @@ public partial class AnimationCanvas
         canvas.UpdateShapeRendering(shape);
     }
 
-    public static void SetWidth(Shape shape, double width) => shape.SetValue(ItemWidthProperty, width);
-    public static double GetWidth(Shape shape) => ShapeToAssociatedCanvas[shape]._shapes[shape].size.X;
+    public static void SetShapeWidth(Shape shape, double width) => shape.SetValue(ShapeWidthProperty, width);
+    public static double GetShapeWidth(Shape shape) => ShapeToAssociatedCanvas[shape]._shapes[shape].size.X;
 
-    public static readonly DependencyProperty ItemHeightProperty
-        = DependencyProperty.Register(
-            name: "ItemHeight",
+    public static readonly DependencyProperty ShapeHeightProperty
+        = DependencyProperty.RegisterAttached(
+            name: "ShapeHeight",
             propertyType: typeof(double),
             ownerType: typeof(AnimationCanvas),
             new FrameworkPropertyMetadata(1d,
@@ -90,6 +90,6 @@ public partial class AnimationCanvas
         canvas.UpdateShapeRendering(shape);
     }
 
-    public static void SetHeight(Shape shape, double height) => shape.SetValue(ItemHeightProperty, height);
-    public static double GetHeight(Shape shape) => ShapeToAssociatedCanvas[shape]._shapes[shape].size.Y;
+    public static void SetShapeHeight(Shape shape, double height) => shape.SetValue(ShapeHeightProperty, height);
+    public static double GetShapeHeight(Shape shape) => (double)shape.GetValue(ShapeHeightProperty);
 }

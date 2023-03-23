@@ -96,6 +96,9 @@ public partial class AnimationCanvas
 
             var arc2 = AddShape<Arc>((-4, -4), (4, 4), strokeColor: Brushes.Crimson);
             var rect2 = AddShape<Rectangle>((-4, -4), (4, 4));
+
+            SetShapeHeight(arc2, 8);
+            SetShapeHeight(rect2, 8);
         };
     }
 
