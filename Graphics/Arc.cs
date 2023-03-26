@@ -35,6 +35,8 @@ public class Arc : Shape
         set { Canvas.SetLeft(this, value.X - Width / 2); Canvas.SetTop(this, value.Y - Height / 2); }
     }
 
+    internal Geometry ArcGeometry => DefiningGeometry;
+
     protected override Geometry DefiningGeometry {
         get {
             var ellipseRadii = new Double2D(Width / 2, Height / 2);

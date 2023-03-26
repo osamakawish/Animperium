@@ -19,6 +19,9 @@ public static class ShapeExtensions
     internal static AnimationCanvas GetAnimationCanvas(this Shape shape)
         => AnimationCanvas.ShapeToAssociatedCanvas[shape];
 
+    public static void SetDecorativeShapeRegion(this Shape shape, Point point1, Point point2)
+        => AnimationCanvas.RedrawFromPoints(shape, point1, point2);
+
     public static void SetShapeRegion(this Shape shape, Point point1, Point point2)
         => shape.GetAnimationCanvas().SetShapeRegion(shape, new Rect(point1, point2));
 

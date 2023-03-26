@@ -33,6 +33,7 @@ public partial class AnimationCanvas
 
     internal VisualAnimationTool VisualAnimationTool { get; set; } = AnimationTools.ItemSelectTool;
     private ShapeCollection ShapeCollection { get; }
+    internal Rectangle PreSelectionRect { get; } = new();
 
     // Parameters for mouse events.
     private Point? _start;
@@ -85,6 +86,9 @@ public partial class AnimationCanvas
 
         Canvas.SetLeft(Path2, 0);
         Canvas.SetTop(Path2, 0);
+
+        var style = ShapeCollection.SelectionColorTheme;
+        PreSelectionRect.StrokeDashArray = style.StrokeDashArray;
 
         Loaded += (_, _) =>
         {
@@ -200,6 +204,9 @@ public partial class AnimationCanvas
         var (relativePosition, relativeSize) = _shapes[shape];
         Redraw(shape, relativePosition, relativeSize);
     }
+
+    internal static void RedrawFromPoints(Shape shape, Point p1, Point p2)
+    { var rect = new Rect(p1, p2); Redraw(shape, rect.Location, rect.Size); }
 
     internal static void Redraw(Shape shape, Double2D relativePosition, Double2D relativeSize)
     {

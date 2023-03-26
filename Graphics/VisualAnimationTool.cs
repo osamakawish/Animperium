@@ -68,10 +68,11 @@ public record VisualAnimationTool(
 internal static class AnimationTools
 {
     // Mouse tool
+    private static Rectangle? _selectionPreviewRect;
     internal static readonly VisualAnimationTool ItemSelectTool = new(
-        args => { },
-        args => { },
-        args => { }
+        args => { }, // Initiates selection preview rect
+        args => { }, // Resizes selection preview rect
+        args => { }  // Hit tests on selection preview rect, then updates selection rect to preview rect, and hides preview rect.
     ) { Name = "Mouse Tool" };
 
     // Rect Tool: DEBUG

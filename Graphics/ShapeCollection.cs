@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Animperium.Controls;
 using Animperium.Essentials;
+using Animperium.Graphics.Selection;
 
 namespace Animperium.Graphics;
 
@@ -21,15 +22,19 @@ public class ShapeCollection : ICollection<Shape>
 
         const double halfPi = 0.5 * Math.PI;
         RotationButtons = new RotationButtons(
-            new RotationArcButton(animationCanvas, new Point(0, 0), .5, 0),
-            new RotationArcButton(animationCanvas, new Point(0, 0), .5, -halfPi),
-            new RotationArcButton(animationCanvas, new Point(0, 0), .5, halfPi),
-            new RotationArcButton(animationCanvas, new Point(0, 0), .5, Math.PI)
+            new RotationButtonData(animationCanvas, new Point(0, 0), .5, 0),
+            new RotationButtonData(animationCanvas, new Point(0, 0), .5, -halfPi),
+            new RotationButtonData(animationCanvas, new Point(0, 0), .5, halfPi),
+            new RotationButtonData(animationCanvas, new Point(0, 0), .5, Math.PI)
         );
+
+        _animationCanvas = animationCanvas;
     }
 
     private readonly HashSet<Shape> _shapes = new();
     private readonly HashSet<Shape> _selected = new();
+
+    private readonly AnimationCanvas _animationCanvas;
 
     private SelectionRectColorTheme _selectionRectColorTheme
         = new(Brushes.Black, new DoubleCollection(new double[] { 2, 3, 2, 3 }));
@@ -49,7 +54,7 @@ public class ShapeCollection : ICollection<Shape>
     private RotationButtons RotationButtons { get; }
 
     // TODO: Use SelectionRectangle class for this later.
-    internal readonly Rectangle SelectionRectangle;
+    internal Rectangle SelectionRectangle { get; }
 
     /// <summary>
     /// Needs testing: Intended to be the bounds of the selected items.
