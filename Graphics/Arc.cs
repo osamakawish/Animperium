@@ -35,7 +35,26 @@ public class Arc : Shape
         set { Canvas.SetLeft(this, value.X - Width / 2); Canvas.SetTop(this, value.Y - Height / 2); }
     }
 
-    internal Geometry ArcGeometry => DefiningGeometry;
+    public static Geometry GetGeometry(Point center, Size ellipseRadii, double startAngle, double endAngle)
+    {
+        Double2D EllipsePoint(double angle) => ellipseRadii * Double2D.ToCirclePoint(angle) + center;
+
+        var arcSegment = new ArcSegment(
+            point: EllipsePoint(endAngle),
+            size: ellipseRadii, 0,
+            isLargeArc: Math.Abs(startAngle - endAngle) >= Math.PI,
+            sweepDirection: endAngle > startAngle
+                ? SweepDirection.Counterclockwise : SweepDirection.Clockwise,
+            isStroked: true);
+
+        var pathFigure = new PathFigure
+        {
+            StartPoint = EllipsePoint(startAngle),
+            Segments = new PathSegmentCollection { arcSegment }
+        };
+
+        return new PathGeometry(new[] { pathFigure });
+    }
 
     protected override Geometry DefiningGeometry {
         get {

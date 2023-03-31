@@ -22,10 +22,10 @@ public class ShapeCollection : ICollection<Shape>
 
         const double halfPi = 0.5 * Math.PI;
         RotationButtons = new RotationButtons(
-            new RotationButtonData(animationCanvas, new Point(0, 0), .5, 0),
-            new RotationButtonData(animationCanvas, new Point(0, 0), .5, -halfPi),
-            new RotationButtonData(animationCanvas, new Point(0, 0), .5, halfPi),
-            new RotationButtonData(animationCanvas, new Point(0, 0), .5, Math.PI)
+            new RotationButton(animationCanvas, new Point(0, 0), .5, 0),
+            new RotationButton(animationCanvas, new Point(0, 0), .5, -halfPi),
+            new RotationButton(animationCanvas, new Point(0, 0), .5, halfPi),
+            new RotationButton(animationCanvas, new Point(0, 0), .5, Math.PI)
         );
 
         _animationCanvas = animationCanvas;

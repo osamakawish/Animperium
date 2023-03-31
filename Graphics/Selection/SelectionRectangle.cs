@@ -17,25 +17,10 @@ public class SelectionRectangle
     internal double Height => StartPoint.Y - EndPoint.Y;
 
     public SelectionRectVisibleButtons VisibleButtons { get; internal set; }
-
-    // Implement this, and the code only needs to be fixed from here.
+    
     private Path ScaleButtonsShape()
     {
-        var rect = new Rect(StartPoint, EndPoint);
-        rect.Inflate(-6, -6);
-        var length = 8;
-
-        PolyLineSegment CornerScaleButton(Point point) => new()
-        {
-            Points = new PointCollection {
-                point - new Vector(length, 0), point, point + new Vector(0, length)
-            }
-        };
-
-        var nw = CornerScaleButton(rect.TopLeft);
-        var
-
-        return null;
+        
     }
 
     private Shape RotationButtonsShape()

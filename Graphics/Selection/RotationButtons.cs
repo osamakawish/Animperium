@@ -4,14 +4,14 @@ using System.Windows;
 namespace Animperium.Graphics.Selection;
 
 internal record RotationButtons(
-    RotationButtonData TopLeft,
-    RotationButtonData TopRight,
-    RotationButtonData BottomLeft,
-    RotationButtonData BottomRight)
+    RotationButton TopLeft,
+    RotationButton TopRight,
+    RotationButton BottomLeft,
+    RotationButton BottomRight)
 {
     private double _additionalRotation;
 
-    internal void ForEach(Action<RotationButtonData> action)
+    internal void ForEach(Action<RotationButton> action)
     {
         action(TopLeft);
         action(TopRight);
