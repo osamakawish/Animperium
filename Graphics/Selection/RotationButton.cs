@@ -43,3 +43,9 @@ internal class RotationButton : Shape
 
     public RotationButton(ButtonCorner corner) => _corner = corner;
 }
+
+internal record RotationButtons(
+    RotationButton TopLeft,
+    RotationButton TopRight,
+    RotationButton BottomLeft,
+    RotationButton BottomRight);
