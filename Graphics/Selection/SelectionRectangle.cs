@@ -20,7 +20,7 @@ public class SelectionRectangle
     
     private Path ScaleButtonsShape()
     {
-        
+        return null;
     }
 
     private Shape RotationButtonsShape()

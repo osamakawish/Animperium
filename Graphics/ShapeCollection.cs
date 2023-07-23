@@ -17,16 +17,11 @@ public class ShapeCollection : ICollection<Shape>
     internal ShapeCollection(AnimationCanvas animationCanvas)
     {
         SelectionRectangle = animationCanvas.AddShape<Rectangle>(relativeSize: (2, 2), isDecorative: true);
-        SelectionColorTheme = new SelectionRectColorTheme(Brushes.Black, new DoubleCollection(new double[] { 2, 3, 2, 3 }));
+        SelectionColorTheme = new(Brush: Brushes.Black, StrokeDashArray: new(new double[] { 2, 3, 2, 3 }));
         Panel.SetZIndex(SelectionRectangle, int.MaxValue);
 
         const double halfPi = 0.5 * Math.PI;
-        RotationButtons = new RotationButtons(
-            new RotationButton(animationCanvas, new Point(0, 0), .5, 0),
-            new RotationButton(animationCanvas, new Point(0, 0), .5, -halfPi),
-            new RotationButton(animationCanvas, new Point(0, 0), .5, halfPi),
-            new RotationButton(animationCanvas, new Point(0, 0), .5, Math.PI)
-        );
+        RotationButtons = RotationButton.RotationButtons;
 
         _animationCanvas = animationCanvas;
     }
