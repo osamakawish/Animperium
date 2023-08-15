@@ -18,9 +18,6 @@ public partial class TimelinePropertyCanvas
 
     internal Double2D DoubleRange => AssociatedFile.DoubleRange;
 
-    /// <summary>
-    /// 
-    /// </summary>
     /// <param name="actualValue"></param>
     /// <returns>The <see cref="Canvas.BottomProperty"/> for a keyframe given its relative value to the two extremes.</returns>
     private double GetCanvasBottom(double actualValue)
