@@ -22,7 +22,8 @@ public class VisualMouseEventArgs<T> where T : MouseEventArgs
 }
 
 /// <summary>
-/// 
+/// Delegate for storing methods that determine how the mouse will react to various visual
+/// visual interactions.
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public delegate void VisualMouseReaction<T>(VisualMouseEventArgs<T> mouseEventArgs)
